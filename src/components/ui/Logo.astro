@@ -1,0 +1,103 @@
+---
+/**
+ * Logotipo CSMA — reconstrucao vetorial.
+ *
+ * A geometria abaixo foi obtida medindo, pixel a pixel, o arquivo de logotipo
+ * embutido na apresentacao comercial (XObject 1090x230, fundo #01193B):
+ *   - espessura de traco uniforme: 23u
+ *   - altura de caixa alta: 22u -> 209u (linhas de centro em 33,5 e 197,5)
+ *   - "C": semicirculo de raio 82u centrado em (114; 115,5)
+ *   - "S": arcos de raio 41,25u (superior) e 40,75u (inferior)
+ *   - "M": hastes em x=569,5 e x=778,5; vertice do "V" em (674; 144)
+ *   - "A": duas diagonais (dx/dy = 0,602) com apice truncado na linha de caixa
+ *   - travessao do "A": trapezio metalico (#767B82 no original)
+ */
+interface Props {
+  /** Nome acessivel. Vazio => elemento decorativo (aria-hidden). */
+  title?: string;
+  class?: string;
+  /** Anima a entrada glifo a glifo. */
+  animated?: boolean;
+  /** Cor do travessao do "A". */
+  barColor?: string;
+}
+
+const {
+  title = '',
+  class: className = '',
+  animated = false,
+  barColor = 'var(--c-gray-tech)',
+} = Astro.props;
+
+const decorative = title.length === 0;
+---
+
+<svg
+  class:list={['csma-logo', animated && 'csma-logo--animated', className]}
+  viewBox="0 0 1090 230"
+  fill="none"
+  role={decorative ? 'presentation' : 'img'}
+  aria-hidden={decorative ? 'true' : undefined}
+  aria-label={decorative ? undefined : title}
+  style={`--logo-bar:${barColor}`}
+>
+  {!decorative && <title>{title}</title>}
+
+  <g stroke="currentColor" stroke-width="23" stroke-linecap="butt" stroke-linejoin="miter">
+    <path class="csma-logo__g" style="--i:0" d="M246 33.5 H114 A82 82 0 0 0 114 197.5 H246" />
+    <path
+      class="csma-logo__g"
+      style="--i:1"
+      d="M498 33.5 H342.75 A41.25 41.25 0 0 0 342.75 116 H448.75 A40.75 40.75 0 0 1 448.75 197.5 H290.5"
+    />
+    <path
+      class="csma-logo__g"
+      style="--i:2"
+      d="M569.5 22 V209 M778.5 22 V209 M569.5 33.5 L674 144 L778.5 33.5"
+    />
+  </g>
+
+  <path
+    class="csma-logo__g"
+    style="--i:3"
+    fill="currentColor"
+    d="M825.9 209 L938.5 22 H958 L1070.6 209 H1043.8 L948.25 50.3 L852.7 209 Z"
+  />
+  <path
+    class="csma-logo__g csma-logo__bar"
+    style="--i:4"
+    fill="var(--logo-bar)"
+    d="M906.5 187.5 H987.5 L996.5 205 H897.5 Z"
+  />
+</svg>
+
+<style>
+  .csma-logo {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .csma-logo--animated .csma-logo__g {
+    opacity: 0;
+    transform: translateY(7px);
+    transform-box: fill-box;
+    transform-origin: center;
+    transition:
+      opacity 620ms var(--ease-out),
+      transform 620ms var(--ease-out);
+    transition-delay: calc(var(--i) * 90ms + var(--logo-delay, 0ms));
+  }
+
+  .csma-logo--animated.is-in .csma-logo__g {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .csma-logo--animated .csma-logo__g {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

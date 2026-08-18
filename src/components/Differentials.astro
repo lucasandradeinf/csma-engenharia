@@ -1,0 +1,127 @@
+---
+import { differentials } from '../data/site';
+---
+
+<section class="chapter differentials is-dark" id="diferenciais" aria-labelledby="differentials-title">
+  <div class="blueprint" aria-hidden="true"></div>
+
+  <div class="shell">
+    <div class="df__grid">
+      <!-- Título fixo -->
+      <div class="df__aside">
+        <div class="df__aside-inner" data-reveal>
+          <div class="df__rail">
+            <span class="index-mark">11</span>
+            <span class="df__rail-tick" aria-hidden="true"></span>
+          </div>
+          <p class="eyebrow eyebrow--bare df__eyebrow">{differentials.eyebrow}</p>
+          <h2 class="df__title" id="differentials-title">{differentials.title}</h2>
+        </div>
+      </div>
+
+      <!-- Manifesto -->
+      <ol class="df__list">
+        {
+          differentials.items.map((item, i) => (
+            <li class="df__item" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <span class="df__item-rule" data-rule style={`--reveal-delay:${i * 70}ms`} />
+              <span class="index-mark df__item-num">{item.idx}</span>
+              <p class="df__item-text">{item.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .differentials {
+    background: var(--c-navy);
+  }
+
+  .df__grid {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+
+  .df__rail {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: var(--space-md);
+  }
+  .df__rail-tick {
+    display: block;
+    width: 2.5rem;
+    height: 1px;
+    background: var(--rule-strong);
+  }
+  .df__eyebrow {
+    margin-bottom: var(--space-xs);
+    color: var(--ink-faint);
+  }
+  .df__title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    color: #fff;
+    max-width: 12ch;
+  }
+
+  .df__list {
+    display: grid;
+  }
+  .df__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-sm) var(--space-md);
+    align-items: start;
+    padding-block: var(--space-md);
+  }
+  .df__item-rule {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: var(--rule);
+  }
+  .df__item-num {
+    color: var(--c-steel);
+    padding-top: 0.5rem;
+  }
+  .df__item-text {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 0.95rem + 1.4vw, 2.125rem);
+    line-height: 1.2;
+    letter-spacing: -0.014em;
+    color: #fff;
+    max-width: 24ch;
+  }
+
+  @media (min-width: 62rem) {
+    .df__grid {
+      grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+      gap: var(--space-2xl);
+      align-items: start;
+    }
+    .df__aside-inner {
+      position: sticky;
+      top: calc(var(--header-h) + 12vh);
+    }
+    .df__item {
+      padding-block: var(--space-lg);
+      grid-template-columns: 4rem minmax(0, 1fr);
+    }
+    .df__item:last-child {
+      border-bottom: 1px solid var(--rule);
+    }
+  }
+
+  @media (max-width: 61.99rem) {
+    .df__item:last-child {
+      border-bottom: 1px solid var(--rule);
+    }
+  }
+</style>

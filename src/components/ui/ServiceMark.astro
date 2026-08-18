@@ -1,0 +1,118 @@
+---
+/** Marcas tecnicas das frentes de atuacao. 132x64, traco 1, sem preenchimento. */
+interface Props {
+  index: number;
+  class?: string;
+}
+const { index, class: className = '' } = Astro.props;
+---
+
+<svg
+  class:list={['mark', className]}
+  viewBox="0 0 132 64"
+  fill="none"
+  aria-hidden="true"
+  stroke="currentColor"
+  stroke-width="1"
+>
+  {
+    index === 0 && (
+      <g>
+        {/* relatorio com detalhe estrutural */}
+        <path d="M6 6h58v52H6z" class="m-soft" />
+        <path d="M16 20h24M16 28h38M16 36h30M16 44h18" class="m-faint" />
+        <path d="M82 54V20h40v34" class="m-key" />
+        <path d="M82 20h40" class="m-key" />
+        <path d="M88 26h28M88 26 96 34M116 26l-8 8" class="m-soft" />
+        <path d="M76 58h52M76 55v6M128 55v6" class="m-faint" />
+      </g>
+    )
+  }
+
+  {
+    index === 1 && (
+      <g>
+        {/* sequenciamento executivo */}
+        <path d="M4 12h48M46 8l6 4-6 4" class="m-key" />
+        <path d="M28 30h56M78 26l6 4-6 4" class="m-key" />
+        <path d="M56 48h72M122 44l6 4-6 4" class="m-key" />
+        <path d="M4 4v56M28 22v38M56 40v20" class="m-faint" />
+      </g>
+    )
+  }
+
+  {
+    index === 2 && (
+      <g>
+        {/* volume 3D + eixo do tempo */}
+        <path d="M40 6 74 26 74 52 40 32Z" class="m-soft" />
+        <path d="M40 6 6 26 6 52 40 32Z" class="m-soft" />
+        <path d="M40 32v26M40 58 6 52M40 58 74 52" class="m-key" />
+        <path d="M6 39 40 45 74 39" class="m-faint" stroke-dasharray="3 3" />
+        <path d="M88 32h36M118 28l6 4-6 4" class="m-key" />
+        <path d="M88 20v24" class="m-faint" />
+      </g>
+    )
+  }
+
+  {
+    index === 3 && (
+      <g>
+        {/* balanca de trade-off */}
+        <path d="M66 8v40M50 48h32" class="m-key" />
+        <path d="M20 16h92" class="m-key" />
+        <path d="M20 16 8 38h24zM112 16l-12 22h24z" class="m-soft" />
+        <path d="M8 38h24M100 38h24" class="m-key" />
+        <path d="M66 8h0" class="m-key" />
+        <circle cx="66" cy="8" r="3" class="m-key" />
+      </g>
+    )
+  }
+
+  {
+    index === 4 && (
+      <g>
+        {/* icamento e movimentacao */}
+        <path d="M14 58V8h84" class="m-key" />
+        <path d="M14 8 40 26M14 20 30 8" class="m-faint" />
+        <path d="M98 8v14" class="m-key" />
+        <path d="M86 22h24v14H86z" class="m-soft" />
+        <path d="M4 58h124" class="m-key" />
+        <path d="M98 36c0 12-24 12-24 0" class="m-faint" stroke-dasharray="3 3" />
+        <path d="M62 40h24v18H62z" class="m-faint" stroke-dasharray="3 3" />
+      </g>
+    )
+  }
+
+  {
+    index === 5 && (
+      <g>
+        {/* gestao da implantacao em campo */}
+        <path d="M6 12h120v44H6z" class="m-soft" />
+        <path d="M36 12v44M66 12v44M96 12v44M6 34h120" class="m-faint" />
+        <path d="M18 48 44 26l24 12 34-22" class="m-key" />
+        <circle cx="18" cy="48" r="3" class="m-key" />
+        <circle cx="44" cy="26" r="3" class="m-key" />
+        <circle cx="68" cy="38" r="3" class="m-key" />
+        <path d="M102 16v-10h14l-4 5 4 5z" class="m-key" />
+        <circle cx="102" cy="16" r="3" class="m-key" />
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .mark {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .mark :global(*) {
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+  }
+  .m-key { opacity: 1; }
+  .m-soft { opacity: 0.6; }
+  .m-faint { opacity: 0.32; }
+</style>

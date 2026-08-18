@@ -1,0 +1,141 @@
+---
+import '../styles/global.css';
+import '../styles/animations.css';
+import { site } from '../data/site';
+import { withBase } from '../lib/url';
+
+/* Fontes importadas como asset: o Astro devolve a URL final ja com hash e base. */
+import serif from '../assets/fonts/dm-serif-display-latin-400-normal.woff2';
+import sans from '../assets/fonts/ibm-plex-sans-latin-wght-normal.woff2';
+import mono400 from '../assets/fonts/ibm-plex-mono-latin-400-normal.woff2';
+import mono500 from '../assets/fonts/ibm-plex-mono-latin-500-normal.woff2';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Impede indexacao (usado na 404). */
+  noindex?: boolean;
+}
+
+const { title = site.title, description = site.description, noindex = false } = Astro.props;
+
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
+const ogImage = Astro.site
+  ? new URL(withBase('og.png'), Astro.site).href
+  : withBase('og.png');
+
+const LATIN =
+  'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD';
+
+const fontFaces = `
+@font-face{font-family:'DM Serif Display';font-style:normal;font-weight:400;font-display:swap;src:url('${serif}') format('woff2');unicode-range:${LATIN}}
+@font-face{font-family:'IBM Plex Sans';font-style:normal;font-weight:100 700;font-display:swap;src:url('${sans}') format('woff2-variations');unicode-range:${LATIN}}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url('${mono400}') format('woff2');unicode-range:${LATIN}}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:500;font-display:swap;src:url('${mono500}') format('woff2');unicode-range:${LATIN}}
+`.trim();
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  '@id': canonical,
+  name: 'CSMA',
+  alternateName: 'CSMA Engenharia',
+  slogan: site.signature,
+  description: site.description,
+  url: canonical,
+  email: site.email,
+  image: ogImage,
+  logo: ogImage,
+  knowsAbout: [
+    'Construtibilidade',
+    'Planejamento executivo',
+    'Sequenciamento de montagem',
+    'Simulacao BIM 3D',
+    'Planejamento 4D',
+    'Advanced Work Packaging (AWP)',
+    'Design Review',
+    'Analise de trade-off',
+    'Planos de logistica, montagem e icamento',
+    'Gestao da implantacao de projetos industriais',
+    'Comissionamento',
+    'Paradas industriais',
+  ],
+};
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <meta name="theme-color" content="#01193b" />
+    <meta name="color-scheme" content="light" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="CSMA Engenharia" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="CSMA — Constructibility, Strategy, Management, Advisory" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
+    <link rel="alternate icon" href={withBase('favicon.ico')} sizes="48x48" />
+    <link rel="apple-touch-icon" href={withBase('apple-touch-icon.png')} />
+    <link rel="manifest" href={withBase('site.webmanifest')} />
+
+    <link rel="preload" href={sans} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={serif} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={mono400} as="font" type="font/woff2" crossorigin />
+    <style is:inline set:html={fontFaces}></style>
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+    <slot />
+
+    <script>
+      /* ------------------------------------------------------------------
+         Motor de revelacao: um unico IntersectionObserver para o site todo.
+         Sem dependencias, sem trabalho no thread principal apos a entrada.
+         ------------------------------------------------------------------ */
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const targets = document.querySelectorAll<HTMLElement>(
+        '[data-reveal], [data-reveal-group], [data-rule], [data-observe]'
+      );
+
+      if (reduced) {
+        targets.forEach((el) => el.classList.add('is-in'));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              entry.target.classList.add('is-in');
+              io.unobserve(entry.target);
+            }
+          },
+          { rootMargin: '0px 0px -12% 0px', threshold: 0.08 }
+        );
+        targets.forEach((el) => io.observe(el));
+      }
+    </script>
+  </body>
+</html>

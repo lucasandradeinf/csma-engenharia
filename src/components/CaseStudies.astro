@@ -1,0 +1,311 @@
+---
+import { Image } from 'astro:assets';
+import SectionHead from './ui/SectionHead.astro';
+import { cases } from '../data/site';
+
+import formaPerdida from '../assets/cases/forma-perdida.jpg';
+import montagemEquipamentos from '../assets/cases/montagem-equipamentos.jpg';
+import tubulacao from '../assets/cases/tubulacao.jpg';
+
+/* Fotografias reais dos casos, extraídas da apresentação institucional. */
+const photos: Record<string, ImageMetadata> = {
+  'forma-perdida': formaPerdida,
+  'montagem-equipamentos': montagemEquipamentos,
+  tubulacao: tubulacao,
+};
+---
+
+<section class="chapter cases" id="cases" aria-labelledby="cases-title">
+  <div class="shell">
+    <SectionHead num="06" eyebrow={cases.eyebrow} title={cases.title} id="cases-title" />
+
+    <div class="cs__list">
+      {
+        cases.items.map((item) => (
+          <article class="cs__case" aria-labelledby={`case-${item.idx}`}>
+            {/* ---------- Mídia ---------- */}
+            <div class="cs__media">
+              <figure class="cs__figure">
+                <div class="cs__frame" data-reveal>
+                  <span class="cs__frame-outline" aria-hidden="true" />
+
+                  <div class="cs__image" data-clip>
+                    <Image
+                      src={photos[item.image]!}
+                      alt={item.alt}
+                      quality={84}
+                      format="webp"
+                      loading="lazy"
+                      decoding="async"
+                      sizes="(min-width: 64rem) 28rem, 88vw"
+                    />
+                    <span class="cs__mesh" aria-hidden="true" />
+                  </div>
+
+                  <span class="cs__corner cs__corner--tl" aria-hidden="true" />
+                  <span class="cs__corner cs__corner--tr" aria-hidden="true" />
+                  <span class="cs__corner cs__corner--bl" aria-hidden="true" />
+                  <span class="cs__corner cs__corner--br" aria-hidden="true" />
+                  <span class="cs__code mono" aria-hidden="true">{item.code}</span>
+                </div>
+
+                <figcaption class="cs__caption">
+                  <span class="cs__caption-rule" aria-hidden="true" />
+                  <span class="mono">{item.caption}</span>
+                </figcaption>
+              </figure>
+            </div>
+
+            {/* ---------- Texto ---------- */}
+            <div class="cs__body">
+              <header class="cs__head" data-reveal>
+                <p class="cs__label">
+                  <span class="index-mark">Caso {item.idx}</span>
+                </p>
+                <h3 class="cs__title" id={`case-${item.idx}`}>
+                  {item.title}
+                </h3>
+              </header>
+
+              <dl class="cs__facts">
+                <div class="cs__fact" data-reveal style="--reveal-delay:80ms">
+                  <dt class="mono">Situação identificada</dt>
+                  <dd>{item.situation}</dd>
+                </div>
+                <div class="cs__fact" data-reveal style="--reveal-delay:160ms">
+                  <dt class="mono">Solução CSMA</dt>
+                  <dd>{item.solution}</dd>
+                </div>
+              </dl>
+
+              <div class="cs__benefits" data-reveal style="--reveal-delay:240ms">
+                <p class="mono cs__benefits-label">Benefícios esperados</p>
+                <ul data-reveal-group>
+                  {item.benefits.map((b) => (
+                    <li>
+                      <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+                        <path d="M0 5.5h11M5.5 0v11" stroke="currentColor" stroke-width="1" />
+                      </svg>
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .cases {
+    background: var(--c-white);
+  }
+
+  .cs__list {
+    display: grid;
+    gap: var(--space-3xl);
+  }
+
+  .cs__case {
+    display: grid;
+    gap: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--rule);
+  }
+
+  /* ---------- Mídia ---------- */
+  .cs__figure {
+    margin: 0;
+  }
+  .cs__frame {
+    position: relative;
+    padding: 14px;
+  }
+  .cs__frame-outline {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--rule-strong);
+  }
+
+  .cs__image {
+    position: relative;
+    overflow: hidden;
+    background: var(--c-navy-deep);
+  }
+  .cs__image :global(img) {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: saturate(0.82) contrast(1.06);
+    transform: scale(1.001);
+    transition: filter 700ms var(--ease-out), transform 900ms var(--ease-out);
+  }
+  .cs__image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(200deg, rgba(1, 25, 59, 0.3), rgba(1, 25, 59, 0.08) 55%);
+    mix-blend-mode: multiply;
+    transition: opacity 700ms var(--ease-out);
+    pointer-events: none;
+  }
+  .cs__mesh {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.11) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.11) 1px, transparent 1px);
+    background-size: 34px 34px;
+    opacity: 0.5;
+    transition: opacity 700ms var(--ease-out);
+    pointer-events: none;
+  }
+
+  @media (hover: hover) {
+    .cs__figure:hover .cs__image :global(img) {
+      filter: saturate(1) contrast(1);
+      transform: scale(1.02);
+    }
+    .cs__figure:hover .cs__image::after {
+      opacity: 0.35;
+    }
+    .cs__figure:hover .cs__mesh {
+      opacity: 0;
+    }
+  }
+
+  .cs__corner {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border: 0 solid var(--ink-strong);
+  }
+  .cs__corner--tl { top: 0; left: 0; border-top-width: 1px; border-left-width: 1px; }
+  .cs__corner--tr { top: 0; right: 0; border-top-width: 1px; border-right-width: 1px; }
+  .cs__corner--bl { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; }
+  .cs__corner--br { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; }
+
+  .cs__code {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    padding: 0.35rem 0.55rem;
+    background: rgba(1, 25, 59, 0.82);
+    color: #fff;
+    font-size: 0.5625rem;
+    letter-spacing: 0.16em;
+  }
+
+  .cs__caption {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: var(--space-sm);
+    color: var(--ink-faint);
+  }
+  .cs__caption-rule {
+    width: 1.75rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+    flex: none;
+  }
+  .cs__caption .mono {
+    font-size: 0.5625rem;
+    letter-spacing: 0.16em;
+  }
+
+  /* ---------- Texto ---------- */
+  .cs__label {
+    margin-bottom: var(--space-xs);
+  }
+  .cs__label .index-mark {
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+  .cs__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.625rem, 1.1rem + 2.2vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: var(--ink-strong);
+    max-width: 16ch;
+  }
+
+  .cs__facts {
+    margin-top: var(--space-lg);
+    display: grid;
+    gap: var(--space-md);
+  }
+  .cs__fact dt {
+    color: var(--ink-faint);
+    letter-spacing: 0.16em;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 0.65rem;
+  }
+  .cs__fact dd {
+    margin: 0;
+    color: var(--ink-muted);
+    max-width: 52ch;
+  }
+
+  .cs__benefits {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--rule-strong);
+  }
+  .cs__benefits-label {
+    color: var(--ink-strong);
+    letter-spacing: 0.16em;
+    margin-bottom: var(--space-sm);
+  }
+  .cs__benefits ul {
+    display: grid;
+    gap: 0.55rem;
+  }
+  .cs__benefits li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    color: var(--ink);
+    font-size: var(--fs-base);
+  }
+  .cs__benefits li svg {
+    flex: none;
+    color: var(--accent);
+    transform: translateY(2px);
+  }
+
+  /* ---------- Desktop: alternância editorial ---------- */
+  @media (min-width: 64rem) {
+    .cs__case {
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+      gap: var(--space-2xl);
+      align-items: start;
+      padding-top: var(--space-xl);
+    }
+    .cs__case:nth-child(even) .cs__media {
+      order: 2;
+    }
+    .cs__case:nth-child(even) .cs__body {
+      order: 1;
+    }
+    .cs__figure {
+      position: sticky;
+      top: calc(var(--header-h) + 8vh);
+      max-width: 30rem;
+    }
+    .cs__case:nth-child(even) .cs__figure {
+      margin-left: auto;
+    }
+    .cs__benefits ul {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem var(--space-md);
+    }
+  }
+</style>

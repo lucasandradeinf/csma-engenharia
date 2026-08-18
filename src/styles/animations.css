@@ -1,0 +1,127 @@
+/* =========================================================================
+   CSMA — Movimento
+   Regra: o movimento comunica precisao, nao espetaculo.
+   Deslocamentos de 4 a 14px, opacidade e clip. Nada de bounce ou escala forte.
+   ========================================================================= */
+
+/* ---------- Reveal por IntersectionObserver ---------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal='fade'] { transform: none; }
+[data-reveal='left'] { transform: translate3d(-14px, 0, 0); }
+[data-reveal='right'] { transform: translate3d(14px, 0, 0); }
+
+[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Filhos escalonados */
+[data-reveal-group] > * {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition:
+    opacity 780ms var(--ease-out),
+    transform 780ms var(--ease-out);
+}
+[data-reveal-group].is-in > * { opacity: 1; transform: none; }
+[data-reveal-group].is-in > *:nth-child(1) { transition-delay: 0ms; }
+[data-reveal-group].is-in > *:nth-child(2) { transition-delay: 70ms; }
+[data-reveal-group].is-in > *:nth-child(3) { transition-delay: 140ms; }
+[data-reveal-group].is-in > *:nth-child(4) { transition-delay: 210ms; }
+[data-reveal-group].is-in > *:nth-child(5) { transition-delay: 280ms; }
+[data-reveal-group].is-in > *:nth-child(6) { transition-delay: 350ms; }
+[data-reveal-group].is-in > *:nth-child(7) { transition-delay: 420ms; }
+[data-reveal-group].is-in > *:nth-child(8) { transition-delay: 490ms; }
+
+/* ---------- Regua que se desenha ---------- */
+[data-rule] {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1000ms var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-rule].is-in { transform: scaleX(1); }
+
+/* ---------- Traco tecnico que se desenha (SVG) ----------
+   Todo elemento [data-draw] declara pathLength="1": o comprimento passa a ser
+   normalizado, entao o desenho independe da escala do viewBox e do viewport.
+   Importante: pathLength e ignorado sob vector-effect: non-scaling-stroke —
+   por isso os SVGs animados nao usam esse vector-effect. */
+[data-draw] {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset var(--dur-draw) var(--ease-out);
+  transition-delay: var(--draw-delay, 0ms);
+}
+.is-in [data-draw], [data-draw].is-in { stroke-dashoffset: 0; }
+
+/* ---------- Aparicao de nos tecnicos ---------- */
+[data-node] {
+  opacity: 0;
+  transition: opacity 520ms var(--ease-out);
+  transition-delay: var(--node-delay, 0ms);
+}
+.is-in [data-node] { opacity: 1; }
+
+/* ---------- Imagem revelada por clip ----------
+   Atencao: clip-path zera a area de intersecao do elemento, entao ele nunca
+   dispararia o IntersectionObserver por conta propria. O gatilho vem sempre
+   de um ancestral com [data-reveal]. */
+[data-clip] {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1150ms var(--ease-out);
+  transition-delay: var(--clip-delay, 260ms);
+}
+.is-in [data-clip],
+[data-clip].is-in { clip-path: inset(0 0 0 0); }
+
+/* ---------- Varredura unica do hero ---------- */
+@keyframes csma-scan {
+  0%   { transform: translateY(0); opacity: 0; }
+  12%  { opacity: 0.85; }
+  88%  { opacity: 0.85; }
+  100% { transform: translateY(var(--scan-distance, 420px)); opacity: 0; }
+}
+
+@keyframes csma-blink {
+  0%, 62%  { opacity: 0.9; }
+  63%, 100% { opacity: 0.25; }
+}
+
+@keyframes csma-cue {
+  0%   { transform: scaleY(0); transform-origin: top; }
+  45%  { transform: scaleY(1); transform-origin: top; }
+  55%  { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* =========================================================================
+   Respeito a preferencia de movimento reduzido
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal],
+  [data-reveal-group] > * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  [data-rule] { transform: scaleX(1) !important; }
+  [data-draw] { stroke-dashoffset: 0 !important; }
+  [data-node] { opacity: 1 !important; }
+  [data-clip] { clip-path: none !important; }
+}

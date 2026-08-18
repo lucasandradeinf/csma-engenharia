@@ -1,0 +1,119 @@
+---
+/**
+ * Desenhos de linha dos segmentos de atuacao — 140x180, traco 1,2.
+ * Sao esquemas de secao/elevacao, na mesma gramatica do resto do site.
+ */
+interface Props {
+  name: 'mineracao' | 'siderurgia' | 'metalurgia' | 'celulose' | 'energia';
+  class?: string;
+}
+const { name, class: className = '' } = Astro.props;
+---
+
+<svg
+  class:list={['sector-glyph', className]}
+  viewBox="0 0 140 180"
+  fill="none"
+  aria-hidden="true"
+  stroke="currentColor"
+  stroke-width="1.2"
+>
+  {
+    name === 'mineracao' && (
+      <g>
+        {/* cava a ceu aberto, em secao */}
+        <path d="M4 56h22M114 56h22" class="s-key" />
+        <path d="M26 56v22h18v22h16v22h20v-22h16V78h18V56" class="s-key" />
+        <path d="M26 56 60 122" class="s-faint" stroke-dasharray="5 4" />
+        <path d="M4 64v7M15 64v7M125 64v7M136 64v7" class="s-faint" />
+        <path d="M60 122h20" class="s-key" />
+        <path d="M4 152h132" class="s-key" />
+        <path d="M44 152v-8M70 152v-14M96 152v-8" class="s-faint" />
+      </g>
+    )
+  }
+
+  {
+    name === 'siderurgia' && (
+      <g>
+        {/* alto-forno e regenerador */}
+        <path d="M48 150V126L36 102V82L46 34V22h32v12l10 48v20l-12 24v24" class="s-key" />
+        <path d="M36 92h52M46 60h48M48 126h28" class="s-faint" />
+        <path d="M56 22v-8h12v8" class="s-soft" />
+        <path d="M100 150V56a9 9 0 0 1 18 0v94" class="s-soft" />
+        <path d="M100 82h18M100 112h18" class="s-faint" />
+        <path d="M76 142h24" class="s-soft" />
+        <path d="M4 162h132" class="s-key" />
+        <path d="M48 150v12M76 150v12M100 150v12M118 150v12" class="s-faint" />
+      </g>
+    )
+  }
+
+  {
+    name === 'metalurgia' && (
+      <g>
+        {/* panela de vazamento e molde */}
+        <path d="M70 12v14" class="s-soft" />
+        <path d="M62 26h16M44 40h52l-8 56H52z" class="s-key" />
+        <path d="M44 40 62 26M96 40 78 26" class="s-soft" />
+        <circle cx="40" cy="52" r="6" class="s-key" />
+        <circle cx="100" cy="52" r="6" class="s-key" />
+        <path d="M52 62h36" class="s-faint" />
+        <path d="M94 92c6 14 8 24 8 36" class="s-key" />
+        <path d="M84 128h44v34H84z" class="s-soft" />
+        <path d="M92 140h28M92 150h28" class="s-faint" />
+        <path d="M4 162h132" class="s-key" />
+      </g>
+    )
+  }
+
+  {
+    name === 'celulose' && (
+      <g>
+        {/* digestor e bobina */}
+        <path d="M28 42a19 19 0 0 1 38 0v76l-19 20-19-20z" class="s-key" />
+        <path d="M28 66h38M28 92h38M28 118h38" class="s-faint" />
+        <path d="M47 138v14M33 152h28" class="s-soft" />
+        <path d="M66 56h24a12 12 0 0 1 12 12v20" class="s-soft" />
+        <circle cx="102" cy="118" r="28" class="s-key" />
+        <circle cx="102" cy="118" r="10" class="s-soft" />
+        <path d="M102 90a28 28 0 0 0-24 14" class="s-faint" />
+        <path d="M74 118h18" class="s-faint" />
+        <path d="M4 152h132" class="s-key" />
+        <path d="M92 146v6M112 146v6" class="s-faint" />
+      </g>
+    )
+  }
+
+  {
+    name === 'energia' && (
+      <g>
+        {/* torre de transmissao */}
+        <path d="M32 158 58 26M108 158 82 26M58 26h24" class="s-key" />
+        <path d="M40 118h60M46 88h48M52 58h36" class="s-soft" />
+        <path d="M40 118 94 88M46 88 100 118M46 88 88 58M52 58 94 88" class="s-faint" />
+        <path d="M14 74h34M92 74h34" class="s-key" />
+        <path d="M20 74v10M40 74v10M100 74v10M120 74v10" class="s-soft" />
+        <path d="M4 92q16 14 16-8M136 92q-16 14-16-8" class="s-faint" />
+        <path d="M4 162h132" class="s-key" />
+        <path d="M28 158h12M100 158h12" class="s-soft" />
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .sector-glyph {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .sector-glyph :global(*) {
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+  }
+  .s-key { opacity: 1; }
+  .s-soft { opacity: 0.62; }
+  .s-faint { opacity: 0.34; }
+</style>

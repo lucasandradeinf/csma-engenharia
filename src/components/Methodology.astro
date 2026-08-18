@@ -1,0 +1,354 @@
+---
+import SectionHead from './ui/SectionHead.astro';
+import MethodGlyph from './ui/MethodGlyph.astro';
+import { methodology } from '../data/site';
+
+const glyphs = ['diagnostico', 'eap', 'bim', 'workshop', 'ataque', 'relatorio'] as const;
+---
+
+<section
+  class="chapter methodology is-dark"
+  id="metodologia"
+  aria-labelledby="methodology-title"
+  data-methodology
+>
+  <div class="blueprint" aria-hidden="true"></div>
+
+  <div class="shell">
+    <SectionHead
+      num="04"
+      eyebrow={methodology.eyebrow}
+      title={methodology.title}
+      id="methodology-title"
+    />
+
+    <div class="me__grid">
+      <!-- Painel fixo: etapa em foco -->
+      <div class="me__stage" aria-hidden="true">
+        <div class="me__stage-inner">
+          <div class="me__glyphs">
+            {
+              methodology.steps.map((step, i) => (
+                <div data-glyph={i} class:list={['me__glyph', i === 0 && 'is-current']}>
+                  <span class="me__glyph-num">{step.idx}</span>
+                  <MethodGlyph name={glyphs[i]!} />
+                </div>
+              ))
+            }
+          </div>
+
+          <ol class="me__spine">
+            {
+              methodology.steps.map((step, i) => (
+                <li class="me__spine-item" data-spine={i}>
+                  <span class="me__spine-mark" />
+                  <span class="me__spine-num index-mark">{step.idx}</span>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </div>
+
+      <!-- Conteúdo que rola -->
+      <ol class="me__steps">
+        {
+          methodology.steps.map((step, i) => (
+            <li class="me__step" data-step={i} data-reveal>
+              <div class="me__step-head">
+                <span class="index-mark me__step-num">{step.idx}</span>
+                <span class="me__step-line" aria-hidden="true" />
+              </div>
+
+              <div class="me__step-glyph" aria-hidden="true">
+                <MethodGlyph name={glyphs[i]!} />
+              </div>
+
+              <h3 class="me__step-title">{step.title}</h3>
+              <p class="me__step-text">{step.text}</p>
+
+              <ul class="me__outputs">
+                {step.outputs.map((o) => (
+                  <li class="mono">{o}</li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <p class="me__footnote" data-reveal>
+      <span class="me__footnote-mark" aria-hidden="true"></span>
+      <span class="mono">{methodology.footnote}</span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .methodology {
+    background: var(--c-navy);
+  }
+
+  .me__grid {
+    display: grid;
+    gap: var(--space-xl);
+  }
+
+  /* ---------- Painel fixo ---------- */
+  .me__stage {
+    display: none;
+  }
+
+  .me__stage-inner {
+    max-width: 24rem;
+    margin-inline: auto;
+  }
+  .me__glyphs {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+  }
+  .me__glyph {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 520ms var(--ease-out),
+      transform 520ms var(--ease-out);
+  }
+  .me__glyph.is-current {
+    opacity: 1;
+    transform: none;
+  }
+  .me__glyph :global(.glyph) {
+    width: 74%;
+    position: relative;
+    z-index: 1;
+  }
+  .me__glyph-num {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-size: clamp(9rem, 16vw, 15rem);
+    line-height: 1;
+    color: #fff;
+    opacity: 0.05;
+    letter-spacing: -0.04em;
+    user-select: none;
+  }
+
+  .me__spine {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: var(--space-lg);
+  }
+  .me__spine-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .me__spine-mark {
+    display: block;
+    width: 1.75rem;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.24);
+    transition:
+      background-color var(--dur) var(--ease-out),
+      width var(--dur) var(--ease-out);
+  }
+  .me__spine-num {
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease-out);
+  }
+  .me__spine-item.is-current .me__spine-mark {
+    background: #fff;
+    width: 2.75rem;
+  }
+  .me__spine-item.is-current .me__spine-num {
+    opacity: 1;
+    color: #fff;
+  }
+  .me__spine-item.is-done .me__spine-mark {
+    background: rgba(255, 255, 255, 0.55);
+  }
+
+  /* ---------- Etapas ---------- */
+  .me__steps {
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  .me__step {
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--rule);
+  }
+  .me__step-head {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: var(--space-sm);
+  }
+  .me__step-num {
+    color: var(--c-steel);
+  }
+  .me__step-line {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .me__step-glyph {
+    width: 5.5rem;
+    color: #fff;
+    opacity: 0.8;
+    margin-bottom: var(--space-sm);
+  }
+
+  .me__step-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.375rem, 1.05rem + 1.4vw, 2.125rem);
+    line-height: 1.14;
+    letter-spacing: -0.014em;
+    color: #fff;
+    max-width: 20ch;
+  }
+  .me__step-text {
+    margin-top: 0.6rem;
+    color: var(--ink-muted);
+    max-width: 40ch;
+  }
+
+  .me__outputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.5rem;
+    margin-top: var(--space-md);
+  }
+  .me__outputs li {
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--rule);
+    color: rgba(255, 255, 255, 0.66);
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    transition: border-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+  }
+  .me__step.is-current .me__outputs li {
+    border-color: var(--rule-strong);
+    color: #fff;
+  }
+
+  /* ---------- Nota AWP ---------- */
+  .me__footnote {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--rule);
+    color: var(--ink-faint);
+  }
+  .me__footnote-mark {
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--c-steel);
+    flex: none;
+  }
+  .me__footnote .mono {
+    letter-spacing: 0.16em;
+  }
+
+  /* ---------- Desktop ---------- */
+  @media (min-width: 64rem) {
+    .me__grid {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: var(--space-2xl);
+      align-items: start;
+    }
+    .me__stage {
+      display: block;
+      position: sticky;
+      top: calc(var(--header-h) + 10vh);
+    }
+    .me__step-glyph {
+      display: none;
+    }
+    .me__steps {
+      gap: 0;
+    }
+    .me__step {
+      padding-block: clamp(3rem, 8vh, 6rem);
+      opacity: 0.4;
+      transition: opacity var(--dur) var(--ease-out);
+    }
+    .me__step:first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+    .me__step:last-child {
+      padding-bottom: 0;
+    }
+    .me__step.is-current {
+      opacity: 1;
+    }
+    .me__footnote {
+      margin-top: var(--space-3xl);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .me__step {
+      opacity: 1 !important;
+    }
+    .me__glyph {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-methodology]');
+
+  if (root && window.matchMedia('(min-width: 64rem)').matches) {
+    const steps = Array.from(root.querySelectorAll<HTMLElement>('[data-step]'));
+    const glyphs = Array.from(root.querySelectorAll<HTMLElement>('[data-glyph]'));
+    const spine = Array.from(root.querySelectorAll<HTMLElement>('[data-spine]'));
+
+    let current = -1;
+
+    const setCurrent = (index: number) => {
+      if (index === current) return;
+      current = index;
+      steps.forEach((el, i) => el.classList.toggle('is-current', i === index));
+      glyphs.forEach((el, i) => el.classList.toggle('is-current', i === index));
+      spine.forEach((el, i) => {
+        el.classList.toggle('is-current', i === index);
+        el.classList.toggle('is-done', i < index);
+      });
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        let best: { index: number; ratio: number } | null = null;
+        for (const e of entries) {
+          const index = Number((e.target as HTMLElement).dataset.step);
+          if (e.isIntersecting && (!best || e.intersectionRatio > best.ratio)) {
+            best = { index, ratio: e.intersectionRatio };
+          }
+        }
+        if (best) setCurrent(best.index);
+      },
+      { rootMargin: '-45% 0px -45% 0px', threshold: [0, 0.4, 1] }
+    );
+
+    steps.forEach((el) => io.observe(el));
+    setCurrent(0);
+  }
+</script>

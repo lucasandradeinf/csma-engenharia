@@ -1,0 +1,149 @@
+---
+import SectionHead from './ui/SectionHead.astro';
+import SectorGlyph from './ui/SectorGlyph.astro';
+import { sectors } from '../data/site';
+---
+
+<section
+  class="chapter sectors"
+  id="segmentos"
+  aria-labelledby="sectors-title"
+  style="--surface: var(--c-off-white)"
+>
+  <div class="shell">
+    <SectionHead num="10" eyebrow={sectors.eyebrow} title={sectors.title} id="sectors-title" />
+  </div>
+
+  <ul class="sc__strip" data-reveal-group>
+    {
+      sectors.items.map((s) => (
+        <li class="sc__col">
+          <span class="index-mark sc__num">{s.idx}</span>
+          <div class="sc__art" aria-hidden="true">
+            <SectorGlyph name={s.glyph as any} />
+          </div>
+          <h3 class="sc__name">{s.name}</h3>
+          <span class="sc__grid" aria-hidden="true" />
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .sectors {
+    overflow: hidden;
+  }
+
+  .sc__strip {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    border-top: 1px solid var(--rule-strong);
+    border-bottom: 1px solid var(--rule-strong);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .sc__strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sc__col {
+    position: relative;
+    flex: 0 0 min(62vw, 15rem);
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-lg) var(--space-md) var(--space-xl);
+    border-right: 1px solid var(--rule);
+    background: var(--surface);
+    color: var(--ink-strong);
+    isolation: isolate;
+    transition:
+      background-color 520ms var(--ease-out),
+      color 520ms var(--ease-out),
+      flex-basis 620ms var(--ease-out),
+      flex-grow 620ms var(--ease-out);
+  }
+  .sc__col:last-child {
+    border-right: 0;
+  }
+
+  .sc__num {
+    color: var(--accent);
+    transition: color 520ms var(--ease-out);
+  }
+
+  .sc__art {
+    width: min(100%, 8.5rem);
+    margin-top: auto;
+    opacity: 0.72;
+    transition: opacity 520ms var(--ease-out), transform 620ms var(--ease-out);
+  }
+
+  .sc__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1rem + 1.1vw, 1.875rem);
+    line-height: 1.1;
+    letter-spacing: -0.014em;
+    margin-top: var(--space-sm);
+  }
+
+  /* malha técnica que aparece na coluna ativa */
+  .sc__grid {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+    background-size: 28px 28px;
+    opacity: 0;
+    transition: opacity 520ms var(--ease-out);
+  }
+
+  @media (hover: hover) {
+    .sc__col:hover {
+      background: var(--c-navy);
+      color: #fff;
+    }
+    .sc__col:hover .sc__num {
+      color: var(--c-steel);
+    }
+    .sc__col:hover .sc__art {
+      opacity: 1;
+      transform: translateY(-6px);
+    }
+    .sc__col:hover .sc__grid {
+      opacity: 1;
+    }
+  }
+
+  @media (min-width: 62rem) {
+    .sc__strip {
+      overflow: visible;
+    }
+    .sc__col {
+      flex: 1 1 0;
+      min-width: 0;
+      padding: var(--space-xl) var(--space-md);
+      min-height: 24rem;
+    }
+    .sc__strip:hover .sc__col {
+      flex-grow: 0.88;
+    }
+    .sc__strip .sc__col:hover {
+      flex-grow: 1.5;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sc__col,
+    .sc__art {
+      transition: background-color 1ms, color 1ms;
+      transform: none !important;
+    }
+  }
+</style>

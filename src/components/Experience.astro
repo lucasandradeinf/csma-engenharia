@@ -1,0 +1,178 @@
+---
+import SectionHead from './ui/SectionHead.astro';
+import { experience } from '../data/site';
+---
+
+<section
+  class="chapter experience is-dark"
+  id="experiencia"
+  aria-labelledby="experience-title"
+>
+  <div class="blueprint" aria-hidden="true"></div>
+
+  <div class="shell">
+    <SectionHead
+      num="09"
+      eyebrow={experience.eyebrow}
+      title={experience.title}
+      id="experience-title"
+      lead={experience.lead}
+    />
+
+    <div class="ex__grid">
+      <!-- Frentes de atuação do corpo técnico -->
+      <ol class="ex__areas">
+        {
+          experience.areas.map((area, i) => (
+            <li class="ex__area" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <span class="index-mark ex__area-num">{area.idx}</span>
+              <p class="ex__area-title">{area.title}</p>
+            </li>
+          ))
+        }
+      </ol>
+
+      <!-- Ordem de grandeza -->
+      <dl class="ex__metrics">
+        {
+          experience.metrics.map((m, i) => (
+            <div class="ex__metric" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+              <dt class="ex__metric-value">{m.magnitude}</dt>
+              <dd class="ex__metric-text">{m.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    <!-- Escopo dos empreendimentos -->
+    <div class="ex__scope" data-reveal>
+      <p class="ex__scope-note">{experience.scopeNote}</p>
+      <ul class="ex__types" data-reveal-group>
+        {
+          experience.projectTypes.map((t) => (
+            <li>
+              <span class="ex__type-mark" aria-hidden="true" />
+              <span class="mono">{t}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .experience {
+    background: var(--c-navy);
+  }
+
+  .ex__grid {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+
+  /* ---------- Frentes ---------- */
+  .ex__areas {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--rule-strong);
+  }
+  .ex__area {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+    padding-block: var(--space-md);
+    border-bottom: 1px solid var(--rule);
+  }
+  .ex__area-num {
+    flex: none;
+    color: var(--c-steel);
+  }
+  .ex__area-title {
+    font-size: var(--fs-lead);
+    font-weight: 300;
+    line-height: 1.36;
+    color: #fff;
+    max-width: 36ch;
+  }
+
+  /* ---------- Ordem de grandeza ---------- */
+  .ex__metrics {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--rule-strong);
+  }
+  .ex__metric {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+    padding-block: var(--space-md);
+    border-bottom: 1px solid var(--rule);
+  }
+  .ex__metric-value {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 1.15rem + 2.4vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.028em;
+    color: #fff;
+    flex: none;
+  }
+  .ex__metric-text {
+    margin: 0;
+    color: var(--ink-muted);
+    font-size: var(--fs-base);
+  }
+
+  /* ---------- Escopo ---------- */
+  .ex__scope {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--rule-strong);
+    display: grid;
+    gap: var(--space-md);
+  }
+  .ex__scope-note {
+    color: var(--ink-muted);
+    max-width: 46ch;
+    font-size: var(--fs-base);
+  }
+  .ex__types {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+  }
+  .ex__types li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: rgba(255, 255, 255, 0.78);
+  }
+  .ex__type-mark {
+    width: 6px;
+    height: 6px;
+    border: 1px solid var(--c-steel);
+    flex: none;
+  }
+  .ex__types .mono {
+    letter-spacing: 0.14em;
+  }
+
+  @media (min-width: 64rem) {
+    .ex__grid {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: var(--space-2xl);
+      align-items: start;
+    }
+    .ex__scope {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: start;
+      gap: var(--space-2xl);
+    }
+    .ex__types {
+      justify-content: flex-end;
+      gap: 0.75rem 2rem;
+    }
+  }
+</style>

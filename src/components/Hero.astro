@@ -1,0 +1,475 @@
+---
+import { hero } from '../data/site';
+import { buildFrame } from '../lib/iso';
+
+const f = buildFrame();
+const vb = `${f.bounds.minX} ${f.bounds.minY} ${f.bounds.maxX - f.bounds.minX} ${f.bounds.maxY - f.bounds.minY}`;
+
+/* Ordem de desenho: chão, base, pilares, vigas, contraventamento.
+   O equipamento entra depois, em linha tracejada — e um volume previsto,
+   nao construido, e a convencao de desenho e o tracejado. */
+const structure = [
+  { cls: 'ln ln--base', items: [f.base], delay: 120 },
+  { cls: 'ln ln--col', items: f.columns, delay: 420 },
+  { cls: 'ln ln--beam', items: f.beamsLong, delay: 760 },
+  { cls: 'ln ln--beam', items: f.beamsCross, delay: 880 },
+  { cls: 'ln ln--brace', items: f.braces, delay: 1080 },
+];
+---
+
+<section class="hero is-dark is-dark--deep" id="topo" aria-labelledby="hero-title">
+  <div class="hero__field" aria-hidden="true"></div>
+
+  <div class="shell hero__inner">
+    <div class="hero__copy">
+      <p class="hero__eyebrow mono">{hero.eyebrow}</p>
+
+      <h1 class="hero__title" id="hero-title">{hero.headline}</h1>
+
+      <p class="hero__sub">{hero.sub}</p>
+
+      <div class="hero__actions">
+        <a class="btn" href={hero.ctaPrimary.href}>
+          <span>{hero.ctaPrimary.label}</span>
+          <span class="btn__arrow" aria-hidden="true">
+            <svg width="18" height="8" viewBox="0 0 18 8" fill="none">
+              <path d="M0 4h16M13 1l3 3-3 3" stroke="currentColor" stroke-width="1"></path>
+            </svg>
+          </span>
+        </a>
+        <a class="btn btn--ghost" href={hero.ctaSecondary.href}>
+          <span>{hero.ctaSecondary.label}</span>
+        </a>
+      </div>
+
+      <div class="hero__cue" aria-hidden="true">
+        <span class="hero__cue-line"></span>
+        <span class="mono">Role</span>
+      </div>
+    </div>
+
+    <!-- Composição técnica proprietária: módulo industrial em axonometria -->
+    <figure class="hero__figure" data-observe>
+      <figcaption class="visually-hidden">
+        Representação axonométrica esquemática de um módulo industrial de quatro eixos,
+        com pilares, vigas, contraventamento e equipamento pré-montado — a leitura de
+        construtibilidade que a CSMA faz antes da mobilização em campo.
+      </figcaption>
+
+      <svg class="iso" viewBox={vb} fill="none" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+        <!-- malha do piso -->
+        <g class="iso__ground">
+          {
+            f.ground.map((s) => (
+              <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} pathLength="1" data-draw style="--draw-delay:60ms" />
+            ))
+          }
+        </g>
+
+        <!-- estrutura -->
+        {
+          structure.map((group) =>
+            group.items.map((s: any, i: number) => {
+              const delay = group.delay + i * 45;
+              return 'd' in s ? (
+                <path class={group.cls} d={s.d} pathLength="1" data-draw style={`--draw-delay:${delay}ms`} />
+              ) : (
+                <line
+                  class={group.cls}
+                  x1={s.x1}
+                  y1={s.y1}
+                  x2={s.x2}
+                  y2={s.y2}
+                  pathLength="1"
+                  data-draw
+                  style={`--draw-delay:${delay}ms`}
+                />
+              );
+            })
+          )
+        }
+
+        <!-- equipamento pré-montado, em tracejado -->
+        <g class="iso__eq">
+          {
+            f.equipment.map((e, i) => (
+              <line class="ln ln--eq" x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2} data-node style={`--node-delay:${1280 + i * 40}ms`} />
+            ))
+          }
+        </g>
+
+        <!-- linha de cota da base -->
+        <g class="iso__dim">
+          <line
+            x1={f.dimension.x1}
+            y1={f.dimension.y1}
+            x2={f.dimension.x2}
+            y2={f.dimension.y2}
+            pathLength="1"
+            data-draw
+            style="--draw-delay:1500ms"
+          />
+          {
+            f.dimension.ticks.map((t, i) => (
+              <g data-node style={`--node-delay:${1650 + i * 70}ms`}>
+                <line class="iso__ext" x1={t.from.x} y1={t.from.y} x2={t.x} y2={t.y} />
+                <line class="iso__tick" x1={t.x - 4} y1={t.y - 6} x2={t.x + 4} y2={t.y + 6} />
+                <text
+                  class="iso__label"
+                  x={t.x + 6}
+                  y={t.y + 16}
+                  transform={`rotate(30 ${t.x + 6} ${t.y + 16})`}>{f.nodes[i]!.axis}</text>
+              </g>
+            ))
+          }
+        </g>
+
+        <!-- cota de elevação -->
+        <g class="iso__dim" data-node style="--node-delay:1900ms">
+          <line class="iso__ext" x1={f.elevation.fromBottom.x} y1={f.elevation.fromBottom.y} x2={f.elevation.x} y2={f.elevation.y1} />
+          <line class="iso__ext" x1={f.elevation.fromTop.x} y1={f.elevation.fromTop.y} x2={f.elevation.x} y2={f.elevation.y2} />
+          <line x1={f.elevation.x} y1={f.elevation.y1} x2={f.elevation.x} y2={f.elevation.y2} />
+          <line class="iso__tick" x1={f.elevation.x - 4} y1={f.elevation.y1} x2={f.elevation.x + 4} y2={f.elevation.y1} />
+          <line class="iso__tick" x1={f.elevation.x - 4} y1={f.elevation.y2} x2={f.elevation.x + 4} y2={f.elevation.y2} />
+          <text class="iso__label" x={f.elevation.x + 9} y={f.elevation.y1 + 3}>&#177;0.00</text>
+          <text
+            class="iso__label"
+            x={f.elevation.x + 13}
+            y={(f.elevation.y1 + f.elevation.y2) / 2}
+            text-anchor="middle"
+            transform={`rotate(-90 ${f.elevation.x + 13} ${(f.elevation.y1 + f.elevation.y2) / 2})`}
+            >Elevação</text
+          >
+        </g>
+
+        <!-- nós de ligação -->
+        <g class="iso__nodes">
+          {
+            f.nodes.map((n, i) => (
+              <g data-node style={`--node-delay:${2050 + i * 90}ms`}>
+                <circle class="iso__node" cx={n.x} cy={n.y} r="4.5" />
+                <text class="iso__label iso__label--node" x={n.x - 6} y={n.y - 12} text-anchor="end">
+                  {n.code}
+                </text>
+              </g>
+            ))
+          }
+        </g>
+
+        <!-- marca de registro -->
+        <g class="iso__reg" data-node style="--node-delay:2500ms">
+          <line x1={f.bounds.minX + 14} y1={f.bounds.minY + 32} x2={f.bounds.minX + 42} y2={f.bounds.minY + 32} />
+          <line x1={f.bounds.minX + 28} y1={f.bounds.minY + 18} x2={f.bounds.minX + 28} y2={f.bounds.minY + 46} />
+          <circle cx={f.bounds.minX + 28} cy={f.bounds.minY + 32} r="9" />
+        </g>
+
+        <!-- varredura da simulação 4D -->
+        <g class="iso__scan" aria-hidden="true">
+          <line x1={f.bounds.minX + 6} y1="0" x2={f.bounds.maxX - 6} y2="0" />
+        </g>
+      </svg>
+
+      <p class="iso__caption mono" data-reveal style="--reveal-delay:2400ms">
+        <span>Simulação de sequenciamento</span>
+        <span class="iso__caption-sep" aria-hidden="true"></span>
+        <span>Representação esquemática</span>
+      </p>
+    </figure>
+  </div>
+
+  <!-- assinatura da marca decomposta -->
+  <div class="hero__pillars">
+    <div class="shell">
+      <ul data-reveal-group>
+        {
+          hero.pillars.map((p) => (
+            <li>
+              <span class="index-mark">{p.idx}</span>
+              <span class="hero__pillar-en">{p.en}</span>
+              <span class="hero__pillar-pt">{p.pt}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    background: var(--c-navy-deep);
+    color: #fff;
+    padding-top: calc(var(--header-h) + var(--space-md));
+    overflow: hidden;
+  }
+
+  .hero__field {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.038) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.038) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: radial-gradient(115% 90% at 68% 34%, #000 8%, transparent 72%);
+    mask-image: radial-gradient(115% 90% at 68% 34%, #000 8%, transparent 72%);
+  }
+  .hero__field::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(78% 62% at 62% 34%, rgba(94, 135, 176, 0.16), transparent 68%);
+  }
+
+  .hero__inner {
+    position: relative;
+    flex: 1;
+    display: grid;
+    align-content: center;
+    gap: var(--space-xl);
+    padding-block: var(--space-sm) var(--space-md);
+  }
+
+  /* ---------- Texto ---------- */
+  .hero__eyebrow {
+    color: var(--c-gray-soft);
+    opacity: 0.75;
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    margin-bottom: var(--space-md);
+    animation: hero-in 900ms var(--ease-out) both;
+  }
+
+  .hero__title {
+    font-family: var(--font-display);
+    font-size: clamp(2.125rem, 1rem + 3.5vw, 4.25rem);
+    line-height: 1.04;
+    letter-spacing: -0.022em;
+    max-width: 17ch;
+    color: #fff;
+    animation: hero-in 1000ms var(--ease-out) 120ms both;
+  }
+
+  .hero__sub {
+    margin-top: var(--space-md);
+    max-width: 46ch;
+    font-size: var(--fs-lead);
+    font-weight: 300;
+    line-height: 1.58;
+    color: var(--c-gray-soft);
+    animation: hero-in 1000ms var(--ease-out) 260ms both;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: var(--space-lg);
+    animation: hero-in 1000ms var(--ease-out) 400ms both;
+  }
+
+  .hero__cue {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: var(--space-lg);
+    color: rgba(255, 255, 255, 0.55);
+    animation: hero-in 900ms var(--ease-out) 900ms both;
+  }
+  .hero__cue-line {
+    display: block;
+    width: 1px;
+    height: 34px;
+    background: currentColor;
+    animation: csma-cue 2600ms var(--ease-in-out) infinite;
+  }
+  .hero__cue .mono {
+    font-size: 0.5625rem;
+    letter-spacing: 0.22em;
+  }
+
+  @keyframes hero-in {
+    from { opacity: 0; transform: translate3d(0, 16px, 0); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ---------- Composição axonométrica ---------- */
+  .hero__figure {
+    position: relative;
+    margin: 0;
+    justify-self: center;
+    width: min(100%, 27rem);
+  }
+
+  .iso {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .iso__ground line {
+    stroke: rgba(255, 255, 255, 0.09);
+    stroke-width: 1.2;
+  }
+  .ln {
+    stroke-width: 1.3;
+  }
+  .ln--base { stroke: rgba(255, 255, 255, 0.34); stroke-width: 1.4; }
+  .ln--col { stroke: rgba(255, 255, 255, 0.74); stroke-width: 1.8; }
+  .ln--beam { stroke: rgba(255, 255, 255, 0.64); stroke-width: 1.55; }
+  .ln--brace { stroke: var(--c-steel); stroke-width: 1.4; opacity: 0.9; }
+  .ln--eq { stroke: rgba(255, 255, 255, 0.42); stroke-width: 1.4; stroke-dasharray: 5 4; }
+
+  .iso__dim line { stroke: var(--c-steel); stroke-width: 1.3; }
+  .iso__ext { stroke: rgba(94, 135, 176, 0.42) !important; stroke-dasharray: 4 3.5; }
+  .iso__tick { stroke-width: 1.7 !important; }
+
+  .iso__node {
+    fill: var(--c-navy-deep);
+    stroke: #fff;
+    stroke-width: 1.8;
+  }
+
+  .iso__label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    fill: rgba(255, 255, 255, 0.5);
+  }
+  .iso__label--node {
+    fill: rgba(255, 255, 255, 0.82);
+  }
+
+  .iso__reg line,
+  .iso__reg circle {
+    stroke: rgba(255, 255, 255, 0.24);
+    stroke-width: 1.3;
+  }
+
+  .iso__scan line {
+    stroke: var(--c-steel);
+    stroke-width: 1.6;
+    opacity: 0;
+  }
+  :global(.is-in) .iso__scan line {
+    --scan-distance: 300px;
+    animation: csma-scan 3600ms var(--ease-in-out) 2600ms 1 both;
+  }
+
+  .iso__caption {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: var(--space-md);
+    color: rgba(255, 255, 255, 0.56);
+    font-size: 0.5625rem;
+    letter-spacing: 0.18em;
+    flex-wrap: wrap;
+  }
+  .iso__caption-sep {
+    width: 1.5rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+
+  /* ---------- Faixa dos pilares da marca ---------- */
+  .hero__pillars {
+    position: relative;
+    border-top: 1px solid rgba(255, 255, 255, 0.13);
+  }
+  .hero__pillars ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .hero__pillars li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: var(--space-sm) var(--space-sm) var(--space-sm) 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.13);
+    padding-left: var(--space-sm);
+    margin-left: -1px;
+  }
+  .hero__pillars li:nth-child(-n + 2) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+  }
+  .hero__pillar-en {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  .hero__pillar-pt {
+    font-size: var(--fs-sm);
+    color: rgba(255, 255, 255, 0.62);
+  }
+
+  /* ---------- Responsivo ---------- */
+  @media (min-width: 48rem) {
+    .hero__pillars ul {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .hero__pillars li:nth-child(-n + 2) {
+      border-bottom: 0;
+    }
+    .hero__pillars li {
+      padding-block: var(--space-md);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .hero__inner {
+      grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+      align-items: center;
+      gap: var(--space-2xl);
+    }
+    .hero__figure {
+      width: 100%;
+      max-width: 30rem;
+    }
+    .hero__cue {
+      display: flex;
+    }
+  }
+
+  @media (min-width: 90rem) {
+    .hero__inner {
+      grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr);
+    }
+  }
+
+  @media (max-width: 63.99rem) {
+    /* A manchete vem primeiro: o desenho recompensa o primeiro scroll. */
+    .hero__figure {
+      width: min(100%, 23rem);
+      justify-self: start;
+      margin-top: var(--space-lg);
+    }
+    @media (min-width: 48rem) {
+      .hero__figure {
+        width: min(100%, 30rem);
+      }
+    }
+    .iso__caption {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__eyebrow,
+    .hero__title,
+    .hero__sub,
+    .hero__actions,
+    .hero__cue {
+      animation: none;
+    }
+    .hero__cue-line {
+      animation: none;
+    }
+  }
+</style>

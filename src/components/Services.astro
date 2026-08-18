@@ -1,0 +1,129 @@
+---
+import SectionHead from './ui/SectionHead.astro';
+import ServiceMark from './ui/ServiceMark.astro';
+import { services } from '../data/site';
+---
+
+<section
+  class="chapter services"
+  id="solucoes"
+  aria-labelledby="services-title"
+  style="--surface: var(--c-off-white)"
+>
+  <div class="shell">
+    <SectionHead
+      num="05"
+      eyebrow={services.eyebrow}
+      title={services.title}
+      id="services-title"
+      lead={services.lead}
+    />
+
+    <ol class="sv__list">
+      {
+        services.items.map((item, i) => (
+          <li class="sv__item" data-reveal style={`--reveal-delay:${i * 60}ms`}>
+            <span class="sv__num index-mark">{item.idx}</span>
+            <h3 class="sv__title">{item.title}</h3>
+            <div class="sv__mark" aria-hidden="true">
+              <ServiceMark index={i} />
+            </div>
+            <span class="sv__hair" aria-hidden="true" />
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .sv__list {
+    border-top: 1px solid var(--rule-strong);
+  }
+
+  .sv__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'num mark'
+      'title title';
+    align-items: center;
+    gap: var(--space-sm) var(--space-md);
+    padding-block: var(--space-lg);
+    border-bottom: 1px solid var(--rule);
+    transition: padding-left var(--dur) var(--ease-out);
+  }
+
+  .sv__num {
+    grid-area: num;
+    color: var(--accent);
+    align-self: center;
+  }
+
+  .sv__title {
+    grid-area: title;
+    font-family: var(--font-display);
+    font-size: clamp(1.375rem, 0.9rem + 2.1vw, 2.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.018em;
+    color: var(--ink-strong);
+    max-width: 22ch;
+    transition: transform var(--dur) var(--ease-out);
+  }
+
+  .sv__mark {
+    grid-area: mark;
+    justify-self: end;
+    width: clamp(5.5rem, 14vw, 8.25rem);
+    color: var(--ink-strong);
+    opacity: 0.34;
+    transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+  }
+
+  /* linha que se estende sob o item ativo */
+  .sv__hair {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 1px;
+    background: var(--ink-strong);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 620ms var(--ease-out);
+  }
+
+  @media (hover: hover) {
+    .sv__item:hover .sv__title {
+      transform: translateX(10px);
+    }
+    .sv__item:hover .sv__mark {
+      opacity: 1;
+      transform: translateX(-6px);
+    }
+    .sv__item:hover .sv__hair {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .sv__item {
+      grid-template-columns: 4.5rem minmax(0, 1fr) clamp(7rem, 16vw, 10.5rem);
+      grid-template-areas: 'num title mark';
+      gap: var(--space-md);
+      padding-block: clamp(1.75rem, 3.4vw, 2.75rem);
+    }
+    .sv__num {
+      align-self: center;
+      padding-top: 0.3rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sv__item:hover .sv__title,
+    .sv__item:hover .sv__mark {
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,88 @@
+---
+/** Cabecalho de capitulo: trilho tecnico + sobretitulo + titulo + texto de apoio. */
+interface Props {
+  /** Numero do capitulo, ex. "02". */
+  num: string;
+  eyebrow: string;
+  title: string;
+  /** Id do <h2>, usado pelo aria-labelledby da secao. */
+  id: string;
+  /** Texto de apoio, exibido na terceira coluna em telas largas. */
+  lead?: string;
+  class?: string;
+}
+
+const { num, eyebrow, title, id, lead, class: className = '' } = Astro.props;
+---
+
+<header class:list={['sh', lead && 'sh--split', className]} data-reveal>
+  <div class="sh__rail">
+    <span class="sh__num index-mark">{num}</span>
+    <span class="sh__tick" aria-hidden="true"></span>
+  </div>
+
+  <div class="sh__main">
+    <p class="eyebrow eyebrow--bare sh__eyebrow">{eyebrow}</p>
+    <h2 class="h-section" id={id}>{title}</h2>
+  </div>
+
+  {lead && <p class="sh__lead lead">{lead}</p>}
+</header>
+
+<style>
+  .sh {
+    display: grid;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-2xl);
+  }
+
+  .sh__rail {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .sh__num {
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+  }
+  .sh__tick {
+    display: block;
+    height: 1px;
+    width: 2.5rem;
+    background: var(--rule-strong);
+  }
+
+  .sh__eyebrow {
+    margin-bottom: var(--space-xs);
+  }
+
+  .sh__lead {
+    margin-top: var(--space-xs);
+  }
+
+  @media (min-width: 62rem) {
+    .sh {
+      grid-template-columns: var(--rail) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .sh__rail {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.85rem;
+      padding-top: 0.6rem;
+    }
+    .sh__tick {
+      width: 100%;
+      max-width: 3.5rem;
+    }
+    .sh--split {
+      grid-template-columns: var(--rail) minmax(0, 1.15fr) minmax(0, 0.85fr);
+      align-items: end;
+    }
+    .sh--split .sh__lead {
+      margin-top: 0;
+      padding-bottom: 0.4rem;
+    }
+  }
+</style>

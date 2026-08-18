@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Logo from '../components/ui/Logo.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+import { withBase } from '../lib/url';
+import { buildFrame } from '../lib/iso';
+
+const f = buildFrame({ axes: [0, 150, 300], depth: 150, mid: 100, top: 190 });
+const lines = [...f.columns, ...f.beamsLong, ...f.beamsCross, ...f.braces];
+---
+
+<BaseLayout title={`Página não encontrada | ${site.legalName}`} noindex>
+  <main class="nf is-dark is-dark--deep" id="conteudo">
+    <div class="nf__echo" aria-hidden="true">
+      <svg viewBox="-140 -210 520 400" fill="none">
+        <path d={f.base.d} />
+        {lines.map((s) => <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} />)}
+      </svg>
+    </div>
+
+    <div class="shell nf__inner">
+      <a class="nf__brand" href={withBase('/')} aria-label="CSMA — início">
+        <Logo class="nf__logo" />
+      </a>
+
+      <p class="mono nf__code">Erro 404</p>
+      <h1 class="nf__title">Esta página não existe.</h1>
+      <p class="nf__text">
+        O endereço acessado não corresponde a nenhuma seção do site. Volte ao início
+        para conhecer a atuação da CSMA em construtibilidade, planejamento e gestão
+        da implantação de projetos industriais.
+      </p>
+
+      <div class="nf__actions">
+        <a class="btn" href={withBase('/')}>
+          <span>Voltar ao início</span>
+          <span class="btn__arrow" aria-hidden="true">
+            <svg width="18" height="8" viewBox="0 0 18 8" fill="none">
+              <path d="M0 4h16M13 1l3 3-3 3" stroke="currentColor" stroke-width="1"></path>
+            </svg>
+          </span>
+        </a>
+        <a class="btn btn--ghost" href={`mailto:${site.email}`}>
+          <span>Fale com a CSMA</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .nf {
+    position: relative;
+    display: grid;
+    align-items: center;
+    min-height: 82svh;
+    padding-block: var(--space-3xl);
+    background: var(--c-navy-deep);
+    color: #fff;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .nf__echo {
+    position: absolute;
+    right: -6%;
+    bottom: -12%;
+    width: min(60%, 34rem);
+    z-index: -1;
+    opacity: 0.5;
+  }
+  .nf__echo svg {
+    width: 100%;
+    height: auto;
+  }
+  .nf__echo line,
+  .nf__echo path {
+    stroke: rgba(94, 135, 176, 0.5);
+    stroke-width: 1;
+    fill: none;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .nf__inner {
+    position: relative;
+  }
+
+  .nf__brand {
+    display: block;
+    width: 7rem;
+    color: #fff;
+    margin-bottom: var(--space-xl);
+  }
+
+  .nf__code {
+    color: var(--c-steel);
+    letter-spacing: 0.22em;
+    margin-bottom: var(--space-sm);
+  }
+
+  .nf__title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.2rem + 3.4vw, 4rem);
+    line-height: 1.06;
+    letter-spacing: -0.022em;
+    color: #fff;
+    max-width: 14ch;
+  }
+
+  .nf__text {
+    margin-top: var(--space-md);
+    max-width: 52ch;
+    color: var(--c-gray-soft);
+    font-weight: 300;
+    font-size: var(--fs-lead);
+    line-height: 1.58;
+  }
+
+  .nf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: var(--space-lg);
+  }
+</style>

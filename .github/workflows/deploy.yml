@@ -1,0 +1,66 @@
+name: Deploy
+
+# Publica o site estático no GitHub Pages a cada push na branch principal.
+# Também pode ser disparado manualmente em Actions → Deploy → Run workflow.
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+# Permissões mínimas exigidas pelo GitHub Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Um deploy por vez; um push novo não cancela um deploy em andamento.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Instalar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Build
+        # `configure-pages` devolve a origem e o caminho corretos, seja em
+        # usuario.github.io/repositorio/ ou em domínio próprio (CNAME).
+        env:
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: npm run build
+
+      - name: Publicar artefato
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

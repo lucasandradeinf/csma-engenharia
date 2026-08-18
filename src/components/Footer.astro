@@ -1,0 +1,143 @@
+---
+import Logo from './ui/Logo.astro';
+import { site, footerNav } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="ft is-dark is-dark--deep" aria-labelledby="footer-title">
+  <h2 class="visually-hidden" id="footer-title">Rodapé</h2>
+
+  <div class="shell">
+    <div class="ft__top">
+      <div class="ft__brand">
+        <a href="#topo" class="ft__logo-link" aria-label="CSMA — voltar ao topo">
+          <Logo class="ft__logo" />
+        </a>
+        <p class="ft__signature mono">{site.signatureUpper}</p>
+      </div>
+
+      <nav class="ft__nav" aria-label="Navegação do rodapé">
+        <p class="mono ft__nav-label">Navegação</p>
+        <ul>
+          {
+            footerNav.map((item) => (
+              <li>
+                <a class="tlink" href={item.href}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="ft__contact">
+        <p class="mono ft__nav-label">E-mail</p>
+        <a class="ft__mail tlink" href={`mailto:${site.email}`}>{site.email}</a>
+      </div>
+    </div>
+
+    <div class="ft__bottom">
+      <p class="mono">&copy; {year} CSMA Engenharia</p>
+      <p class="mono ft__bottom-note">
+        Consultoria em construtibilidade, planejamento e gestão da implantação
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .ft {
+    background: var(--c-navy-deep);
+    color: #fff;
+    padding-block: var(--space-2xl) var(--space-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .ft__top {
+    display: grid;
+    gap: var(--space-xl);
+    padding-bottom: var(--space-xl);
+  }
+
+  .ft__brand {
+    display: grid;
+    gap: var(--space-sm);
+    justify-items: start;
+  }
+  .ft__logo-link {
+    display: block;
+    width: 7.5rem;
+    color: #fff;
+    transition: opacity var(--dur) var(--ease-out);
+  }
+  .ft__logo-link:hover {
+    opacity: 0.72;
+  }
+  .ft__signature {
+    color: rgba(255, 255, 255, 0.56);
+    font-size: 0.5625rem;
+    letter-spacing: 0.2em;
+  }
+
+  .ft__nav-label {
+    color: rgba(255, 255, 255, 0.58);
+    letter-spacing: 0.2em;
+    margin-bottom: var(--space-sm);
+  }
+  .ft__nav ul {
+    display: grid;
+    gap: 0.55rem;
+  }
+  .ft__nav a {
+    color: rgba(255, 255, 255, 0.78);
+    font-size: var(--fs-sm);
+    transition: color var(--dur) var(--ease-out);
+  }
+  .ft__nav a:hover,
+  .ft__nav a:focus-visible {
+    color: #fff;
+  }
+
+  .ft__mail {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    color: #fff;
+    letter-spacing: 0.03em;
+  }
+
+  .ft__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-sm) var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.56);
+  }
+  .ft__bottom p {
+    font-size: 0.5625rem;
+    letter-spacing: 0.16em;
+  }
+  .ft__bottom-note {
+    text-align: right;
+  }
+
+  @media (min-width: 48rem) {
+    .ft__top {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-2xl);
+    }
+    .ft__nav ul {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.6rem var(--space-md);
+    }
+  }
+
+  @media (min-width: 62rem) {
+    .ft__logo-link {
+      width: 9rem;
+    }
+  }
+</style>

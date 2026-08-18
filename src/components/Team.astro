@@ -1,0 +1,320 @@
+---
+import SectionHead from './ui/SectionHead.astro';
+import { team } from '../data/site';
+
+/* Constelacao de disciplinas: sete nos em anel irregular, ligados em rede.
+   Sem hierarquia central — a integracao e o proprio desenho. */
+const CX = 100;
+const CY = 100;
+const nodes = team.roles.map((role, i) => {
+  const angle = (-Math.PI / 2) + (i * 2 * Math.PI) / team.roles.length;
+  const r = i % 2 === 0 ? 74 : 58;
+  return {
+    ...role,
+    i,
+    x: +(CX + Math.cos(angle) * r).toFixed(2),
+    y: +(CY + Math.sin(angle) * r).toFixed(2),
+  };
+});
+
+/* Arestas: anel + cordas, cobrindo todas as interfaces sem virar teia. */
+const edges: Array<{ a: number; b: number }> = [];
+for (let i = 0; i < nodes.length; i++) {
+  edges.push({ a: i, b: (i + 1) % nodes.length });
+  edges.push({ a: i, b: (i + 3) % nodes.length });
+}
+---
+
+<section
+  class="chapter team"
+  id="equipe"
+  aria-labelledby="team-title"
+  style="--surface: var(--c-off-white)"
+  data-team
+>
+  <div class="shell">
+    <SectionHead num="08" eyebrow={team.eyebrow} title={team.title} id="team-title" lead={team.lead} />
+
+    <div class="tm__grid">
+      <!-- Rede de disciplinas + métrica -->
+      <div class="tm__aside">
+        <div class="tm__net" data-observe aria-hidden="true">
+          <svg viewBox="0 0 200 200" fill="none">
+            {
+              edges.map((e, i) => (
+                <line
+                  class="tm__edge"
+                  data-edge={`${e.a}-${e.b}`}
+                  x1={nodes[e.a]!.x}
+                  y1={nodes[e.a]!.y}
+                  x2={nodes[e.b]!.x}
+                  y2={nodes[e.b]!.y}
+                  pathLength="1"
+                  data-draw
+                  style={`--draw-delay:${i * 55}ms`}
+                />
+              ))
+            }
+            {
+              nodes.map((n) => (
+                <g class="tm__node" data-node-i={n.i} data-node style={`--node-delay:${800 + n.i * 70}ms`}>
+                  <circle class="tm__node-halo" cx={n.x} cy={n.y} r="9" />
+                  <rect class="tm__node-mark" x={n.x - 4} y={n.y - 4} width="8" height="8" />
+                </g>
+              ))
+            }
+          </svg>
+        </div>
+
+        <div class="tm__metric" data-observe>
+          <p class="tm__metric-value">
+            <span aria-hidden="true">{team.metric.prefix}</span><span
+              data-count
+              data-count-to={team.metric.value}>{team.metric.value}</span
+            >
+            <span class="tm__metric-unit">{team.metric.unit}</span>
+          </p>
+          <span class="tm__metric-rule" data-rule></span>
+          <p class="tm__metric-caption">{team.metricCaption}</p>
+        </div>
+      </div>
+
+      <!-- Especialidades -->
+      <div class="tm__roles">
+        <ol>
+          {
+            team.roles.map((role, i) => (
+              <li class="tm__role" data-role-i={i} data-reveal style={`--reveal-delay:${i * 55}ms`}>
+                <span class="index-mark tm__role-num">{role.idx}</span>
+                <span class="tm__role-title">{role.title}</span>
+                <span class="tm__role-rule" aria-hidden="true" />
+              </li>
+            ))
+          }
+        </ol>
+        <p class="tm__footnote mono">{team.footnote}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tm__grid {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+
+  /* ---------- Rede ---------- */
+  .tm__net {
+    width: min(100%, 18rem);
+    margin-inline: auto;
+  }
+  .tm__net svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .tm__edge {
+    stroke: var(--rule-strong);
+    stroke-width: 0.9;
+    transition: stroke var(--dur) var(--ease-out);
+  }
+  .tm__edge.is-lit {
+    stroke: var(--accent);
+  }
+  .tm__node-halo {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 0.8;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: scale(0.5);
+    transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+  }
+  .tm__node-mark {
+    fill: var(--surface);
+    stroke: var(--ink-strong);
+    stroke-width: 0.9;
+    transition: fill var(--dur) var(--ease-out);
+  }
+  .tm__node.is-lit .tm__node-halo {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .tm__node.is-lit .tm__node-mark {
+    fill: var(--ink-strong);
+  }
+
+  /* ---------- Métrica ---------- */
+  .tm__metric {
+    margin-top: var(--space-xl);
+    text-align: center;
+  }
+  .tm__metric-value {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 2rem + 6vw, 7rem);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    color: var(--ink-strong);
+    font-variant-numeric: tabular-nums;
+  }
+  .tm__metric-unit {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-top: var(--space-xs);
+  }
+  .tm__metric-rule {
+    display: block;
+    height: 1px;
+    background: var(--rule-strong);
+    margin: var(--space-md) auto;
+    max-width: 14rem;
+  }
+  .tm__metric-caption {
+    color: var(--ink-muted);
+    font-size: var(--fs-sm);
+    max-width: 30ch;
+    margin-inline: auto;
+  }
+
+  /* ---------- Especialidades ---------- */
+  .tm__roles ol {
+    border-top: 1px solid var(--rule-strong);
+  }
+  .tm__role {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+    padding-block: var(--space-sm);
+    border-bottom: 1px solid var(--rule);
+    cursor: default;
+  }
+  .tm__role-num {
+    flex: none;
+    color: var(--accent);
+  }
+  .tm__role-title {
+    font-size: var(--fs-lead);
+    font-weight: 300;
+    line-height: 1.34;
+    color: var(--ink-strong);
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .tm__role-rule {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 1px;
+    background: var(--ink-strong);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 560ms var(--ease-out);
+  }
+  .tm__role:hover .tm__role-rule,
+  .tm__role:focus-visible .tm__role-rule {
+    transform: scaleX(1);
+  }
+  .tm__role:hover .tm__role-title,
+  .tm__role:focus-visible .tm__role-title {
+    transform: translateX(6px);
+  }
+
+  .tm__footnote {
+    margin-top: var(--space-md);
+    color: var(--ink-faint);
+    letter-spacing: 0.14em;
+  }
+
+  @media (min-width: 64rem) {
+    .tm__grid {
+      grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+      gap: var(--space-2xl);
+      align-items: start;
+    }
+    .tm__net {
+      margin-inline: 0;
+      width: min(100%, 20rem);
+    }
+    .tm__metric {
+      text-align: left;
+    }
+    .tm__metric-rule,
+    .tm__metric-caption {
+      margin-inline: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tm__role-title {
+      transform: none !important;
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-team]');
+
+  if (root) {
+    /* --- Contador da métrica ------------------------------------------ */
+    const counter = root.querySelector<HTMLElement>('[data-count]');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (counter && !reduced) {
+      const target = Number(counter.dataset.countTo || '0');
+      counter.textContent = '0';
+
+      const run = () => {
+        const duration = 1500;
+        const start = performance.now();
+        const tick = (now: number) => {
+          const t = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - t, 3);
+          counter.textContent = String(Math.round(target * eased));
+          if (t < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      };
+
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            run();
+            io.disconnect();
+          }
+        },
+        { threshold: 0.4 }
+      );
+      io.observe(counter);
+    }
+
+    /* --- Vínculo entre lista e rede ----------------------------------- */
+    const roles = Array.from(root.querySelectorAll<HTMLElement>('[data-role-i]'));
+    const netNodes = Array.from(root.querySelectorAll<SVGGElement>('[data-node-i]'));
+    const edges = Array.from(root.querySelectorAll<SVGLineElement>('[data-edge]'));
+
+    const light = (index: number | null) => {
+      netNodes.forEach((n, i) => n.classList.toggle('is-lit', i === index));
+      edges.forEach((e) => {
+        const [a, b] = (e.dataset.edge || '').split('-').map(Number);
+        e.classList.toggle('is-lit', index !== null && (a === index || b === index));
+      });
+    };
+
+    roles.forEach((el, i) => {
+      const on = () => light(i);
+      const off = () => light(null);
+      el.addEventListener('mouseenter', on);
+      el.addEventListener('mouseleave', off);
+      el.addEventListener('focus', on);
+      el.addEventListener('blur', off);
+    });
+  }
+</script>
