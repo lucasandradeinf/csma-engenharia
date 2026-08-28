@@ -1,0 +1,203 @@
+---
+/**
+ * Capítulo 04 — o núcleo da direção 01.
+ *
+ * Aqui a tese vira desenho: seis etapas numa linha de montagem única, com a
+ * fronteira da mobilização marcada entre a quinta e a sexta. Tudo o que está
+ * à esquerda da fronteira acontece no modelo; à direita, em campo.
+ */
+import { constructibility as c } from '../../data/site';
+
+const antes = c.stages.filter((s) => !('real' in s && s.real));
+const campo = c.stages.filter((s) => 'real' in s && s.real);
+---
+
+<section class="cap nucleo" id="construtibilidade" aria-labelledby="t-nucleo">
+  <div class="malha" aria-hidden="true"></div>
+
+  <div class="faixa">
+    <div class="cabec cabec--largo">
+      <p class="cabec__cota">04 / {c.eyebrow}</p>
+      <h2 class="enunciado" id="t-nucleo" data-r>{c.title}</h2>
+      <p class="lead nucleo__lead" data-r style="--atraso:120ms">{c.lead}</p>
+    </div>
+
+    <!-- ---------- linha de montagem ---------- -->
+    <div class="nucleo__linha" data-observa>
+      <div class="nucleo__fronteira" aria-hidden="true">
+        <span class="nucleo__fronteira-fio"></span>
+        <span class="dado nucleo__fronteira-a">{c.boundary.before}</span>
+        <span class="dado nucleo__fronteira-b">{c.boundary.after}</span>
+      </div>
+
+      <ol class="nucleo__etapas">
+        {
+          antes.map((s, i) => (
+            <li class="nucleo__etapa" style={`--i:${i}`}>
+              <span class="nucleo__no" aria-hidden="true" />
+              <span class="dado dado--oxido nucleo__n">{s.idx}</span>
+              <h3 class="nucleo__rotulo">{s.label}</h3>
+              <p class="nucleo__txt">{s.text}</p>
+            </li>
+          ))
+        }
+        {
+          campo.map((s) => (
+            <li class="nucleo__etapa nucleo__etapa--campo" style={`--i:5`}>
+              <span class="nucleo__no nucleo__no--cheio" aria-hidden="true" />
+              <span class="dado nucleo__n nucleo__n--campo">{s.idx}</span>
+              <h3 class="nucleo__rotulo">{s.label}</h3>
+              <p class="nucleo__txt">{s.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <!-- ---------- nota de projeto ---------- -->
+    <div class="nucleo__nota">
+      <p class="nucleo__frase" data-r>{c.statement}</p>
+      <p class="nucleo__obs corpo" data-r style="--atraso:100ms">{c.note}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .nucleo {
+    background: var(--grafite);
+    border-block: 1px solid var(--fio);
+  }
+  .nucleo__lead { max-width: 44ch; }
+
+  /* ---------- linha de montagem ---------- */
+  .nucleo__linha { position: relative; padding-top: var(--e-6); }
+
+  .nucleo__etapas {
+    display: grid;
+    gap: 1px;
+    background: var(--fio);
+    border-block: 1px solid var(--fio);
+    position: relative;
+  }
+  @media (min-width: 52rem) {
+    .nucleo__etapas { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (min-width: 78rem) {
+    .nucleo__etapas { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  }
+
+  .nucleo__etapa {
+    position: relative;
+    background: var(--grafite);
+    padding: var(--e-6) var(--e-4) var(--e-5);
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 620ms var(--saida), transform 620ms var(--saida);
+    transition-delay: calc(var(--i) * 110ms + 200ms);
+  }
+  .nucleo__linha.is-in .nucleo__etapa { opacity: 1; transform: none; }
+
+  .nucleo__no {
+    position: absolute;
+    top: -4px;
+    left: var(--e-4);
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--oxido);
+    background: var(--grafite);
+  }
+  .nucleo__no--cheio { background: var(--oxido); }
+
+  .nucleo__n { line-height: 1; }
+  .nucleo__n--campo { color: var(--aco-claro); }
+
+  .nucleo__rotulo {
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    text-transform: uppercase;
+    color: #fff;
+    line-height: 1.15;
+  }
+  .nucleo__txt {
+    font-size: var(--t-min);
+    line-height: 1.65;
+    color: var(--tinta-fraca);
+  }
+
+  .nucleo__etapa--campo {
+    background: var(--grafite-3);
+  }
+  .nucleo__etapa--campo .nucleo__rotulo { color: var(--oxido-claro); }
+
+  /* ---------- fronteira da mobilização ---------- */
+  .nucleo__fronteira { display: none; }
+  @media (min-width: 78rem) {
+    .nucleo__fronteira {
+      display: block;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: calc(100% / 6 * 5);
+      width: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .nucleo__fronteira-fio {
+      position: absolute;
+      top: var(--e-4);
+      bottom: -1.6rem;
+      left: 0;
+      width: 1px;
+      background: repeating-linear-gradient(
+        to bottom,
+        var(--oxido) 0 5px,
+        transparent 5px 10px
+      );
+      opacity: 0.75;
+    }
+    .nucleo__fronteira-a,
+    .nucleo__fronteira-b {
+      position: absolute;
+      bottom: -2.9rem;
+      white-space: nowrap;
+      color: var(--aco);
+      font-size: var(--t-dado);
+    }
+    .nucleo__fronteira-a { right: 0.75rem; }
+    .nucleo__fronteira-b { left: 0.75rem; color: var(--oxido); }
+  }
+
+  /* ---------- nota ---------- */
+  .nucleo__nota {
+    margin-top: var(--e-8);
+    display: grid;
+    gap: var(--e-4);
+  }
+  @media (min-width: 62rem) {
+    .nucleo__nota {
+      grid-template-columns: var(--trilho) minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--e-6);
+      align-items: start;
+    }
+    .nucleo__frase { grid-column: 2; }
+  }
+  .nucleo__frase {
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    text-transform: uppercase;
+    color: #fff;
+    border-left: 2px solid var(--oxido);
+    padding-left: var(--e-4);
+  }
+  .nucleo__obs {
+    font-size: var(--t-min);
+    line-height: 1.75;
+    max-width: 48ch;
+  }
+</style>

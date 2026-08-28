@@ -3,32 +3,22 @@ import SectionHead from './ui/SectionHead.astro';
 import { deliverables, site } from '../data/site';
 ---
 
-<section
-  class="chapter deliverables is-dark is-dark--deep"
-  id="entregaveis"
-  aria-labelledby="deliverables-title"
->
-  <div class="blueprint" aria-hidden="true"></div>
-
+<section class="chapter deliverables" id="entregaveis" aria-labelledby="deliverables-title">
   <div class="shell">
     <SectionHead
       num="07"
       eyebrow={deliverables.eyebrow}
       title={deliverables.title}
       id="deliverables-title"
+      lead={deliverables.lead}
     />
 
     <ul class="dl__matrix" data-reveal-group>
       {
         deliverables.items.map((item) => (
           <li class="dl__cell">
-            <span class="dl__code index-mark">{item.code}</span>
+            <span class="dl__idx index-mark">{item.idx}</span>
             <h3 class="dl__title">{item.title}</h3>
-            <span class="dl__cross" aria-hidden="true">
-              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                <path d="M6.5 0v13M0 6.5h13" stroke="currentColor" stroke-width="1" />
-              </svg>
-            </span>
           </li>
         ))
       }
@@ -45,14 +35,13 @@ import { deliverables, site } from '../data/site';
 
 <style>
   .deliverables {
-    background: var(--c-navy-deep);
+    background: var(--c-white);
   }
 
   .dl__matrix {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     border-top: 1px solid var(--rule-strong);
-    border-left: 1px solid var(--rule-strong);
   }
 
   .dl__cell {
@@ -61,57 +50,36 @@ import { deliverables, site } from '../data/site';
     flex-direction: column;
     justify-content: space-between;
     gap: var(--space-lg);
-    min-height: 11rem;
-    padding: var(--space-md);
-    border-right: 1px solid var(--rule-strong);
-    border-bottom: 1px solid var(--rule-strong);
-    transition: background-color var(--dur) var(--ease-out);
-  }
-  .dl__cell:hover {
-    background: rgba(255, 255, 255, 0.028);
+    min-height: 9.5rem;
+    padding: var(--space-md) var(--space-md) var(--space-md) 0;
+    border-bottom: 1px solid var(--rule);
   }
 
-  .dl__code {
-    color: var(--c-steel);
-    letter-spacing: 0.16em;
+  .dl__idx {
+    color: var(--accent);
   }
 
   .dl__title {
     font-family: var(--font-display);
     font-size: clamp(1.125rem, 0.95rem + 0.8vw, 1.5rem);
-    line-height: 1.16;
-    letter-spacing: -0.01em;
-    color: #fff;
+    line-height: 1.2;
+    letter-spacing: -0.008em;
+    color: var(--ink-strong);
     max-width: 18ch;
-  }
-
-  /* cruzeta de canto, como marca de encontro de eixos na prancha */
-  .dl__cross {
-    position: absolute;
-    right: -7px;
-    bottom: -7px;
-    color: var(--c-steel);
-    opacity: 0;
-    transition: opacity var(--dur) var(--ease-out);
-    pointer-events: none;
-    z-index: 1;
-  }
-  .dl__cell:hover .dl__cross {
-    opacity: 0.9;
   }
 
   .dl__block {
     display: flex;
     align-items: center;
     gap: var(--space-sm);
-    margin-top: var(--space-md);
+    margin-top: var(--space-lg);
     padding: var(--space-sm) 0;
     border-bottom: 1px solid var(--rule);
     color: var(--ink-faint);
   }
   .dl__block-item {
     letter-spacing: 0.22em;
-    color: rgba(255, 255, 255, 0.62);
+    color: var(--ink);
   }
   .dl__block-item--wide {
     font-size: 0.5625rem;
@@ -127,6 +95,7 @@ import { deliverables, site } from '../data/site';
   @media (min-width: 40rem) {
     .dl__matrix {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-2xl);
     }
   }
   @media (min-width: 64rem) {
@@ -134,8 +103,8 @@ import { deliverables, site } from '../data/site';
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
     .dl__cell {
-      min-height: 14rem;
-      padding: var(--space-md) var(--space-md) var(--space-lg);
+      min-height: 11rem;
+      padding-block: var(--space-lg);
     }
   }
 </style>

@@ -19,7 +19,12 @@ export default defineConfig({
   integrations: [
     sitemap({
       // Sem a 404 e sem a variante sem barra final, para nao duplicar a home.
-      filter: (page) => !page.includes('/404') && page.endsWith('/'),
+      // As tres direcoes de design (/phd/, /arcadis/, /worley/) sao propostas
+      // internas marcadas como `noindex` — ficam fora do sitemap.
+      filter: (page) =>
+        !page.includes('/404') &&
+        page.endsWith('/') &&
+        !/\/(phd|arcadis|worley)\/$/.test(page),
     }),
   ],
   build: {

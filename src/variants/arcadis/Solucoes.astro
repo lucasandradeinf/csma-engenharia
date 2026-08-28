@@ -1,0 +1,150 @@
+---
+/**
+ * Soluções e entregáveis — direção 02.
+ *
+ * As seis frentes de atuação como uma grade de serviços de consultoria; os
+ * seis entregáveis como uma lista numerada sobre off-white. Texto idêntico
+ * ao da apresentação comercial.
+ */
+import { services, deliverables } from '../../data/site';
+---
+
+<!-- ============================ SOLUÇÕES ============================ -->
+<section class="bloco solucoes" id="solucoes" aria-labelledby="t-solucoes">
+  <div class="faixa">
+    <div class="secao">
+      <p class="rotulo secao__rotulo" data-e>{services.eyebrow}</p>
+      <h2 class="h2" id="t-solucoes" data-e style="--atraso:60ms">{services.title}</h2>
+      <p class="lead" data-e style="--atraso:140ms">{services.lead}</p>
+    </div>
+
+    <ul class="solucoes__grade" data-eg>
+      {
+        services.items.map((s) => (
+          <li class="servico">
+            <span class="servico__n">{s.idx}</span>
+            <h3 class="h3 servico__titulo">{s.title}</h3>
+            <span class="servico__seta" aria-hidden="true">
+              <svg viewBox="0 0 20 12" fill="none">
+                <path d="M0 6h18M13 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" />
+              </svg>
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ ENTREGÁVEIS ============================ -->
+<section class="bloco bloco--areia entregaveis" id="entregaveis" aria-labelledby="t-entrega">
+  <div class="faixa entregaveis__grade">
+    <div class="entregaveis__intro">
+      <p class="rotulo" data-e>{deliverables.eyebrow}</p>
+      <h2 class="h2 entregaveis__titulo" id="t-entrega" data-e style="--atraso:60ms">
+        {deliverables.title}
+      </h2>
+      <p class="lead entregaveis__lead" data-e style="--atraso:140ms">{deliverables.lead}</p>
+    </div>
+
+    <ol class="entregaveis__lista" data-eg>
+      {
+        deliverables.items.map((d) => (
+          <li class="entrega">
+            <span class="entrega__n">{d.idx}</span>
+            <span class="entrega__nome">{d.title}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  /* ---------------- soluções ---------------- */
+  .solucoes__grade {
+    display: grid;
+    gap: 1px;
+    background: var(--fio);
+    border-block: 1px solid var(--fio);
+  }
+  @media (min-width: 50rem) {
+    .solucoes__grade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 76rem) {
+    .solucoes__grade { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
+  .servico {
+    position: relative;
+    background: var(--branco);
+    padding: var(--e-6) var(--e-5) var(--e-8);
+    display: grid;
+    gap: var(--e-4);
+    align-content: start;
+    min-height: 12.5rem;
+    transition: background var(--dur-1) var(--suave);
+  }
+  .servico:hover { background: var(--areia); }
+  .servico__n {
+    font-size: var(--t-rotulo);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--tinta-fraca);
+    font-variant-numeric: tabular-nums;
+  }
+  .servico__titulo {
+    font-size: var(--t-h4);
+    max-width: 24ch;
+  }
+  @media (min-width: 76rem) {
+    .servico__titulo { font-size: clamp(1.0625rem, 0.8rem + 0.7vw, 1.375rem); }
+  }
+  .servico__seta {
+    position: absolute;
+    left: var(--e-5);
+    bottom: var(--e-6);
+    color: var(--navy);
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity var(--dur-1) var(--suave), transform var(--dur-1) var(--suave);
+  }
+  .servico__seta svg { width: 1.4rem; }
+  .servico:hover .servico__seta { opacity: 1; transform: none; }
+
+  /* ---------------- entregáveis ---------------- */
+  .entregaveis__grade { display: grid; gap: var(--e-7); }
+  @media (min-width: 62rem) {
+    .entregaveis__grade {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+      gap: var(--e-8);
+      align-items: start;
+    }
+  }
+  .entregaveis__titulo { margin-top: var(--e-4); }
+  .entregaveis__lead { margin-top: var(--e-4); }
+
+  .entregaveis__lista { display: grid; }
+  .entrega {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: var(--e-4);
+    padding-block: var(--e-4);
+    border-top: 1px solid var(--fio-forte);
+  }
+  .entrega:last-child { border-bottom: 1px solid var(--fio-forte); }
+  .entrega__n {
+    font-size: var(--t-rotulo);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--navy);
+    font-variant-numeric: tabular-nums;
+  }
+  .entrega__nome {
+    font-size: var(--t-h4);
+    font-weight: 500;
+    letter-spacing: -0.014em;
+    line-height: 1.35;
+  }
+</style>

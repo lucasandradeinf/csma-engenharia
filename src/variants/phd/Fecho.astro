@@ -1,0 +1,356 @@
+---
+/**
+ * Capítulos 10 a 12 — diferenciais, benefícios e contato.
+ *
+ * O encerramento fecha como uma prancha fecha: com o carimbo. O bloco final
+ * é um selo de desenho técnico (projeto, disciplina, escopo, contato) — não
+ * um rodapé de site genérico.
+ */
+import Mark from '../_shared/Mark.astro';
+import { site, differentials, benefits, closing } from '../../data/site';
+import { capitulos } from './nav';
+---
+
+<!-- ============================ DIFERENCIAIS ============================ -->
+<section class="cap diferenciais" id="diferenciais" aria-labelledby="t-dif">
+  <div class="malha" aria-hidden="true"></div>
+
+  <div class="faixa">
+    <div class="cabec cabec--largo">
+      <p class="cabec__cota">10 / {differentials.eyebrow}</p>
+      <h2 class="enunciado" id="t-dif" data-r>{differentials.title}</h2>
+      <p class="lead diferenciais__lead" data-r style="--atraso:120ms">
+        Seis razões declaradas pela própria CSMA. Nenhuma promessa acrescentada.
+      </p>
+    </div>
+
+    <ul class="diferenciais__lista" data-rg>
+      {
+        differentials.items.map((d) => (
+          <li class="diferenciais__item">
+            <span class="dado dado--oxido">{d.idx}</span>
+            <span class="diferenciais__txt">{d.text}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ BENEFÍCIOS ============================ -->
+<section class="cap claro beneficios" id="resultados" aria-labelledby="t-ben">
+  <div class="malha" aria-hidden="true"></div>
+
+  <div class="faixa">
+    <div class="cabec cabec--largo">
+      <p class="cabec__cota">11 / {benefits.eyebrow}</p>
+      <h2 class="enunciado" id="t-ben" data-r>{benefits.title}</h2>
+      <p class="lead beneficios__lead" data-r style="--atraso:120ms">{benefits.lead}</p>
+    </div>
+
+    <div class="beneficios__tabela" data-observa>
+      <div class="beneficios__cabeca" aria-hidden="true">
+        <span class="dado dado--fraco">{benefits.columns.before}</span>
+        <span class="dado dado--oxido">{benefits.columns.after}</span>
+      </div>
+
+      {
+        benefits.items.map((b, i) => (
+          <div class="beneficios__linha" style={`--i:${i}`}>
+            <span class="dado beneficios__n">{b.idx}</span>
+            <p class="beneficios__antes">{b.before}</p>
+            <span class="beneficios__seta" aria-hidden="true" />
+            <p class="beneficios__depois">{b.after}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CONTATO ============================ -->
+<section class="cap contato" id="contato" aria-labelledby="t-contato">
+  <div class="malha" aria-hidden="true"></div>
+
+  <div class="faixa contato__grade">
+    <p class="cabec__cota">12 / Encerramento</p>
+
+    <div class="contato__nucleo">
+      <p class="dado dado--fraco contato__pergunta" data-r>{closing.question}</p>
+      <p class="contato__frase" id="t-contato" data-r style="--atraso:100ms">{closing.statement}</p>
+
+      <div class="contato__acoes" data-r style="--atraso:200ms">
+        <a class="botao botao--cheio" href={closing.cta.href}>
+          {closing.cta.label}
+          <span class="botao__seta" aria-hidden="true"></span>
+        </a>
+        <a class="contato__mail" href={`mailto:${site.email}`}>{site.email}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CARIMBO ============================ -->
+<footer class="carimbo">
+  <div class="faixa">
+    <div class="carimbo__quadro">
+      <div class="carimbo__marca">
+        <span class="carimbo__marca-svg"><Mark title="CSMA Engenharia" travessao="var(--oxido)" /></span>
+        <p class="dado dado--fraco">{site.signatureUpper}</p>
+      </div>
+
+      <dl class="carimbo__campos">
+        <div>
+          <dt class="dado dado--fraco">Projeto</dt>
+          <dd>{site.legalName}</dd>
+        </div>
+        <div>
+          <dt class="dado dado--fraco">Disciplina</dt>
+          <dd>Construtibilidade e planejamento executivo</dd>
+        </div>
+        <div>
+          <dt class="dado dado--fraco">Escopo</dt>
+          <dd>Da engenharia à execução em campo</dd>
+        </div>
+        <div>
+          <dt class="dado dado--fraco">Contato</dt>
+          <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+        </div>
+      </dl>
+
+      <nav class="carimbo__nav" aria-label="Rodapé">
+        <span class="dado dado--fraco">Índice</span>
+        <ul>
+          {capitulos.map((c) => (
+            <li><a href={c.href}><i>{c.n}</i> {c.rotulo}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+
+    <p class="carimbo__linha dado dado--fraco">
+      <span>Direção 01 · Especialista em engenharia</span>
+      <span>Proposta de design — conteúdo da apresentação comercial CSMA</span>
+    </p>
+  </div>
+</footer>
+
+<style>
+  /* ---------------- diferenciais ---------------- */
+  .diferenciais { background: var(--grafite-2); }
+  .diferenciais__lead { max-width: 40ch; }
+
+  .diferenciais__lista {
+    display: grid;
+    gap: 1px;
+    background: var(--fio);
+    border-block: 1px solid var(--fio);
+  }
+  @media (min-width: 48rem) {
+    .diferenciais__lista { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 76rem) {
+    .diferenciais__lista { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  .diferenciais__item {
+    background: var(--grafite-2);
+    padding: var(--e-5) var(--e-4) var(--e-6);
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+    transition: background var(--dur-1) var(--saida);
+  }
+  .diferenciais__item:hover { background: var(--grafite-3); }
+  .diferenciais__txt {
+    font-size: var(--t-h4);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+    color: #fff;
+  }
+
+  /* ---------------- benefícios ---------------- */
+  .beneficios { background: var(--osso); }
+  .beneficios__lead { max-width: 42ch; }
+
+  .beneficios__tabela { border-top: 1px solid var(--fio-forte); }
+
+  .beneficios__cabeca {
+    display: none;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--fio);
+  }
+  @media (min-width: 60rem) {
+    .beneficios__cabeca {
+      display: grid;
+      grid-template-columns: 2.6rem minmax(0, 1fr) 3.5rem minmax(0, 1fr);
+      gap: var(--e-4);
+    }
+    .beneficios__cabeca span:first-child { grid-column: 2; }
+    .beneficios__cabeca span:last-child { grid-column: 4; }
+  }
+
+  .beneficios__linha {
+    display: grid;
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+    gap: 0.5rem 0.9rem;
+    padding-block: var(--e-5);
+    border-bottom: 1px solid var(--fio);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 640ms var(--saida), transform 640ms var(--saida);
+    transition-delay: calc(var(--i) * 80ms + 180ms);
+  }
+  .beneficios__tabela.is-in .beneficios__linha { opacity: 1; transform: none; }
+
+  @media (min-width: 60rem) {
+    .beneficios__linha {
+      grid-template-columns: 2.6rem minmax(0, 1fr) 3.5rem minmax(0, 1fr);
+      gap: var(--e-4);
+      align-items: center;
+    }
+  }
+
+  .beneficios__n { color: var(--tinta-fraca); align-self: start; padding-top: 0.25rem; }
+  .beneficios__antes {
+    font-size: var(--t-min);
+    line-height: 1.65;
+    color: #6a727a;
+  }
+  .beneficios__seta {
+    grid-column: 2;
+    width: 2.5rem;
+    height: 1px;
+    background: var(--oxido);
+    position: relative;
+  }
+  .beneficios__seta::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -3px;
+    width: 7px;
+    height: 7px;
+    border-top: 1px solid var(--oxido);
+    border-right: 1px solid var(--oxido);
+    transform: rotate(45deg);
+  }
+  @media (min-width: 60rem) {
+    .beneficios__seta { grid-column: 3; justify-self: center; }
+  }
+  .beneficios__depois {
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    line-height: 1.3;
+    color: var(--tinta-forte);
+  }
+
+  /* ---------------- contato ---------------- */
+  .contato {
+    background: var(--grafite);
+    border-top: 1px solid var(--fio);
+  }
+  .contato__grade { display: grid; gap: var(--e-5); }
+  @media (min-width: 62rem) {
+    .contato__grade { grid-template-columns: var(--trilho) minmax(0, 1fr); gap: var(--e-6); }
+  }
+  .contato__nucleo { max-width: 30ch; }
+  @media (min-width: 48rem) { .contato__nucleo { max-width: 22ch; } }
+  .contato__pergunta { text-transform: none; letter-spacing: 0.02em; font-size: var(--t-dado-g); }
+  .contato__frase {
+    margin-top: var(--e-4);
+    font-size: var(--t-h1);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+    text-transform: uppercase;
+    color: #fff;
+    max-width: 16ch;
+  }
+  .contato__acoes {
+    margin-top: var(--e-6);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--e-4);
+  }
+  .contato__mail {
+    font-family: var(--f-mono);
+    font-size: var(--t-min);
+    color: var(--aco-claro);
+    border-bottom: 1px solid var(--fio-forte);
+    padding-bottom: 2px;
+  }
+  .contato__mail:hover { color: #fff; border-bottom-color: var(--oxido); }
+
+  /* ---------------- carimbo ---------------- */
+  .carimbo {
+    background: var(--grafite-2);
+    border-top: 1px solid var(--fio);
+    padding-block: var(--e-7) var(--e-5);
+  }
+  .carimbo__quadro {
+    display: grid;
+    gap: 1px;
+    background: var(--fio);
+    border: 1px solid var(--fio);
+  }
+  @media (min-width: 62rem) {
+    .carimbo__quadro {
+      grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.2fr) minmax(0, 0.8fr);
+    }
+  }
+
+  .carimbo__marca,
+  .carimbo__campos,
+  .carimbo__nav {
+    background: var(--grafite-2);
+    padding: var(--e-5);
+  }
+
+  .carimbo__marca { display: grid; gap: var(--e-4); align-content: start; }
+  .carimbo__marca-svg { display: block; width: 118px; color: var(--osso); }
+  .carimbo__marca p { line-height: 1.9; max-width: 26ch; }
+
+  .carimbo__campos { display: grid; gap: var(--e-4); align-content: start; }
+  @media (min-width: 40rem) {
+    .carimbo__campos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  .carimbo__campos dd {
+    margin: 0.35rem 0 0;
+    font-size: var(--t-min);
+    color: #fff;
+    line-height: 1.45;
+  }
+  .carimbo__campos a { border-bottom: 1px solid var(--oxido); }
+
+  .carimbo__nav { display: grid; gap: 0.75rem; align-content: start; }
+  .carimbo__nav ul { display: grid; gap: 0.3rem; }
+  .carimbo__nav a {
+    font-size: var(--t-min);
+    color: var(--tinta-fraca);
+    display: inline-flex;
+    gap: 0.55rem;
+    transition: color var(--dur-1) var(--saida);
+  }
+  .carimbo__nav a i {
+    font-style: normal;
+    font-family: var(--f-mono);
+    font-size: var(--t-dado);
+    color: var(--oxido);
+    opacity: 0.8;
+  }
+  .carimbo__nav a:hover { color: #fff; }
+
+  .carimbo__linha {
+    margin-top: var(--e-4);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    text-transform: none;
+    letter-spacing: 0.03em;
+    color: var(--aco);
+  }
+</style>

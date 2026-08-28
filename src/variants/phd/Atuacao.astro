@@ -1,0 +1,141 @@
+---
+/**
+ * Capítulo 06 — como a CSMA gera valor, e o que o cliente recebe.
+ *
+ * Duas listas frente a frente: à esquerda a atuação (o que a CSMA faz), à
+ * direita os entregáveis (o que fica com o cliente). Ambas com o texto exato
+ * da apresentação comercial, sem sigla de catálogo.
+ */
+import { services, deliverables } from '../../data/site';
+---
+
+<section class="cap atuacao" id="atuacao" aria-labelledby="t-atuacao">
+  <div class="malha" aria-hidden="true"></div>
+
+  <div class="faixa">
+    <div class="cabec cabec--largo">
+      <p class="cabec__cota">06 / {services.eyebrow}</p>
+      <h2 class="enunciado" id="t-atuacao" data-r>{services.title}</h2>
+      <p class="lead atuacao__lead" data-r style="--atraso:120ms">{services.lead}</p>
+    </div>
+
+    <div class="atuacao__par">
+      <!-- ---------- atuação ---------- -->
+      <div class="atuacao__col">
+        <h3 class="dado dado--oxido atuacao__legenda">Frentes de atuação</h3>
+        <ol class="atuacao__lista" data-rg>
+          {
+            services.items.map((s) => (
+              <li class="atuacao__item">
+                <span class="dado atuacao__n">{s.idx}</span>
+                <span class="atuacao__nome">{s.title}</span>
+                <span class="atuacao__fio" aria-hidden="true" />
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <!-- ---------- entregáveis ---------- -->
+      <div class="atuacao__col atuacao__col--doc">
+        <h3 class="dado dado--oxido atuacao__legenda">{deliverables.eyebrow}</h3>
+        <p class="corpo atuacao__nota">{deliverables.lead}</p>
+
+        <ul class="atuacao__docs" data-rg>
+          {
+            deliverables.items.map((d) => (
+              <li class="atuacao__doc">
+                <svg class="atuacao__doc-icone" viewBox="0 0 24 30" fill="none" aria-hidden="true">
+                  <path d="M1.5 1.5h14l7 7v20h-21z" />
+                  <path d="M15.5 1.5v7h7" />
+                  <path class="fino" d="M6 15h12M6 19h12M6 23h8" />
+                </svg>
+                <span class="atuacao__doc-nome">{d.title}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .atuacao { background: var(--grafite-2); }
+  .atuacao__lead { max-width: 44ch; }
+
+  .atuacao__par {
+    display: grid;
+    gap: var(--e-8);
+  }
+  @media (min-width: 66rem) {
+    .atuacao__par {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: var(--e-8);
+      align-items: start;
+    }
+  }
+
+  .atuacao__legenda { margin-bottom: var(--e-4); display: block; }
+
+  /* ---------- frentes ---------- */
+  .atuacao__lista { display: grid; }
+  .atuacao__item {
+    display: grid;
+    grid-template-columns: 2.4rem minmax(0, auto) minmax(2rem, 1fr);
+    align-items: center;
+    gap: 1rem;
+    padding-block: var(--e-4);
+    border-top: 1px solid var(--fio);
+    transition: color var(--dur-1) var(--saida);
+  }
+  .atuacao__item:last-child { border-bottom: 1px solid var(--fio); }
+  .atuacao__n { color: var(--oxido); }
+  .atuacao__nome {
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: -0.014em;
+    color: #fff;
+    line-height: 1.22;
+  }
+  @media (min-width: 66rem) {
+    .atuacao__nome { font-size: clamp(1.0625rem, 0.8rem + 0.75vw, 1.4375rem); }
+  }
+  .atuacao__fio { height: 1px; background: var(--fio); }
+  .atuacao__item:hover .atuacao__fio { background: var(--oxido); }
+
+  /* ---------- entregáveis ---------- */
+  .atuacao__col--doc {
+    border: 1px solid var(--fio);
+    padding: var(--e-6) var(--e-5);
+    background: rgba(0, 0, 0, 0.22);
+  }
+  .atuacao__nota {
+    font-size: var(--t-min);
+    line-height: 1.7;
+    margin-bottom: var(--e-5);
+    max-width: 42ch;
+  }
+  .atuacao__docs { display: grid; gap: 1px; background: var(--fio); }
+  .atuacao__doc {
+    display: grid;
+    grid-template-columns: 1.5rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.95rem 0.25rem;
+    background: var(--grafite-2);
+  }
+  .atuacao__doc-icone {
+    width: 100%;
+    height: auto;
+    stroke: var(--oxido);
+    stroke-width: 1.4;
+  }
+  .atuacao__doc-icone .fino { stroke: var(--aco); stroke-width: 1.2; }
+  .atuacao__doc-nome {
+    font-size: var(--t-min);
+    font-weight: 500;
+    color: var(--osso);
+    line-height: 1.4;
+  }
+</style>

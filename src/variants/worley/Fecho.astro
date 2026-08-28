@@ -1,0 +1,300 @@
+---
+/**
+ * Ato 07 — diferenciais, resultados, chamada e rodapé.
+ *
+ * A narrativa fecha como começou: uma fotografia real ocupando a tela e uma
+ * frase — a mesma com que a apresentação comercial se encerra.
+ */
+import { Image } from 'astro:assets';
+import Mark from '../_shared/Mark.astro';
+import { site, differentials, benefits, closing } from '../../data/site';
+import { casePhoto } from '../../lib/photos';
+import { atos } from './jornada';
+
+const foto = casePhoto('forma-perdida');
+---
+
+<!-- ============================ DIFERENCIAIS ============================ -->
+<section class="ato areia diferenciais" id="diferenciais" aria-labelledby="t-dif">
+  <div class="faixa">
+    <div class="abertura">
+      <p class="num abertura__num" data-c>{differentials.eyebrow}</p>
+      <h2 class="tit tit--h2" id="t-dif" data-c style="--atraso:80ms">{differentials.title}</h2>
+      <p class="lead" data-c style="--atraso:160ms">
+        Seis pontos declarados pela própria CSMA na apresentação comercial.
+      </p>
+    </div>
+
+    <ul class="dif__lista" data-cg>
+      {
+        differentials.items.map((d) => (
+          <li class="dif">
+            <span class="dif__n">{d.idx}</span>
+            <p class="dif__txt">{d.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ RESULTADOS ============================ -->
+<section class="ato escuro resultados" id="resultados" aria-labelledby="t-res">
+  <div class="faixa">
+    <div class="abertura">
+      <p class="num abertura__num" data-c>{benefits.eyebrow}</p>
+      <h2 class="tit tit--h2" id="t-res" data-c style="--atraso:80ms">{benefits.title}</h2>
+      <p class="lead" data-c style="--atraso:160ms">{benefits.lead}</p>
+    </div>
+
+    <ul class="troca" data-cg>
+      {
+        benefits.items.map((b) => (
+          <li class="troca__linha">
+            <p class="troca__antes">{b.before}</p>
+            <span class="troca__seta" aria-hidden="true">
+              <svg viewBox="0 0 24 12" fill="none">
+                <path d="M0 6h22M17 1l5 5-5 5" stroke="currentColor" stroke-width="1.4" />
+              </svg>
+            </span>
+            <p class="troca__depois">{b.after}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ CHAMADA ============================ -->
+<section class="chamada" id="contato" aria-labelledby="t-contato" data-observa>
+  <div class="chamada__fundo">
+    {
+      foto && (
+        <Image
+          class="chamada__foto"
+          src={foto}
+          alt=""
+          quality={84}
+          format="webp"
+          widths={[1080, 1560, 2000]}
+          sizes="100vw"
+          loading="lazy"
+          decoding="async"
+          data-cine
+        />
+      )
+    }
+    <span class="chamada__veu" aria-hidden="true"></span>
+  </div>
+
+  <div class="faixa chamada__conteudo">
+    <p class="num" data-c>Contato</p>
+    <p class="lead chamada__pergunta" data-c style="--atraso:60ms">{closing.question}</p>
+    <h2 class="tit tit--h1 chamada__frase" id="t-contato" data-c style="--atraso:120ms">
+      {closing.statement}
+    </h2>
+    <div class="chamada__acoes" data-c style="--atraso:180ms">
+      <a class="pilula" href={closing.cta.href}>
+        {closing.cta.label}
+        <svg viewBox="0 0 20 12" fill="none" aria-hidden="true">
+          <path d="M0 6h18M13 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" />
+        </svg>
+      </a>
+      <a class="chamada__mail" href={`mailto:${site.email}`}>{site.email}</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ RODAPÉ ============================ -->
+<footer class="rodape">
+  <div class="faixa rodape__grade">
+    <div class="rodape__marca">
+      <span class="rodape__marca-svg"><Mark title="CSMA Engenharia" travessao="var(--mineral)" /></span>
+      <p class="rodape__assinatura">{site.signature}</p>
+    </div>
+
+    <nav class="rodape__nav" aria-label="Atos">
+      <ol>
+        {atos.map((a) => (
+          <li><a href={a.href}><i>{a.n}</i> {a.rotulo}</a></li>
+        ))}
+      </ol>
+    </nav>
+
+    <div class="rodape__contato">
+      <p class="num num--simples">Contato</p>
+      <a class="rodape__mail" href={`mailto:${site.email}`}>{site.email}</a>
+    </div>
+  </div>
+
+  <div class="faixa rodape__base">
+    <span>Direção 03 · Jornada de projeto</span>
+    <span>Proposta de design — conteúdo da apresentação comercial CSMA</span>
+  </div>
+</footer>
+
+<style>
+  /* ---------------- diferenciais ---------------- */
+  .dif__lista { display: grid; gap: var(--e-5) var(--e-7); }
+  @media (min-width: 48rem) { .dif__lista { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 76rem) { .dif__lista { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .dif {
+    display: grid;
+    gap: 0.6rem;
+    padding-top: var(--e-4);
+    border-top: 1px solid var(--fio-forte);
+  }
+  .dif__n {
+    font-family: var(--f-num);
+    font-size: var(--t-num);
+    letter-spacing: 0.18em;
+    color: var(--mineral-forte);
+  }
+  .dif__txt {
+    font-family: var(--f-titulo);
+    font-size: clamp(1.0625rem, 0.85rem + 0.7vw, 1.375rem);
+    line-height: 1.28;
+    color: var(--txt-forte);
+    max-width: 26ch;
+  }
+
+  /* ---------------- resultados ---------------- */
+  .troca { display: grid; }
+  .troca__linha {
+    display: grid;
+    gap: 0.6rem;
+    padding-block: var(--e-5);
+    border-top: 1px solid var(--fio);
+  }
+  .troca__linha:last-child { border-bottom: 1px solid var(--fio); }
+  @media (min-width: 60rem) {
+    .troca__linha {
+      grid-template-columns: minmax(0, 1fr) 3.5rem minmax(0, 1fr);
+      gap: var(--e-5);
+      align-items: center;
+    }
+  }
+  .troca__antes {
+    font-size: var(--t-min);
+    line-height: 1.65;
+    color: var(--txt-fraco);
+    max-width: 44ch;
+  }
+  .troca__seta { color: var(--mineral); }
+  .troca__seta svg { width: 1.6rem; }
+  .troca__depois {
+    font-family: var(--f-titulo);
+    font-size: clamp(1.0625rem, 0.85rem + 0.75vw, 1.4375rem);
+    line-height: 1.24;
+    color: #fff;
+    max-width: 24ch;
+  }
+
+  /* ---------------- chamada ---------------- */
+  .chamada {
+    position: relative;
+    min-height: 78svh;
+    display: flex;
+    align-items: flex-end;
+    background: var(--petroleo);
+    color: var(--areia);
+    overflow: hidden;
+  }
+  .chamada__fundo { position: absolute; inset: 0; }
+  .chamada__foto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.8) contrast(1.04);
+  }
+  .chamada__veu {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to top, rgba(12, 30, 34, 0.96) 10%, rgba(12, 30, 34, 0.6) 55%, rgba(12, 30, 34, 0.3)),
+      linear-gradient(to right, rgba(12, 30, 34, 0.75), rgba(12, 30, 34, 0.05) 60%);
+  }
+  .chamada__conteudo {
+    position: relative;
+    z-index: 1;
+    padding-block: var(--e-8);
+    display: grid;
+    gap: var(--e-4);
+  }
+  .chamada .num { color: var(--mineral); }
+  .chamada__pergunta { color: rgba(233, 227, 216, 0.86); max-width: 30ch; }
+  .chamada__frase { color: #fff; max-width: 17ch; margin-top: var(--e-3); }
+  .chamada__acoes {
+    margin-top: var(--e-5);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--e-5);
+  }
+  .chamada__mail {
+    font-family: var(--f-num);
+    font-size: var(--t-min);
+    color: rgba(233, 227, 216, 0.86);
+    border-bottom: 1px solid rgba(233, 227, 216, 0.4);
+    padding-bottom: 2px;
+  }
+  .chamada__mail:hover { color: #fff; border-bottom-color: var(--mineral); }
+
+  /* ---------------- rodapé ---------------- */
+  .rodape {
+    background: var(--petroleo);
+    color: var(--areia);
+    border-top: 1px solid rgba(233, 227, 216, 0.14);
+    padding-block: var(--e-7) var(--e-5);
+  }
+  .rodape__grade { display: grid; gap: var(--e-6); padding-bottom: var(--e-6); }
+  @media (min-width: 62rem) {
+    .rodape__grade { grid-template-columns: 1.1fr 1.4fr 0.8fr; gap: var(--e-7); }
+  }
+  .rodape__marca { display: grid; gap: var(--e-4); align-content: start; justify-items: start; }
+  .rodape__marca-svg { display: block; width: 116px; color: var(--areia); }
+  .rodape__assinatura { font-size: var(--t-min); color: #93a5a2; max-width: 28ch; }
+
+  .rodape__nav ol { display: grid; gap: 0.4rem; }
+  @media (min-width: 40rem) {
+    .rodape__nav ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  .rodape__nav a {
+    display: inline-flex;
+    gap: 0.6rem;
+    font-size: var(--t-min);
+    color: rgba(233, 227, 216, 0.78);
+    transition: color var(--dur-1) var(--cine);
+  }
+  .rodape__nav a:hover { color: #fff; }
+  .rodape__nav i {
+    font-style: normal;
+    font-family: var(--f-num);
+    font-size: var(--t-num);
+    letter-spacing: 0.12em;
+    color: var(--mineral);
+  }
+
+  .rodape__contato { display: grid; gap: 0.6rem; align-content: start; justify-items: start; }
+  .rodape__contato .num { color: var(--mineral); }
+  .rodape__mail {
+    font-family: var(--f-num);
+    font-size: var(--t-min);
+    border-bottom: 1px solid rgba(233, 227, 216, 0.35);
+    padding-bottom: 2px;
+  }
+  .rodape__mail:hover { border-bottom-color: var(--mineral); }
+
+  .rodape__base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding-top: var(--e-5);
+    border-top: 1px solid rgba(233, 227, 216, 0.14);
+    font-family: var(--f-num);
+    font-size: var(--t-num);
+    letter-spacing: 0.08em;
+    color: #7c8c8a;
+  }
+</style>

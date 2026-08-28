@@ -1,0 +1,150 @@
+---
+/**
+ * Ato 05 — segmentos, em corte cinematográfico.
+ *
+ * Cinco painéis altos de borda a borda. O nome do segmento entra grande, em
+ * serifa, sobre o desenho técnico — ou sobre a fotografia real, assim que ela
+ * existir em `src/assets/sectors/`.
+ */
+import { Image } from 'astro:assets';
+import { sectors } from '../../data/site';
+import { sectorPhoto } from '../../lib/photos';
+import SectorMark from '../_shared/SectorMark.astro';
+
+const itens = sectors.items.map((s) => ({ ...s, foto: sectorPhoto(s.photo) }));
+---
+
+<section class="ato escuro ato--sangra segmentos" id="segmentos" aria-labelledby="t-seg">
+  <div class="faixa">
+    <div class="abertura">
+      <p class="num abertura__num" data-c>Ato 05 — {sectors.eyebrow}</p>
+      <h2 class="tit tit--h2" id="t-seg" data-c style="--atraso:80ms">{sectors.title}</h2>
+      <p class="lead" data-c style="--atraso:160ms">{sectors.lead}</p>
+    </div>
+  </div>
+
+  <ul class="tira" data-cg>
+    {
+      itens.map((s) => (
+        <li class="painel">
+          <div class="painel__fundo">
+            {s.foto ? (
+              <Image
+                class="painel__foto"
+                src={s.foto}
+                alt=""
+                quality={82}
+                format="webp"
+                widths={[520, 780, 1100]}
+                sizes="(min-width: 68rem) 21vw, 72vw"
+                loading="lazy"
+                decoding="async"
+              />
+            ) : (
+              <SectorMark name={s.glyph} class="painel__marca" detail="full" />
+            )}
+            <span class="painel__veu" aria-hidden="true" />
+          </div>
+
+          <div class="painel__texto">
+            <span class="painel__n">{s.idx}</span>
+            <h3 class="tit painel__nome">{s.name}</h3>
+            <p class="painel__lead">{s.lead}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .segmentos { padding-bottom: var(--e-8); }
+
+  .tira {
+    display: grid;
+    gap: 1px;
+    background: var(--fio);
+    border-block: 1px solid var(--fio);
+  }
+  @media (min-width: 44rem) {
+    .tira { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 68rem) {
+    .tira { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  }
+
+  .painel {
+    position: relative;
+    background: var(--petroleo);
+    min-height: 24rem;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+  }
+  @media (min-width: 68rem) { .painel { min-height: 30rem; } }
+
+  .painel__fundo { position: absolute; inset: 0; display: grid; place-items: center; padding: var(--e-6); }
+  .painel__foto {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.02);
+    transition: transform 900ms var(--cine);
+  }
+  .painel:hover .painel__foto { transform: scale(1.08); }
+
+  .painel__marca {
+    color: rgba(233, 227, 216, 0.5);
+    --mark-key: 1.3;
+    --mark-key-o: 1;
+    --mark-soft: 1.1;
+    --mark-soft-o: 0.6;
+    --mark-faint: 1;
+    --mark-faint-o: 0.3;
+    transform: translateY(-8%);
+    transition: color 700ms var(--cine);
+  }
+  .painel:hover .painel__marca { color: var(--mineral); }
+
+  .painel__veu {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(12, 30, 34, 0.96) 12%,
+      rgba(12, 30, 34, 0.55) 46%,
+      rgba(12, 30, 34, 0.18) 100%
+    );
+  }
+
+  .painel__texto {
+    position: relative;
+    z-index: 1;
+    padding: var(--e-5);
+    display: grid;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  .painel__n {
+    font-family: var(--f-num);
+    font-size: var(--t-num);
+    letter-spacing: 0.2em;
+    color: var(--mineral);
+  }
+  .painel__nome {
+    font-size: clamp(1.5rem, 1rem + 1.6vw, 2.125rem);
+    line-height: 1.02;
+    color: #fff;
+  }
+  .painel__lead {
+    font-size: var(--t-min);
+    line-height: 1.6;
+    color: rgba(233, 227, 216, 0.72);
+  }
+  @media (min-width: 68rem) {
+    /* Alinha os cinco títulos na mesma altura, mesmo com resumos de tamanhos diferentes. */
+    .painel__lead { min-height: 4.8em; }
+  }
+</style>

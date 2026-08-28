@@ -1,7 +1,16 @@
 /* =========================================================================
    CSMA — Design Tokens
-   Cores extraídas diretamente dos content streams da apresentação comercial
-   original (PDF) e do arquivo do logotipo. Nenhuma cor foi inventada.
+
+   As cores base saem dos content streams da apresentacao comercial original
+   (PDF) e do arquivo do logotipo. Nenhuma cor foi inventada.
+
+   Hierarquia de superficie (fase 2):
+     navy profundo  → capa, capitulo de posicionamento, encerramento
+     off-white      → conteudo corrido (metodologia, cases, equipe)
+     branco         → respiro e areas editoriais
+     papel          → capitulos com fotografia
+     cinza          → fios, divisores e informacao secundaria
+     azul aco       → detalhe. Nunca area. Nunca brilho.
    ========================================================================= */
 
 :root {
@@ -14,6 +23,7 @@
   /* ---------- Cor: superfícies claras ---------- */
   --c-white: #ffffff;
   --c-off-white: #f6f7f8;   /* PDF rg 0.965 0.969 0.973 */
+  --c-paper: #f3f2ef;       /* derivada: off-white levemente quente, para fotografia */
   --c-pale: #eef1fa;        /* PDF rg 0.933 0.945 0.98 */
 
   /* ---------- Cor: neutros ---------- */
@@ -22,9 +32,11 @@
   --c-gray-soft: #d9dde1;   /* PDF rg 0.851 0.867 0.882 — texto sobre navy */
   --c-graphite: #252a32;
 
-  /* ---------- Cor: aço (único acento; monoline do logotipo) ---------- */
-  --c-steel: #5e87b0;
-  --c-steel-dim: #34527a;
+  /* ---------- Cor: aço (único acento; monoline do logotipo) ----------
+     Dessaturado em relação à fase 1: o azul precisa ler como metal, não
+     como luz de interface. */
+  --c-steel: #8098b2;       /* sobre navy */
+  --c-steel-dim: #3a5578;   /* sobre claro */
 
   /* ---------- Papéis semânticos (tema claro, padrão) ---------- */
   --surface: var(--c-white);
@@ -35,13 +47,13 @@
   /* #767b82 (cinza tecnico da marca) rende 4.26:1 sobre branco — abaixo de AA.
      Fica reservado a fios e marcas; o texto usa um tom mais fechado (5.4:1). */
   --ink-faint: #656a72;
-  --rule: #e3e6ea;
+  --rule: #e4e6e9;
   --rule-strong: var(--c-gray-line);
   --accent: var(--c-steel-dim);
 
-  /* Blueprint grid (claro) */
-  --grid-line: rgba(10, 29, 58, 0.055);
-  --grid-line-major: rgba(10, 29, 58, 0.08);
+  /* Malha de prancha (claro) — presente, quase imperceptível */
+  --grid-line: rgba(10, 29, 58, 0.045);
+  --grid-line-major: rgba(10, 29, 58, 0.065);
 
   /* ---------- Tipografia ---------- */
   --font-display: 'DM Serif Display', 'Iowan Old Style', 'Palatino Linotype',
@@ -51,26 +63,28 @@
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono',
     Menlo, Consolas, 'Liberation Mono', monospace;
 
-  /* Escala fluida — base 16px, teto em 1440px */
+  /* Escala fluida — base 16px, teto em 1440px.
+     Fase 2: tetos mais baixos e entrelinhas mais soltas. A manchete deve
+     parecer editorial impressa, não capa de landing page. */
   --fs-micro: 0.6875rem;                                  /* 11px  — rótulos mono */
   --fs-micro-lg: 0.75rem;                                 /* 12px */
   --fs-sm: clamp(0.8125rem, 0.78rem + 0.16vw, 0.875rem);
   --fs-base: clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
-  --fs-lead: clamp(1.0625rem, 0.98rem + 0.42vw, 1.3125rem);
-  --fs-quote: clamp(1.25rem, 1.05rem + 0.95vw, 1.875rem);
-  --fs-h3: clamp(1.25rem, 1.06rem + 0.9vw, 1.875rem);
-  --fs-h2: clamp(1.875rem, 1.35rem + 2.4vw, 3.5rem);
-  --fs-h1: clamp(2.5rem, 1.5rem + 4.6vw, 5.75rem);
-  --fs-numeral: clamp(3.5rem, 2rem + 7.5vw, 9rem);
+  --fs-lead: clamp(1.0625rem, 0.98rem + 0.4vw, 1.25rem);
+  --fs-quote: clamp(1.25rem, 1.05rem + 0.9vw, 1.75rem);
+  --fs-h3: clamp(1.1875rem, 1.03rem + 0.78vw, 1.6875rem);
+  --fs-h2: clamp(1.75rem, 1.3rem + 2vw, 3.125rem);
+  --fs-h1: clamp(2.375rem, 1.5rem + 3.9vw, 5rem);
+  --fs-numeral: clamp(3.25rem, 2rem + 6.5vw, 8rem);
 
-  --lh-tight: 1.02;
-  --lh-display: 1.06;
-  --lh-snug: 1.28;
+  --lh-tight: 1.06;
+  --lh-display: 1.1;
+  --lh-snug: 1.3;
   --lh-body: 1.68;
 
   --ls-micro: 0.18em;
   --ls-micro-tight: 0.12em;
-  --ls-display: -0.018em;
+  --ls-display: -0.014em;
 
   /* ---------- Espaçamento ---------- */
   --space-3xs: 0.25rem;
@@ -80,8 +94,8 @@
   --space-md: 1.5rem;
   --space-lg: 2.5rem;
   --space-xl: 4rem;
-  --space-2xl: clamp(4.5rem, 3rem + 6vw, 8rem);
-  --space-3xl: clamp(6rem, 3.5rem + 9vw, 11.5rem);
+  --space-2xl: clamp(4rem, 2.8rem + 5vw, 7rem);
+  --space-3xl: clamp(5.5rem, 3.4rem + 7.5vw, 10rem);
 
   /* ---------- Layout ---------- */
   --shell-max: 1440px;
@@ -99,6 +113,10 @@
   --dur-draw: 1600ms;
 }
 
+/* ---------- Superfícies claras nomeadas ---------- */
+.is-alt { --surface: var(--c-off-white); }
+.is-paper { --surface: var(--c-paper); --rule: #e3e1dc; --rule-strong: #cfccc5; }
+
 /* ---------- Inversão: capítulos escuros ---------- */
 .is-dark {
   --surface: var(--c-navy);
@@ -106,12 +124,12 @@
   --ink: #ffffff;
   --ink-strong: #ffffff;
   --ink-muted: var(--c-gray-soft);
-  --ink-faint: #8894a6;
+  --ink-faint: #8f9cad;
   --rule: rgba(255, 255, 255, 0.13);
   --rule-strong: rgba(255, 255, 255, 0.26);
   --accent: var(--c-steel);
-  --grid-line: rgba(255, 255, 255, 0.05);
-  --grid-line-major: rgba(255, 255, 255, 0.09);
+  --grid-line: rgba(255, 255, 255, 0.045);
+  --grid-line-major: rgba(255, 255, 255, 0.075);
 }
 
 .is-dark--deep {

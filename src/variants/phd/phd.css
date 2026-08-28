@@ -1,0 +1,414 @@
+/* =========================================================================
+   CSMA — DIREÇÃO 01 · "PHD"
+   O especialista em construtibilidade.
+
+   Leitura em 5 segundos: prancha de desenho técnica sobre superfície grafite.
+   Sem serifa, sem azul de interface, sem brilho. Caixa alta comprimida para
+   os enunciados, monoespaçada para todo dado, e um único acento de óxido
+   (a cor da proteção industrial) reservado a índices, cotas e estado ativo.
+
+   Este arquivo é exclusivo desta variante. Nada aqui é compartilhado com
+   /arcadis/ ou /worley/ — a separação visual é real.
+   ========================================================================= */
+
+:root {
+  /* ---------- Superfícies ---------- */
+  --grafite: #0e1113;      /* prancha escura — superfície dominante */
+  --grafite-2: #14181b;    /* bloco alternado */
+  --grafite-3: #1b2023;    /* cartão sobre escuro */
+  --osso: #e8e5de;         /* papel técnico */
+  --osso-2: #f1efe9;
+  --branco: #ffffff;
+
+  /* ---------- Acento único ---------- */
+  --oxido: #c4661f;        /* óxido / proteção industrial */
+  --oxido-claro: #dd8341;
+  --oxido-fundo: rgba(196, 102, 31, 0.12);
+
+  /* ---------- Âncora CSMA ---------- */
+  --navy: #0c1b33;
+
+  /* ---------- Neutros ---------- */
+  --aco: #7c848b;
+  --aco-claro: #a8b0b6;
+
+  /* ---------- Papéis semânticos: superfície escura (padrão) ---------- */
+  --sup: var(--grafite);
+  --sup-2: var(--grafite-2);
+  --tinta: var(--osso);
+  --tinta-forte: #ffffff;
+  --tinta-fraca: #98a0a7;
+  --fio: rgba(232, 229, 222, 0.14);
+  --fio-forte: rgba(232, 229, 222, 0.3);
+  --malha: rgba(232, 229, 222, 0.05);
+  --malha-maior: rgba(232, 229, 222, 0.085);
+
+  /* ---------- Tipografia ---------- */
+  --f-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Escala. Enunciados grandes e comprimidos; corpo baixo e legível. */
+  --t-dado: 0.6875rem;                                    /* 11px — mono */
+  --t-dado-g: 0.75rem;
+  --t-min: clamp(0.8125rem, 0.79rem + 0.12vw, 0.875rem);
+  --t-base: clamp(0.9375rem, 0.91rem + 0.16vw, 1.0625rem);
+  --t-lead: clamp(1.0625rem, 1rem + 0.34vw, 1.3125rem);
+  --t-h4: clamp(1rem, 0.95rem + 0.26vw, 1.1875rem);
+  --t-h3: clamp(1.25rem, 1.08rem + 0.85vw, 1.875rem);
+  --t-h2: clamp(1.875rem, 1.3rem + 2.6vw, 3.5rem);
+  --t-h1: clamp(2.25rem, 1.2rem + 4.8vw, 5.5rem);
+  --t-cifra: clamp(3rem, 1.6rem + 7vw, 8.5rem);
+
+  /* ---------- Espaço ---------- */
+  --e-1: 0.25rem;
+  --e-2: 0.5rem;
+  --e-3: 0.75rem;
+  --e-4: 1rem;
+  --e-5: 1.5rem;
+  --e-6: 2rem;
+  --e-7: 3rem;
+  --e-8: clamp(3.5rem, 2.4rem + 4.6vw, 6rem);
+  --e-9: clamp(5rem, 3.2rem + 7.2vw, 9.5rem);
+
+  /* ---------- Estrutura ---------- */
+  --larg: 1440px;
+  --marg: clamp(1.25rem, 0.4rem + 3.6vw, 4rem);
+  --trilho: clamp(0px, -7rem + 13vw, 9rem);   /* coluna de cotas à esquerda */
+  --topo: 4rem;
+
+  /* ---------- Movimento ---------- */
+  --saida: cubic-bezier(0.16, 0.84, 0.34, 1);
+  --dur-1: 200ms;
+  --dur-2: 460ms;
+  --dur-3: 900ms;
+  --dur-traco: 1500ms;
+}
+
+/* Blocos claros — a prancha vira papel */
+.claro {
+  --sup: var(--osso);
+  --sup-2: var(--osso-2);
+  --tinta: #191d20;
+  --tinta-forte: #0e1113;
+  --tinta-fraca: #5d656c;
+  --fio: rgba(14, 17, 19, 0.12);
+  --fio-forte: rgba(14, 17, 19, 0.26);
+  --malha: rgba(14, 17, 19, 0.05);
+  --malha-maior: rgba(14, 17, 19, 0.08);
+}
+.claro-2 { --sup: var(--osso-2); }
+
+/* =========================================================================
+   Reset
+   ========================================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--topo) + 1rem);
+}
+
+body {
+  background: var(--grafite);
+  color: var(--osso);
+  font-family: var(--f-sans);
+  font-size: var(--t-base);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'kern' 1, 'liga' 1;
+  overflow-x: hidden;
+}
+
+img, svg, video { display: block; max-width: 100%; }
+img { height: auto; }
+button { background: none; border: 0; cursor: pointer; font: inherit; color: inherit; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; padding: 0; }
+h1, h2, h3, h4 { font-weight: 400; line-height: 1.06; text-wrap: balance; }
+p { text-wrap: pretty; }
+::selection { background: var(--oxido); color: #fff; }
+
+:focus-visible {
+  outline: 2px solid var(--oxido-claro);
+  outline-offset: 3px;
+}
+
+.pular {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--oxido);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  font-family: var(--f-mono);
+  font-size: var(--t-dado);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.pular:focus { left: 0; }
+
+/* =========================================================================
+   Estrutura
+   ========================================================================= */
+.faixa {
+  width: 100%;
+  max-width: var(--larg);
+  margin-inline: auto;
+  padding-inline: var(--marg);
+}
+
+.cap {
+  position: relative;
+  background: var(--sup);
+  color: var(--tinta);
+  padding-block: var(--e-9);
+  isolation: isolate;
+}
+.cap--curto { padding-block: var(--e-8); }
+.cap--sangra { padding-inline: 0; }
+
+/* Malha de prancha: 8mm com marcação a cada 40mm */
+.malha {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--malha) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--malha) 1px, transparent 1px),
+    linear-gradient(to right, var(--malha-maior) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--malha-maior) 1px, transparent 1px);
+  background-size: 32px 32px, 32px 32px, 160px 160px, 160px 160px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 82%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 82%, transparent);
+}
+
+/* Cabeçalho de capítulo, com a coluna de cotas à esquerda */
+.cabec {
+  display: grid;
+  gap: var(--e-4);
+  margin-bottom: var(--e-8);
+}
+@media (min-width: 62rem) {
+  .cabec {
+    grid-template-columns: var(--trilho) minmax(0, 1fr);
+    gap: var(--e-6);
+    align-items: start;
+  }
+  .cabec--largo { grid-template-columns: var(--trilho) minmax(0, 1.1fr) minmax(0, 0.8fr); }
+}
+
+.cabec__cota {
+  font-family: var(--f-mono);
+  font-size: var(--t-dado);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--oxido);
+  padding-top: 0.45rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+.cabec__cota::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.4;
+  transform: translateY(-0.3em);
+}
+@media (min-width: 62rem) { .cabec__cota::after { display: none; } }
+
+/* =========================================================================
+   Tipografia
+   ========================================================================= */
+.dado {
+  font-family: var(--f-mono);
+  font-size: var(--t-dado);
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+.dado--oxido { color: var(--oxido); }
+.dado--fraco { color: var(--tinta-fraca); }
+
+.enunciado {
+  font-size: var(--t-h2);
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  line-height: 1.02;
+  text-transform: uppercase;
+  color: var(--tinta-forte);
+}
+.enunciado--h1 { font-size: var(--t-h1); letter-spacing: -0.035em; }
+
+.titulo {
+  font-size: var(--t-h3);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.14;
+  color: var(--tinta-forte);
+  text-transform: none;
+}
+.subtitulo {
+  font-size: var(--t-h4);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  line-height: 1.25;
+  color: var(--tinta-forte);
+}
+
+.lead {
+  font-size: var(--t-lead);
+  line-height: 1.55;
+  color: var(--tinta);
+  max-width: 46ch;
+  font-weight: 300;
+}
+.corpo {
+  color: var(--tinta-fraca);
+  max-width: 62ch;
+}
+.claro .corpo { color: #4a5158; }
+
+/* =========================================================================
+   Componentes primitivos
+   ========================================================================= */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.95rem 1.5rem;
+  font-family: var(--f-mono);
+  font-size: var(--t-dado);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border: 1px solid var(--oxido);
+  color: var(--oxido);
+  background: transparent;
+  transition: background var(--dur-1) var(--saida), color var(--dur-1) var(--saida);
+}
+.botao:hover { background: var(--oxido); color: #fff; }
+.botao__seta { width: 1.25rem; height: 1px; background: currentColor; transition: width var(--dur-1) var(--saida); }
+.botao:hover .botao__seta { width: 2rem; }
+
+.botao--cheio { background: var(--oxido); color: #fff; }
+.botao--cheio:hover { background: var(--oxido-claro); border-color: var(--oxido-claro); }
+
+.botao--neutro {
+  border-color: var(--fio-forte);
+  color: var(--tinta);
+}
+.botao--neutro:hover { background: var(--tinta); color: var(--sup); border-color: var(--tinta); }
+
+/* Fio horizontal de seção */
+.fio {
+  height: 1px;
+  background: var(--fio);
+  border: 0;
+}
+
+/* Lista de verificação (benefícios) */
+.checks { display: grid; gap: 0.5rem; }
+.checks li {
+  display: grid;
+  grid-template-columns: 1.1rem 1fr;
+  gap: 0.7rem;
+  font-size: var(--t-min);
+  color: var(--tinta-fraca);
+  line-height: 1.5;
+}
+.claro .checks li { color: #4a5158; }
+.checks li::before {
+  content: '';
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-top: 0.45rem;
+  border-left: 1px solid var(--oxido);
+  border-bottom: 1px solid var(--oxido);
+  transform: rotate(-45deg) translate(0.05rem, -0.05rem);
+}
+
+/* =========================================================================
+   Movimento — técnico: linhas que se desenham, cotas que aparecem
+   ========================================================================= */
+[data-r] {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition:
+    opacity var(--dur-3) var(--saida),
+    transform var(--dur-3) var(--saida);
+  transition-delay: var(--atraso, 0ms);
+}
+[data-r='x'] { transform: translate3d(-14px, 0, 0); }
+[data-r='none'] { transform: none; }
+[data-r].is-in { opacity: 1; transform: none; }
+
+[data-rg] > * {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition: opacity 720ms var(--saida), transform 720ms var(--saida);
+}
+[data-rg].is-in > * { opacity: 1; transform: none; }
+[data-rg].is-in > *:nth-child(1) { transition-delay: 0ms; }
+[data-rg].is-in > *:nth-child(2) { transition-delay: 60ms; }
+[data-rg].is-in > *:nth-child(3) { transition-delay: 120ms; }
+[data-rg].is-in > *:nth-child(4) { transition-delay: 180ms; }
+[data-rg].is-in > *:nth-child(5) { transition-delay: 240ms; }
+[data-rg].is-in > *:nth-child(6) { transition-delay: 300ms; }
+[data-rg].is-in > *:nth-child(7) { transition-delay: 360ms; }
+[data-rg].is-in > *:nth-child(8) { transition-delay: 420ms; }
+
+/* Régua que se traça da esquerda para a direita */
+[data-fio] {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1000ms var(--saida);
+  transition-delay: var(--atraso, 0ms);
+}
+[data-fio].is-in { transform: scaleX(1); }
+
+/* Traço técnico desenhado (SVG). Exige pathLength="1". */
+[data-traco] {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset var(--dur-traco) var(--saida);
+  transition-delay: var(--traco-atraso, 0ms);
+}
+.is-in [data-traco], [data-traco].is-in { stroke-dashoffset: 0; }
+
+/* Nós de cota */
+[data-no] {
+  opacity: 0;
+  transition: opacity 480ms var(--saida);
+  transition-delay: var(--no-atraso, 0ms);
+}
+.is-in [data-no] { opacity: 1; }
+
+/* Fotografia revelada por corte reto */
+[data-corte] {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1050ms var(--saida);
+  transition-delay: var(--corte-atraso, 200ms);
+}
+.is-in [data-corte], [data-corte].is-in { clip-path: inset(0 0 0 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  [data-r], [data-rg] > * { opacity: 1 !important; transform: none !important; }
+  [data-fio] { transform: scaleX(1) !important; }
+  [data-traco] { stroke-dashoffset: 0 !important; }
+  [data-no] { opacity: 1 !important; }
+  [data-corte] { clip-path: none !important; }
+}

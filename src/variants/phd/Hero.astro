@@ -1,0 +1,365 @@
+---
+/**
+ * Abertura — direção 01.
+ *
+ * A tese da direção está na primeira dobra: construtibilidade é a execução
+ * virtual da obra. À esquerda o enunciado; à direita o módulo industrial se
+ * desenha eixo a eixo, com as cotas aparecendo depois da estrutura — a mesma
+ * ordem de um desenho de montagem real.
+ */
+import { buildFrame } from '../../lib/iso';
+import { site, hero } from '../../data/site';
+
+const f = buildFrame({ axes: [0, 130, 260, 390], depth: 150, mid: 106, top: 200 });
+const vb = `${f.bounds.minX} ${f.bounds.minY} ${f.bounds.maxX - f.bounds.minX} ${f.bounds.maxY - f.bounds.minY}`;
+
+/* A cadeia conceitual desta direção. Cinco verbos, nenhuma sigla. */
+const cadeia = ['Modelar', 'Simular', 'Testar', 'Validar', 'Executar'] as const;
+---
+
+<section class="capa" id="topo" data-observa>
+  <div class="malha" aria-hidden="true"></div>
+
+  <div class="capa__grade faixa">
+    <!-- Coluna de cotas -->
+    <div class="capa__trilho" aria-hidden="true">
+      <span class="dado dado--oxido">01</span>
+      <span class="capa__trilho-fio" data-fio></span>
+      <span class="dado dado--fraco capa__trilho-txt">Capa</span>
+    </div>
+
+    <!-- Enunciado -->
+    <div class="capa__texto">
+      <p class="dado dado--fraco capa__assinatura" data-r style="--atraso:60ms">
+        {site.signatureUpper}
+      </p>
+
+      <h1 class="enunciado enunciado--h1 capa__titulo" data-r style="--atraso:140ms">
+        A execução<br />
+        <span class="capa__destaque">
+          virtual
+          <span class="capa__sublinha" data-fio style="--atraso:900ms" aria-hidden="true"></span>
+        </span>
+        da obra.
+      </h1>
+
+      <p class="lead capa__lead" data-r style="--atraso:240ms">
+        A obra inteira é montada no modelo — sequência, acessos, içamentos e
+        interferências — antes do primeiro movimento em campo.
+      </p>
+
+      <p class="corpo capa__corpo" data-r style="--atraso:320ms">
+        {hero.sub}
+      </p>
+
+      <div class="capa__acoes" data-r style="--atraso:400ms">
+        <a class="botao botao--cheio" href="#construtibilidade">
+          Ver como funciona
+          <span class="botao__seta" aria-hidden="true"></span>
+        </a>
+        <a class="botao botao--neutro" href={`mailto:${site.email}`}>
+          Falar com a CSMA
+          <span class="botao__seta" aria-hidden="true"></span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Desenho -->
+    <div class="capa__desenho" aria-hidden="true">
+      <svg class="capa__svg" viewBox={vb} fill="none" stroke="currentColor">
+        <!-- malha do piso -->
+        <g class="d-terreno">
+          {f.ground.map((s) => <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} />)}
+        </g>
+
+        <!-- perímetro da base -->
+        <path class="d-base" d={f.base.d} pathLength="1" data-traco style="--traco-atraso:200ms" />
+
+        <!-- pilares -->
+        <g class="d-estrutura">
+          {
+            f.columns.map((s, i) => (
+              <line
+                x1={s.x1}
+                y1={s.y1}
+                x2={s.x2}
+                y2={s.y2}
+                pathLength="1"
+                data-traco
+                style={`--traco-atraso:${420 + i * 45}ms`}
+              />
+            ))
+          }
+        </g>
+
+        <!-- vigas -->
+        <g class="d-estrutura">
+          {
+            [...f.beamsLong, ...f.beamsCross].map((s, i) => (
+              <line
+                x1={s.x1}
+                y1={s.y1}
+                x2={s.x2}
+                y2={s.y2}
+                pathLength="1"
+                data-traco
+                style={`--traco-atraso:${780 + i * 40}ms`}
+              />
+            ))
+          }
+        </g>
+
+        <!-- contraventamento -->
+        <g class="d-contrav">
+          {
+            f.braces.map((s, i) => (
+              <line
+                x1={s.x1}
+                y1={s.y1}
+                x2={s.x2}
+                y2={s.y2}
+                pathLength="1"
+                data-traco
+                style={`--traco-atraso:${1180 + i * 70}ms`}
+              />
+            ))
+          }
+        </g>
+
+        <!-- equipamento pré-montado no vão central -->
+        <g class="d-equip">
+          {
+            f.equipment.map((s, i) => (
+              <line
+                x1={s.x1}
+                y1={s.y1}
+                x2={s.x2}
+                y2={s.y2}
+                pathLength="1"
+                data-traco
+                style={`--traco-atraso:${1400 + i * 40}ms`}
+              />
+            ))
+          }
+        </g>
+
+        <!-- cota horizontal dos eixos -->
+        <g class="d-cota">
+          <line
+            x1={f.dimension.x1}
+            y1={f.dimension.y1}
+            x2={f.dimension.x2}
+            y2={f.dimension.y2}
+            pathLength="1"
+            data-traco
+            style="--traco-atraso:1750ms"
+          />
+          {
+            f.dimension.ticks.map((t, i) => (
+              <g data-no style={`--no-atraso:${1900 + i * 70}ms`}>
+                <line x1={t.x} y1={t.y - 7} x2={t.x} y2={t.y + 7} />
+                <line class="d-chamada" x1={t.x} y1={t.y} x2={t.from.x} y2={t.from.y} />
+              </g>
+            ))
+          }
+        </g>
+
+        <!-- cota de elevação -->
+        <g class="d-cota" data-no style="--no-atraso:2180ms">
+          <line x1={f.elevation.x} y1={f.elevation.y1} x2={f.elevation.x} y2={f.elevation.y2} />
+          <line x1={f.elevation.x - 6} y1={f.elevation.y1} x2={f.elevation.x + 6} y2={f.elevation.y1} />
+          <line x1={f.elevation.x - 6} y1={f.elevation.y2} x2={f.elevation.x + 6} y2={f.elevation.y2} />
+          <line class="d-chamada" x1={f.elevation.x} y1={f.elevation.y2} x2={f.elevation.fromTop.x} y2={f.elevation.fromTop.y} />
+        </g>
+
+        <!-- rótulos dos eixos -->
+        <g class="d-rotulo">
+          {
+            f.nodes.map((n, i) => (
+              <g data-no style={`--no-atraso:${2000 + i * 80}ms`}>
+                <rect x={n.x - 2.5} y={n.y - 2.5} width="5" height="5" />
+                <text x={n.x} y={n.y - 14}>{n.axis}</text>
+              </g>
+            ))
+          }
+        </g>
+      </svg>
+
+      <p class="capa__legenda dado dado--fraco">
+        Módulo industrial · quatro eixos · montagem simulada
+      </p>
+    </div>
+  </div>
+
+  <!-- Rodapé da capa: a cadeia da direção -->
+  <div class="capa__base">
+    <div class="faixa capa__cadeia" data-rg>
+      {
+        cadeia.map((verbo, i) => (
+          <div class="capa__elo">
+            <span class="dado dado--oxido">{String(i + 1).padStart(2, '0')}</span>
+            <span class="capa__verbo">{verbo}</span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .capa {
+    position: relative;
+    background: var(--grafite);
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: calc(var(--topo) + var(--e-6));
+    padding-bottom: 0;
+    overflow: hidden;
+  }
+
+  .capa__grade {
+    display: grid;
+    gap: var(--e-6);
+    flex: 1;
+    align-content: center;
+    padding-block: var(--e-6) var(--e-7);
+  }
+  @media (min-width: 62rem) {
+    .capa__grade {
+      grid-template-columns: var(--trilho) minmax(0, 1.02fr) minmax(0, 0.95fr);
+      gap: var(--e-6);
+      align-items: center;
+    }
+  }
+
+  /* --- coluna de cotas --- */
+  .capa__trilho { display: none; }
+  @media (min-width: 62rem) {
+    .capa__trilho {
+      display: grid;
+      justify-items: start;
+      gap: 0.8rem;
+      align-self: stretch;
+      align-content: start;
+      padding-top: 0.4rem;
+    }
+    .capa__trilho-fio {
+      width: 1px;
+      height: clamp(4rem, 12vh, 9rem);
+      background: var(--fio-forte);
+      transform-origin: top;
+    }
+    .capa__trilho-txt { writing-mode: vertical-rl; letter-spacing: 0.2em; }
+  }
+
+  /* --- enunciado --- */
+  .capa__assinatura {
+    line-height: 1.8;
+    max-width: 34ch;
+    color: var(--aco);
+  }
+  .capa__titulo {
+    margin-top: var(--e-5);
+  }
+  .capa__destaque { position: relative; display: inline-block; }
+  .capa__sublinha {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.02em;
+    height: 3px;
+    background: var(--oxido);
+    transform-origin: left;
+  }
+  .capa__lead {
+    margin-top: var(--e-5);
+    max-width: 40ch;
+    color: #fff;
+    font-weight: 300;
+  }
+  .capa__corpo {
+    margin-top: var(--e-4);
+    font-size: var(--t-min);
+    max-width: 48ch;
+    line-height: 1.7;
+  }
+  .capa__acoes {
+    margin-top: var(--e-6);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e-3);
+  }
+
+  /* --- desenho --- */
+  .capa__desenho { position: relative; }
+  .capa__svg {
+    width: 100%;
+    height: auto;
+    max-height: 62vh;
+    color: var(--osso);
+    overflow: visible;
+  }
+  .capa__legenda {
+    margin-top: var(--e-4);
+    text-align: right;
+    line-height: 1.7;
+  }
+  @media (max-width: 61.9375rem) {
+    .capa__desenho { order: -1; opacity: 0.85; }
+    .capa__svg { max-height: 34vh; }
+    .capa__legenda { display: none; }
+  }
+
+  .d-terreno line { stroke: var(--osso); stroke-width: 0.6; opacity: 0.12; }
+  .d-base { stroke: var(--osso); stroke-width: 1.1; opacity: 0.45; }
+  .d-estrutura line { stroke: var(--osso); stroke-width: 1.4; opacity: 0.82; }
+  .d-contrav line { stroke: var(--osso); stroke-width: 1; opacity: 0.45; }
+  .d-equip line { stroke: var(--oxido); stroke-width: 2; opacity: 1; }
+  .d-cota line { stroke: var(--oxido); stroke-width: 1; opacity: 0.9; }
+  .d-cota .d-chamada { opacity: 0.35; stroke-dasharray: 4 4; }
+  .d-rotulo rect { fill: var(--grafite); stroke: var(--osso); stroke-width: 1.2; }
+  .d-rotulo text {
+    fill: var(--aco-claro);
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-anchor: middle;
+    stroke: none;
+  }
+
+  /* --- rodapé da capa --- */
+  .capa__base {
+    border-top: 1px solid var(--fio);
+    background: rgba(0, 0, 0, 0.22);
+    flex: none;
+  }
+  .capa__cadeia {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @media (min-width: 48rem) {
+    .capa__cadeia { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  }
+  .capa__elo {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    padding: 1.05rem 0;
+    border-left: 1px solid var(--fio);
+    padding-left: 1rem;
+  }
+  .capa__elo:first-child { border-left: 0; padding-left: 0; }
+  @media (max-width: 47.9375rem) {
+    .capa__elo:nth-child(odd) { border-left: 0; padding-left: 0; }
+    .capa__elo:nth-child(5) { grid-column: span 2; }
+  }
+  .capa__verbo {
+    font-size: var(--t-min);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--osso);
+  }
+</style>

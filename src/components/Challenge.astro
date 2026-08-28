@@ -3,7 +3,8 @@ import SectionHead from './ui/SectionHead.astro';
 import { challenge } from '../data/site';
 
 /* Diagrama conceitual: trajetoria planejada x trajetoria realizada.
-   Sem escalas e sem numeros — e uma representacao esquematica, nao um dado. */
+   Sem escalas e sem numeros — e uma representacao esquematica, nao um dado.
+   Cada ponto do desvio carrega o nome da situacao, nunca um codigo. */
 const PLAN = { x1: 40, y1: 252, x2: 392, y2: 68 };
 const ACTUAL = [
   [40, 252],
@@ -23,12 +24,7 @@ const actualPath = ACTUAL.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0]} ${p[1]}`)
 const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`;
 ---
 
-<section
-  class="chapter challenge is-dark is-dark--deep"
-  id="desafio"
-  aria-labelledby="challenge-title"
-  data-challenge
->
+<section class="chapter challenge" id="desafio" aria-labelledby="challenge-title" data-challenge>
   <div class="blueprint" aria-hidden="true"></div>
 
   <div class="shell">
@@ -37,6 +33,7 @@ const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`
       eyebrow={challenge.eyebrow}
       title={challenge.title}
       id="challenge-title"
+      lead={challenge.lead}
     />
 
     <div class="ch__grid">
@@ -46,7 +43,7 @@ const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`
           <svg viewBox="0 0 432 300" fill="none" role="img" aria-labelledby="ch-viz-title">
             <title id="ch-viz-title">
               Diagrama esquemático: à medida que o projeto avança, a trajetória realizada
-              se afasta da planejada a cada ponto de falha identificado.
+              se afasta da planejada a cada situação identificada tarde demais.
             </title>
 
             <!-- moldura -->
@@ -73,14 +70,14 @@ const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`
             <!-- trajetoria realizada -->
             <path class="ch__actual" d={actualPath} pathLength="1" data-draw style="--draw-delay:420ms" />
 
-            <!-- pontos de falha -->
+            <!-- situacoes que abrem o desvio -->
             {
               faults.map((f, i) => (
-                <g class="ch__fault" data-fault={f.code} data-node style={`--node-delay:${1000 + i * 110}ms`}>
+                <g class="ch__fault" data-fault={f.idx} data-node style={`--node-delay:${1000 + i * 110}ms`}>
                   <line class="ch__drop" x1={f.x} y1={f.y} x2={f.x} y2="272" />
                   <circle class="ch__halo" cx={f.x} cy={f.y} r="11" />
                   <circle class="ch__dot" cx={f.x} cy={f.y} r="4" />
-                  <text class="ch__code" x={f.x} y="288" text-anchor="middle">{f.code}</text>
+                  <text class="ch__tag" x={f.x} y="290" text-anchor="middle">{f.tag}</text>
                 </g>
               ))
             }
@@ -95,13 +92,13 @@ const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`
         </figure>
       </div>
 
-      <!-- Pontos de falha, em texto -->
+      <!-- Situações, em texto -->
       <ol class="ch__list">
         {
           challenge.items.map((item) => (
-            <li class="ch__item" data-item={item.code} data-reveal>
+            <li class="ch__item" data-item={item.idx} data-reveal>
               <div class="ch__item-head">
-                <span class="index-mark ch__item-code">{item.code}</span>
+                <span class="index-mark ch__item-idx">{item.idx}</span>
                 <span class="ch__item-line" aria-hidden="true" />
               </div>
               <h3 class="h-item ch__item-title">{item.title}</h3>
@@ -116,7 +113,7 @@ const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`
 
 <style>
   .challenge {
-    background: var(--c-navy-deep);
+    background: var(--c-white);
   }
 
   .ch__grid {
@@ -127,7 +124,7 @@ const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`
   /* ---------- Diagrama ---------- */
   .ch__figure {
     margin: 0;
-    max-width: 34rem;
+    max-width: 32rem;
   }
   .ch__figure svg {
     width: 100%;
@@ -135,37 +132,37 @@ const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`
     overflow: visible;
   }
   .ch__frame line {
-    stroke: rgba(255, 255, 255, 0.18);
+    stroke: var(--rule-strong);
     stroke-width: 0.9;
   }
   .ch__grid-line {
-    stroke: rgba(255, 255, 255, 0.06) !important;
+    stroke: var(--rule) !important;
   }
 
   .ch__area {
-    fill: var(--c-steel);
-    fill-opacity: 0.12;
+    fill: var(--c-navy);
+    fill-opacity: 0.06;
   }
 
   .ch__plan {
-    stroke: rgba(255, 255, 255, 0.55);
+    stroke: var(--c-gray-tech);
     stroke-width: 0.9;
     stroke-dasharray: 0.012 0.01;
   }
   .ch__actual {
-    stroke: #fff;
-    stroke-width: 1.5;
+    stroke: var(--c-navy);
+    stroke-width: 1.6;
     fill: none;
   }
 
   .ch__drop {
-    stroke: rgba(255, 255, 255, 0.16);
+    stroke: var(--rule-strong);
     stroke-width: 0.9;
     stroke-dasharray: 2 3;
   }
   .ch__halo {
     fill: none;
-    stroke: var(--c-steel);
+    stroke: var(--accent);
     stroke-width: 0.9;
     opacity: 0;
     transform-box: fill-box;
@@ -176,17 +173,19 @@ const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`
       transform var(--dur) var(--ease-out);
   }
   .ch__dot {
-    fill: var(--c-navy-deep);
-    stroke: #fff;
+    fill: var(--c-white);
+    stroke: var(--c-navy);
     stroke-width: 1.5;
-    transition: fill var(--dur) var(--ease-out), stroke var(--dur) var(--ease-out);
+    transition: fill var(--dur) var(--ease-out);
   }
-  .ch__code {
+  .ch__tag {
     font-family: var(--font-mono);
     font-size: 9px;
-    letter-spacing: 0.08em;
-    fill: rgba(255, 255, 255, 0.34);
-    transition: fill var(--dur) var(--ease-out);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    fill: var(--c-navy);
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease-out);
   }
 
   .ch__fault.is-active .ch__halo {
@@ -194,11 +193,10 @@ const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`
     transform: scale(1);
   }
   .ch__fault.is-active .ch__dot {
-    fill: #fff;
-    stroke: #fff;
+    fill: var(--c-navy);
   }
-  .ch__fault.is-active .ch__code {
-    fill: #fff;
+  .ch__fault.is-active .ch__tag {
+    opacity: 1;
   }
 
   .ch__axis {
@@ -206,18 +204,18 @@ const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`
     font-size: 9.5px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    fill: rgba(255, 255, 255, 0.6);
+    fill: var(--c-gray-tech);
   }
   .ch__axis--warn {
-    fill: #fff;
+    fill: var(--c-navy);
   }
   .ch__axis--muted {
-    fill: rgba(255, 255, 255, 0.32);
+    fill: var(--c-gray-line);
   }
 
   .ch__note {
-    margin-top: var(--space-sm);
-    color: rgba(255, 255, 255, 0.56);
+    margin-top: var(--space-md);
+    color: var(--ink-faint);
     font-size: 0.5625rem;
     letter-spacing: 0.18em;
   }
@@ -238,8 +236,8 @@ const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`
     gap: 0.85rem;
     margin-bottom: var(--space-xs);
   }
-  .ch__item-code {
-    color: var(--c-steel);
+  .ch__item-idx {
+    color: var(--accent);
   }
   .ch__item-line {
     flex: 1;
@@ -255,7 +253,7 @@ const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`
     font-size: var(--fs-base);
   }
 
-  /* ---------- Desktop: diagrama fixo, falhas rolando ---------- */
+  /* ---------- Desktop: diagrama fixo, situações rolando ---------- */
   @media (min-width: 64rem) {
     .ch__grid {
       grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
@@ -270,9 +268,9 @@ const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`
       gap: 0;
     }
     .ch__item {
-      padding-block: clamp(2.5rem, 6vh, 4.5rem);
+      padding-block: clamp(2.25rem, 5.5vh, 4rem);
       border-top: 1px solid var(--rule);
-      opacity: 0.42;
+      opacity: 0.4;
     }
     .ch__item:first-child {
       padding-top: 0;
@@ -305,7 +303,7 @@ const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`
 <script>
   const section = document.querySelector<HTMLElement>('[data-challenge]');
 
-  if (section && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (section) {
     const items = Array.from(section.querySelectorAll<HTMLElement>('[data-item]'));
     const faults = new Map(
       Array.from(section.querySelectorAll<SVGGElement>('[data-fault]')).map((el) => [
@@ -314,22 +312,22 @@ const areaPath = `${actualPath} L${PLAN.x2} ${PLAN.y2} L${PLAN.x1} ${PLAN.y1} Z`
       ])
     );
 
-    const setCurrent = (code: string | null) => {
-      items.forEach((el) => el.classList.toggle('is-current', el.dataset.item === code));
-      faults.forEach((el, key) => el.classList.toggle('is-active', key === code));
+    const setCurrent = (idx: string | null) => {
+      items.forEach((el) => el.classList.toggle('is-current', el.dataset.item === idx));
+      faults.forEach((el, key) => el.classList.toggle('is-active', key === idx));
     };
 
     const io = new IntersectionObserver(
       (entries) => {
         /* O item cuja area visivel esta mais proxima do centro assume o foco. */
-        let best: { code: string; ratio: number } | null = null;
+        let best: { idx: string; ratio: number } | null = null;
         entries.forEach((e) => {
-          const code = (e.target as HTMLElement).dataset.item!;
+          const idx = (e.target as HTMLElement).dataset.item!;
           if (e.isIntersecting && (!best || e.intersectionRatio > best.ratio)) {
-            best = { code, ratio: e.intersectionRatio };
+            best = { idx, ratio: e.intersectionRatio };
           }
         });
-        if (best) setCurrent((best as { code: string }).code);
+        if (best) setCurrent((best as { idx: string }).idx);
       },
       { rootMargin: '-42% 0px -42% 0px', threshold: [0, 0.5, 1] }
     );

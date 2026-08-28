@@ -1,0 +1,170 @@
+---
+/**
+ * A CSMA e o cenário atual — direção 02.
+ *
+ * Ritmo institucional: rótulo, título, resumo, e o conteúdo em duas colunas
+ * generosas. Depois, o diagnóstico em cinco cartões limpos sobre off-white.
+ */
+import { Image } from 'astro:assets';
+import { about, challenge } from '../../data/site';
+import { casePhoto } from '../../lib/photos';
+
+const foto = casePhoto('tubulacao');
+---
+
+<!-- ============================ A CSMA ============================ -->
+<section class="bloco quem" id="a-csma" aria-labelledby="t-quem">
+  <div class="faixa">
+    <div class="secao">
+      <p class="rotulo secao__rotulo" data-e>{about.eyebrow}</p>
+      <h2 class="h2" id="t-quem" data-e style="--atraso:60ms">{about.title}</h2>
+      <p class="lead" data-e style="--atraso:140ms">{about.lead}</p>
+    </div>
+
+    <div class="quem__blocos" data-eg>
+      {
+        about.blocks.map((b) => (
+          <article class="quem__bloco">
+            <h3 class="h3">{b.label}</h3>
+            <p class="corpo">{b.text}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+
+  <figure class="quem__banda" data-observa>
+    {
+      foto && (
+        <Image
+          class="quem__foto"
+          src={foto}
+          alt="Linha de tubulação de grande diâmetro apoiada em suportes metálicos ao longo de uma via interna de planta industrial."
+          quality={84}
+          format="webp"
+          widths={[960, 1440, 1920]}
+          sizes="100vw"
+          loading="lazy"
+          decoding="async"
+          data-foto
+        />
+      )
+    }
+    <figcaption class="quem__legenda">
+      <span class="faixa">Da engenharia à execução em campo</span>
+    </figcaption>
+  </figure>
+</section>
+
+<!-- ============================ DESAFIO ============================ -->
+<section class="bloco bloco--areia desafio" id="desafio" aria-labelledby="t-desafio">
+  <div class="faixa">
+    <div class="secao">
+      <p class="rotulo secao__rotulo" data-e>{challenge.eyebrow}</p>
+      <h2 class="h2" id="t-desafio" data-e style="--atraso:60ms">{challenge.title}</h2>
+      <p class="lead" data-e style="--atraso:140ms">{challenge.lead}</p>
+    </div>
+
+    <ul class="desafio__cartoes" data-eg>
+      {
+        challenge.items.map((it) => (
+          <li class="cartao">
+            <span class="cartao__n">{it.idx}</span>
+            <h3 class="h4 cartao__titulo">{it.title}</h3>
+            <p class="min">{it.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* ---------------- quem somos ---------------- */
+  .quem { padding-bottom: 0; }
+
+  .quem__blocos {
+    display: grid;
+    gap: var(--e-6);
+    padding-bottom: var(--e-9);
+  }
+  @media (min-width: 56rem) {
+    .quem__blocos {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--e-8);
+    }
+  }
+  .quem__bloco {
+    display: grid;
+    gap: var(--e-4);
+    align-content: start;
+    padding-top: var(--e-5);
+    border-top: 2px solid var(--navy);
+  }
+  .quem__bloco .corpo { max-width: 46ch; }
+
+  .quem__banda {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 21 / 8;
+    min-height: 260px;
+    overflow: hidden;
+    background: var(--areia-2);
+  }
+  .quem__foto {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .quem__legenda {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding-block: var(--e-5);
+    background: linear-gradient(to top, rgba(14, 31, 54, 0.72), rgba(14, 31, 54, 0));
+    color: #fff;
+    font-size: var(--t-min);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  /* ---------------- desafio ---------------- */
+  .desafio__cartoes {
+    display: grid;
+    gap: var(--e-4);
+  }
+  @media (min-width: 44rem) {
+    .desafio__cartoes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 68rem) {
+    .desafio__cartoes { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
+  .cartao {
+    background: var(--branco);
+    border: 1px solid var(--fio);
+    border-radius: var(--raio);
+    padding: var(--e-6) var(--e-5);
+    display: grid;
+    gap: 0.7rem;
+    align-content: start;
+    transition: border-color var(--dur-1) var(--suave), transform var(--dur-1) var(--suave),
+      box-shadow var(--dur-1) var(--suave);
+  }
+  .cartao:hover {
+    border-color: var(--navy);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(18, 39, 68, 0.07);
+  }
+  .cartao__n {
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--navy);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .cartao__titulo { margin-top: 0.35rem; }
+  .cartao .min { max-width: 34ch; }
+</style>

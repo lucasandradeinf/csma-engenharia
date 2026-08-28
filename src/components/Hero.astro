@@ -1,13 +1,13 @@
 ---
-import { hero } from '../data/site';
+import { hero, positioning } from '../data/site';
 import { buildFrame } from '../lib/iso';
 
 const f = buildFrame();
 const vb = `${f.bounds.minX} ${f.bounds.minY} ${f.bounds.maxX - f.bounds.minX} ${f.bounds.maxY - f.bounds.minY}`;
 
 /* Ordem de desenho: chão, base, pilares, vigas, contraventamento.
-   O equipamento entra depois, em linha tracejada — e um volume previsto,
-   nao construido, e a convencao de desenho e o tracejado. */
+   O equipamento entra depois, em linha tracejada — é um volume previsto,
+   não construído, e a convenção de desenho é o tracejado. */
 const structure = [
   { cls: 'ln ln--base', items: [f.base], delay: 120 },
   { cls: 'ln ln--col', items: f.columns, delay: 420 },
@@ -15,6 +15,8 @@ const structure = [
   { cls: 'ln ln--beam', items: f.beamsCross, delay: 880 },
   { cls: 'ln ln--brace', items: f.braces, delay: 1080 },
 ];
+
+const kicker = `${positioning.discipline} — ${positioning.chapter}`;
 ---
 
 <section class="hero is-dark is-dark--deep" id="topo" aria-labelledby="hero-title">
@@ -22,11 +24,14 @@ const structure = [
 
   <div class="shell hero__inner">
     <div class="hero__copy">
-      <p class="hero__eyebrow mono">{hero.eyebrow}</p>
+      <p class="hero__kicker mono">{kicker}</p>
 
       <h1 class="hero__title" id="hero-title">{hero.headline}</h1>
 
-      <p class="hero__sub">{hero.sub}</p>
+      <div class="hero__note">
+        <p class="hero__concept">{hero.concept.line}</p>
+        <p class="hero__sub">{hero.sub}</p>
+      </div>
 
       <div class="hero__actions">
         <a class="btn" href={hero.ctaPrimary.href}>
@@ -147,10 +152,7 @@ const structure = [
           {
             f.nodes.map((n, i) => (
               <g data-node style={`--node-delay:${2050 + i * 90}ms`}>
-                <circle class="iso__node" cx={n.x} cy={n.y} r="4.5" />
-                <text class="iso__label iso__label--node" x={n.x - 6} y={n.y - 12} text-anchor="end">
-                  {n.code}
-                </text>
+                <circle class="iso__node" cx={n.x} cy={n.y} r="4" />
               </g>
             ))
           }
@@ -163,7 +165,7 @@ const structure = [
           <circle cx={f.bounds.minX + 28} cy={f.bounds.minY + 32} r="9" />
         </g>
 
-        <!-- varredura da simulação 4D -->
+        <!-- varredura da simulação: a mesma passagem que o 4D faz sobre o modelo -->
         <g class="iso__scan" aria-hidden="true">
           <line x1={f.bounds.minX + 6} y1="0" x2={f.bounds.maxX - 6} y2="0" />
         </g>
@@ -207,21 +209,18 @@ const structure = [
     overflow: hidden;
   }
 
+  /* Folha de desenho, não interface: malha fina, sem brilho e sem halo azul. */
   .hero__field {
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(to right, rgba(255, 255, 255, 0.038) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.038) 1px, transparent 1px);
-    background-size: 44px 44px;
-    -webkit-mask-image: radial-gradient(115% 90% at 68% 34%, #000 8%, transparent 72%);
-    mask-image: radial-gradient(115% 90% at 68% 34%, #000 8%, transparent 72%);
-  }
-  .hero__field::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(78% 62% at 62% 34%, rgba(94, 135, 176, 0.16), transparent 68%);
+      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 44px 44px, 44px 44px, 220px 220px, 220px 220px;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 72%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 72%, transparent);
   }
 
   .hero__inner {
@@ -234,9 +233,9 @@ const structure = [
   }
 
   /* ---------- Texto ---------- */
-  .hero__eyebrow {
+  .hero__kicker {
     color: var(--c-gray-soft);
-    opacity: 0.75;
+    opacity: 0.78;
     font-size: 0.625rem;
     letter-spacing: 0.2em;
     margin-bottom: var(--space-md);
@@ -245,38 +244,53 @@ const structure = [
 
   .hero__title {
     font-family: var(--font-display);
-    font-size: clamp(2.125rem, 1rem + 3.5vw, 4.25rem);
-    line-height: 1.04;
-    letter-spacing: -0.022em;
-    max-width: 17ch;
+    font-size: clamp(2.0625rem, 1rem + 3.3vw, 4rem);
+    line-height: 1.08;
+    letter-spacing: -0.018em;
+    max-width: 18ch;
     color: #fff;
     animation: hero-in 1000ms var(--ease-out) 120ms both;
   }
 
-  .hero__sub {
+  /* Nota de margem: a frase de posicionamento e a descrição da empresa
+     dividem um único fio, então leem como um bloco só. */
+  .hero__note {
     margin-top: var(--space-md);
-    max-width: 46ch;
-    font-size: var(--fs-lead);
+    padding-left: var(--space-md);
+    border-left: 1px solid rgba(255, 255, 255, 0.22);
+    max-width: 34rem;
+    animation: hero-in 1000ms var(--ease-out) 280ms both;
+  }
+  .hero__concept {
+    font-family: var(--font-display);
+    font-size: clamp(1.125rem, 0.92rem + 0.95vw, 1.625rem);
+    line-height: 1.24;
+    letter-spacing: -0.012em;
+    color: #fff;
+  }
+  .hero__sub {
+    margin-top: 0.7rem;
+    font-size: var(--fs-base);
     font-weight: 300;
-    line-height: 1.58;
+    line-height: 1.6;
     color: var(--c-gray-soft);
-    animation: hero-in 1000ms var(--ease-out) 260ms both;
+    max-width: 46ch;
   }
 
   .hero__actions {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-xs);
-    margin-top: var(--space-lg);
-    animation: hero-in 1000ms var(--ease-out) 400ms both;
+    margin-top: var(--space-md);
+    animation: hero-in 1000ms var(--ease-out) 420ms both;
   }
 
   .hero__cue {
     display: none;
     align-items: center;
     gap: 0.75rem;
-    margin-top: var(--space-lg);
-    color: rgba(255, 255, 255, 0.55);
+    margin-top: var(--space-md);
+    color: rgba(255, 255, 255, 0.5);
     animation: hero-in 900ms var(--ease-out) 900ms both;
   }
   .hero__cue-line {
@@ -310,48 +324,47 @@ const structure = [
     overflow: visible;
   }
   .iso__ground line {
-    stroke: rgba(255, 255, 255, 0.09);
-    stroke-width: 1.2;
+    stroke: rgba(255, 255, 255, 0.075);
+    stroke-width: 1.1;
   }
   .ln {
     stroke-width: 1.3;
   }
-  .ln--base { stroke: rgba(255, 255, 255, 0.34); stroke-width: 1.4; }
-  .ln--col { stroke: rgba(255, 255, 255, 0.74); stroke-width: 1.8; }
-  .ln--beam { stroke: rgba(255, 255, 255, 0.64); stroke-width: 1.55; }
-  .ln--brace { stroke: var(--c-steel); stroke-width: 1.4; opacity: 0.9; }
-  .ln--eq { stroke: rgba(255, 255, 255, 0.42); stroke-width: 1.4; stroke-dasharray: 5 4; }
+  .ln--base { stroke: rgba(255, 255, 255, 0.3); stroke-width: 1.3; }
+  .ln--col { stroke: rgba(255, 255, 255, 0.7); stroke-width: 1.7; }
+  .ln--beam { stroke: rgba(255, 255, 255, 0.58); stroke-width: 1.45; }
+  /* Contraventamento é estrutura, não destaque: fio branco fino. */
+  .ln--brace { stroke: rgba(255, 255, 255, 0.42); stroke-width: 1.15; }
+  .ln--eq { stroke: rgba(255, 255, 255, 0.36); stroke-width: 1.3; stroke-dasharray: 5 4; }
 
-  .iso__dim line { stroke: var(--c-steel); stroke-width: 1.3; }
-  .iso__ext { stroke: rgba(94, 135, 176, 0.42) !important; stroke-dasharray: 4 3.5; }
-  .iso__tick { stroke-width: 1.7 !important; }
+  /* Cotas: única presença do aço, na convenção do desenho técnico. */
+  .iso__dim line { stroke: var(--c-steel); stroke-width: 1.1; opacity: 0.8; }
+  .iso__ext { stroke: rgba(128, 152, 178, 0.34) !important; stroke-dasharray: 4 3.5; }
+  .iso__tick { stroke-width: 1.5 !important; }
 
   .iso__node {
     fill: var(--c-navy-deep);
-    stroke: #fff;
-    stroke-width: 1.8;
+    stroke: rgba(255, 255, 255, 0.85);
+    stroke-width: 1.6;
   }
 
   .iso__label {
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: 10px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    fill: rgba(255, 255, 255, 0.5);
-  }
-  .iso__label--node {
-    fill: rgba(255, 255, 255, 0.82);
+    fill: rgba(255, 255, 255, 0.42);
   }
 
   .iso__reg line,
   .iso__reg circle {
-    stroke: rgba(255, 255, 255, 0.24);
-    stroke-width: 1.3;
+    stroke: rgba(255, 255, 255, 0.2);
+    stroke-width: 1.2;
   }
 
   .iso__scan line {
-    stroke: var(--c-steel);
-    stroke-width: 1.6;
+    stroke: rgba(255, 255, 255, 0.75);
+    stroke-width: 1.2;
     opacity: 0;
   }
   :global(.is-in) .iso__scan line {
@@ -364,7 +377,7 @@ const structure = [
     align-items: center;
     gap: 0.75rem;
     margin-top: var(--space-md);
-    color: rgba(255, 255, 255, 0.56);
+    color: rgba(255, 255, 255, 0.5);
     font-size: 0.5625rem;
     letter-spacing: 0.18em;
     flex-wrap: wrap;
@@ -379,7 +392,7 @@ const structure = [
   /* ---------- Faixa dos pilares da marca ---------- */
   .hero__pillars {
     position: relative;
-    border-top: 1px solid rgba(255, 255, 255, 0.13);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
   }
   .hero__pillars ul {
     display: grid;
@@ -390,12 +403,12 @@ const structure = [
     flex-direction: column;
     gap: 0.3rem;
     padding: var(--space-sm) var(--space-sm) var(--space-sm) 0;
-    border-left: 1px solid rgba(255, 255, 255, 0.13);
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
     padding-left: var(--space-sm);
     margin-left: -1px;
   }
   .hero__pillars li:nth-child(-n + 2) {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   }
   .hero__pillar-en {
     font-family: var(--font-mono);
@@ -406,7 +419,7 @@ const structure = [
   }
   .hero__pillar-pt {
     font-size: var(--fs-sm);
-    color: rgba(255, 255, 255, 0.62);
+    color: rgba(255, 255, 255, 0.6);
   }
 
   /* ---------- Responsivo ---------- */
@@ -424,13 +437,13 @@ const structure = [
 
   @media (min-width: 64rem) {
     .hero__inner {
-      grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+      grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
       align-items: center;
       gap: var(--space-2xl);
     }
     .hero__figure {
       width: 100%;
-      max-width: 30rem;
+      max-width: 29rem;
     }
     .hero__cue {
       display: flex;
@@ -439,7 +452,7 @@ const structure = [
 
   @media (min-width: 90rem) {
     .hero__inner {
-      grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr);
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
     }
   }
 
@@ -461,9 +474,9 @@ const structure = [
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero__eyebrow,
+    .hero__kicker,
     .hero__title,
-    .hero__sub,
+    .hero__note,
     .hero__actions,
     .hero__cue {
       animation: none;

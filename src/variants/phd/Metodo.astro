@@ -1,0 +1,151 @@
+---
+/**
+ * Capítulo 05 — Metodologia CSMA.
+ *
+ * Lida como uma sequência executiva de prancha: seis etapas encadeadas por um
+ * fio vertical com nós, e as saídas de cada etapa listadas em monoespaçada.
+ * As seis etapas e suas saídas são exatamente as da apresentação comercial.
+ */
+import { methodology as m } from '../../data/site';
+---
+
+<section class="cap claro metodo" id="metodologia" aria-labelledby="t-metodo">
+  <div class="malha" aria-hidden="true"></div>
+
+  <div class="faixa">
+    <div class="cabec cabec--largo">
+      <p class="cabec__cota">05 / {m.eyebrow}</p>
+      <h2 class="enunciado" id="t-metodo" data-r>{m.title}</h2>
+      <p class="lead metodo__lead" data-r style="--atraso:120ms">{m.lead}</p>
+    </div>
+
+    <ol class="metodo__seq" data-observa>
+      <span class="metodo__eixo" aria-hidden="true"></span>
+
+      {
+        m.steps.map((s, i) => (
+          <li class="metodo__etapa" style={`--i:${i}`}>
+            <div class="metodo__marca" aria-hidden="true">
+              <span class="metodo__no" />
+            </div>
+
+            <div class="metodo__cabeca">
+              <span class="dado dado--oxido">Etapa {s.idx}</span>
+              <h3 class="titulo metodo__titulo">{s.title}</h3>
+              <p class="corpo metodo__txt">{s.text}</p>
+            </div>
+
+            <ul class="metodo__saidas">
+              {s.outputs.map((o) => (
+                <li class="dado">{o}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="metodo__rodape" data-r>
+      <span class="dado dado--fraco">Referência de método</span>
+      <span class="metodo__awp">{m.footnote}</span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .metodo { background: var(--osso); }
+  .metodo__lead { max-width: 40ch; }
+
+  .metodo__seq { position: relative; display: grid; }
+
+  .metodo__eixo {
+    position: absolute;
+    left: 0.5rem;
+    top: 1.9rem;
+    bottom: 1.9rem;
+    width: 1px;
+    background: var(--fio-forte);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 1400ms var(--saida) 120ms;
+  }
+  .metodo__seq.is-in .metodo__eixo { transform: scaleY(1); }
+  @media (min-width: 62rem) {
+    .metodo__eixo { left: calc(var(--trilho) / 2); }
+  }
+
+  .metodo__etapa {
+    display: grid;
+    grid-template-columns: 1.6rem minmax(0, 1fr);
+    gap: 0.75rem var(--e-4);
+    padding-block: var(--e-6);
+    border-top: 1px solid var(--fio);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 700ms var(--saida), transform 700ms var(--saida);
+    transition-delay: calc(var(--i) * 100ms + 260ms);
+  }
+  .metodo__seq.is-in .metodo__etapa { opacity: 1; transform: none; }
+  .metodo__etapa:last-child { border-bottom: 1px solid var(--fio); }
+
+  @media (min-width: 62rem) {
+    .metodo__etapa {
+      grid-template-columns: var(--trilho) minmax(0, 1.35fr) minmax(0, 0.85fr);
+      align-items: start;
+      gap: var(--e-6);
+    }
+  }
+
+  .metodo__marca { display: flex; justify-content: flex-start; padding-top: 0.55rem; }
+  @media (min-width: 62rem) {
+    .metodo__marca { justify-content: center; }
+  }
+  .metodo__no {
+    width: 9px;
+    height: 9px;
+    background: var(--osso);
+    border: 1.5px solid var(--oxido);
+    transform: rotate(45deg);
+  }
+
+  .metodo__cabeca { display: grid; gap: 0.5rem; }
+  .metodo__titulo { font-size: var(--t-h4); text-transform: none; }
+  @media (min-width: 62rem) {
+    .metodo__titulo { font-size: var(--t-h3); }
+  }
+  .metodo__txt { font-size: var(--t-min); line-height: 1.7; max-width: 46ch; }
+
+  .metodo__saidas {
+    grid-column: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-content: start;
+  }
+  @media (min-width: 62rem) {
+    .metodo__saidas { grid-column: 3; padding-top: 0.4rem; }
+  }
+  .metodo__saidas li {
+    padding: 0.32rem 0.62rem;
+    border: 1px solid var(--fio);
+    color: var(--tinta-fraca);
+    background: var(--osso-2);
+    line-height: 1.35;
+  }
+
+  .metodo__rodape {
+    margin-top: var(--e-6);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.9rem;
+  }
+  .metodo__awp {
+    font-size: var(--t-min);
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--tinta-forte);
+    border-bottom: 2px solid var(--oxido);
+    padding-bottom: 1px;
+  }
+</style>

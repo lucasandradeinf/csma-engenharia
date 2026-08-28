@@ -25,7 +25,9 @@ const lines = [...f.columns, ...f.beamsLong, ...f.beamsCross, ...f.braces];
 
     <h2 class="cta__statement" id="cta-title" data-reveal>{closing.statement}</h2>
 
-    <div class="cta__actions" data-reveal style="--reveal-delay:120ms">
+    <p class="cta__question" data-reveal style="--reveal-delay:100ms">{closing.question}</p>
+
+    <div class="cta__actions" data-reveal style="--reveal-delay:180ms">
       <a class="btn cta__btn" href={closing.cta.href}>
         <span>{closing.cta.label}</span>
         <span class="btn__arrow" aria-hidden="true">
@@ -67,7 +69,7 @@ const lines = [...f.columns, ...f.beamsLong, ...f.beamsCross, ...f.braces];
   }
   .cta__echo line,
   .cta__echo path {
-    stroke: rgba(94, 135, 176, 0.5);
+    stroke: rgba(255, 255, 255, 0.2);
     stroke-width: 1;
     vector-effect: non-scaling-stroke;
     fill: none;
@@ -112,12 +114,20 @@ const lines = [...f.columns, ...f.beamsLong, ...f.beamsCross, ...f.braces];
 
   .cta__statement {
     font-family: var(--font-display);
-    font-size: clamp(1.5rem, 0.95rem + 2.5vw, 3.25rem);
-    line-height: 1.14;
-    letter-spacing: -0.02em;
+    font-size: clamp(1.5rem, 0.95rem + 2.3vw, 3rem);
+    line-height: 1.16;
+    letter-spacing: -0.018em;
     color: #fff;
     max-width: 20ch;
     margin-top: var(--space-lg);
+  }
+
+  .cta__question {
+    margin-top: var(--space-md);
+    color: rgba(255, 255, 255, 0.68);
+    font-size: var(--fs-base);
+    font-weight: 300;
+    max-width: 34ch;
   }
 
   .cta__actions {
@@ -125,7 +135,7 @@ const lines = [...f.columns, ...f.beamsLong, ...f.beamsCross, ...f.braces];
     flex-direction: column;
     align-items: center;
     gap: var(--space-md);
-    margin-top: var(--space-sm);
+    margin-top: var(--space-md);
   }
 
   .cta__mail {

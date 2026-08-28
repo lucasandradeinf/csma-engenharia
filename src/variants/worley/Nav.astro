@@ -1,0 +1,223 @@
+---
+/**
+ * Navegação — direção 03.
+ *
+ * Editorial e orientada à jornada: a barra numera os atos da narrativa e um
+ * fio mineral marca o avanço da leitura. Sobre o herói ela é transparente;
+ * ao entrar no primeiro ato, assume o petróleo.
+ */
+import Mark from '../_shared/Mark.astro';
+import { site } from '../../data/site';
+import { atos } from './jornada';
+---
+
+<header class="barra" data-barra>
+  <div class="faixa barra__linha">
+    <a class="barra__marca" href="#topo" aria-label="CSMA — início">
+      <span class="barra__marca-svg"><Mark travessao="var(--mineral)" /></span>
+    </a>
+
+    <nav class="barra__atos" aria-label="Atos">
+      {
+        atos.slice(0, 6).map((a) => (
+          <a class="barra__ato" href={a.href}>
+            <i>{a.n}</i>
+            <span>{a.rotulo}</span>
+          </a>
+        ))
+      }
+    </nav>
+
+    <a class="pilula barra__cta" href={`mailto:${site.email}`}>
+      Falar com a CSMA
+      <svg viewBox="0 0 20 12" fill="none" aria-hidden="true">
+        <path d="M0 6h18M13 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" />
+      </svg>
+    </a>
+
+    <button class="barra__movel" type="button" data-folha-abrir aria-expanded="false" aria-controls="folha">
+      Atos
+      <span aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
+  </div>
+
+  <div class="barra__avanco" aria-hidden="true"><span data-avanco></span></div>
+</header>
+
+<div class="folha" id="folha" data-folha hidden>
+  <nav class="faixa folha__nav" aria-label="Atos da narrativa">
+    <ol>
+      {
+        atos.map((a) => (
+          <li>
+            <a href={a.href} data-folha-link>
+              <i>{a.n}</i>
+              <span>{a.rotulo}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+    <a class="pilula folha__cta" href={`mailto:${site.email}`}>Falar com a CSMA</a>
+  </nav>
+</div>
+
+<script>
+  const barra = document.querySelector<HTMLElement>('[data-barra]');
+  const avanco = document.querySelector<HTMLElement>('[data-avanco]');
+  const abrir = document.querySelector<HTMLButtonElement>('[data-folha-abrir]');
+  const folha = document.querySelector<HTMLElement>('[data-folha]');
+
+  function alternar(aberto: boolean) {
+    if (!folha || !abrir) return;
+    folha.hidden = !aberto;
+    abrir.setAttribute('aria-expanded', String(aberto));
+    document.documentElement.style.overflow = aberto ? 'hidden' : '';
+    if (aberto) requestAnimationFrame(() => folha.classList.add('is-aberta'));
+    else folha.classList.remove('is-aberta');
+  }
+
+  abrir?.addEventListener('click', () => alternar(Boolean(folha?.hidden ?? true)));
+  folha?.querySelectorAll('[data-folha-link]').forEach((a) =>
+    a.addEventListener('click', () => alternar(false))
+  );
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && folha && !folha.hidden) alternar(false);
+  });
+
+  let pendente = false;
+  const medir = () => {
+    const y = window.scrollY;
+    barra?.classList.toggle('is-solida', y > window.innerHeight * 0.72);
+    if (avanco) {
+      const alcance = document.documentElement.scrollHeight - window.innerHeight;
+      avanco.style.transform = `scaleX(${alcance > 0 ? Math.min(1, y / alcance) : 0})`;
+    }
+    pendente = false;
+  };
+  addEventListener(
+    'scroll',
+    () => {
+      if (pendente) return;
+      pendente = true;
+      requestAnimationFrame(medir);
+    },
+    { passive: true }
+  );
+  medir();
+</script>
+
+<style>
+  .barra {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    transition: background var(--dur-2) var(--cine), backdrop-filter var(--dur-2) var(--cine);
+  }
+  .barra.is-solida {
+    background: rgba(12, 30, 34, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .barra__linha {
+    height: var(--topo);
+    display: flex;
+    align-items: center;
+    gap: var(--e-5);
+  }
+
+  .barra__marca { flex: none; }
+  .barra__marca-svg { display: block; width: 88px; color: var(--areia); }
+
+  .barra__atos {
+    display: none;
+    margin-inline: auto;
+    gap: clamp(0.9rem, 0.1rem + 1.5vw, 2rem);
+  }
+  @media (min-width: 70rem) { .barra__atos { display: flex; } }
+
+  .barra__ato {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    color: rgba(233, 227, 216, 0.78);
+    font-size: var(--t-min);
+    padding-block: 0.35rem;
+    border-bottom: 1px solid transparent;
+    transition: color var(--dur-1) var(--cine), border-color var(--dur-1) var(--cine);
+  }
+  .barra__ato i {
+    font-style: normal;
+    font-family: var(--f-num);
+    font-size: var(--t-num);
+    letter-spacing: 0.1em;
+    color: var(--mineral);
+  }
+  .barra__ato:hover { color: #fff; border-bottom-color: var(--mineral); }
+
+  .barra__cta { display: none; flex: none; padding: 0.6rem 1.2rem; font-size: var(--t-min); }
+  @media (min-width: 70rem) { .barra__cta { display: inline-flex; } }
+
+  .barra__movel {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: var(--areia);
+    font-size: var(--t-min);
+    font-weight: 600;
+  }
+  @media (min-width: 70rem) { .barra__movel { display: none; } }
+  .barra__movel span { display: grid; gap: 4px; width: 20px; }
+  .barra__movel i { display: block; height: 1.5px; background: currentColor; border-radius: 1px; }
+
+  .barra__avanco { height: 2px; }
+  .barra__avanco span {
+    display: block;
+    height: 100%;
+    background: var(--mineral);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  /* --- folha (mobile) --- */
+  .folha {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    background: var(--petroleo);
+    display: grid;
+    align-content: center;
+    opacity: 0;
+    transition: opacity var(--dur-1) var(--cine);
+    overflow-y: auto;
+  }
+  .folha[hidden] { display: none; }
+  .folha.is-aberta { opacity: 1; }
+
+  .folha__nav { display: grid; gap: var(--e-6); }
+  .folha__nav ol { display: grid; }
+  .folha__nav a {
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.9rem;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid rgba(233, 227, 216, 0.14);
+    color: var(--areia);
+  }
+  .folha__nav i {
+    font-style: normal;
+    font-family: var(--f-num);
+    font-size: var(--t-num);
+    letter-spacing: 0.14em;
+    color: var(--mineral);
+  }
+  .folha__nav span {
+    font-family: var(--f-titulo);
+    font-size: clamp(1.5rem, 1rem + 3vw, 2.5rem);
+    line-height: 1.1;
+  }
+  .folha__cta { justify-self: start; }
+</style>

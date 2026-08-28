@@ -1,0 +1,282 @@
+---
+/**
+ * Capítulos 02 e 03 — quem somos e o desafio dos projetos industriais.
+ *
+ * O bloco institucional entra em papel claro (respiro) e o diagnóstico volta
+ * ao grafite. O diagrama do diagnóstico é qualitativo: mostra que o custo de
+ * mudar cresce da engenharia para o campo. Não afirma número algum — a
+ * apresentação não traz nenhum, e nada foi inventado.
+ */
+import { about, challenge } from '../../data/site';
+---
+
+<!-- ============================ A CSMA ============================ -->
+<section class="cap claro empresa" id="a-csma" aria-labelledby="t-empresa">
+  <div class="malha" aria-hidden="true"></div>
+
+  <div class="faixa">
+    <div class="cabec cabec--largo">
+      <p class="cabec__cota">02 / {about.eyebrow}</p>
+
+      <h2 class="enunciado" id="t-empresa" data-r>{about.title}</h2>
+
+      <p class="lead empresa__lead" data-r style="--atraso:120ms">{about.lead}</p>
+    </div>
+
+    <div class="empresa__blocos" data-rg>
+      {
+        about.blocks.map((b) => (
+          <article class="empresa__bloco">
+            <span class="dado dado--oxido">{b.idx}</span>
+            <h3 class="subtitulo">{b.label}</h3>
+            <p class="corpo">{b.text}</p>
+          </article>
+        ))
+      }
+
+      <article class="empresa__bloco empresa__bloco--marca">
+        <span class="dado dado--oxido">03</span>
+        <h3 class="subtitulo">O que a sigla carrega</h3>
+        <ul class="empresa__sigla">
+          <li><b>C</b><span>Constructibility</span><i>Construtibilidade</i></li>
+          <li><b>S</b><span>Strategy</span><i>Estratégia</i></li>
+          <li><b>M</b><span>Management</span><i>Gestão</i></li>
+          <li><b>A</b><span>Advisory</span><i>Assessoria</i></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ DESAFIO ============================ -->
+<section class="cap desafio" id="desafio" aria-labelledby="t-desafio">
+  <div class="malha" aria-hidden="true"></div>
+
+  <div class="faixa">
+    <div class="cabec cabec--largo">
+      <p class="cabec__cota">03 / {challenge.eyebrow}</p>
+      <h2 class="enunciado" id="t-desafio" data-r>{challenge.title}</h2>
+      <p class="lead desafio__lead" data-r style="--atraso:120ms">{challenge.lead}</p>
+    </div>
+
+    <div class="desafio__grade">
+      <!-- Diagrama qualitativo: onde a mudança ainda é barata -->
+      <figure class="desafio__diagrama" data-r data-observa>
+        <svg viewBox="0 0 320 260" fill="none" aria-hidden="true">
+          <!-- eixos -->
+          <line class="g-eixo" x1="34" y1="14" x2="34" y2="216" />
+          <line class="g-eixo" x1="34" y1="216" x2="308" y2="216" />
+
+          <!-- grade -->
+          <g class="g-grade">
+            <line x1="34" y1="166" x2="308" y2="166" />
+            <line x1="34" y1="116" x2="308" y2="116" />
+            <line x1="34" y1="66" x2="308" y2="66" />
+          </g>
+
+          <!-- curva do custo de mudar -->
+          <path
+            class="g-curva"
+            d="M34 206 C 110 202, 158 190, 196 158 S 262 60, 302 22"
+            pathLength="1"
+            data-traco
+            style="--traco-atraso:260ms"
+          />
+
+          <!-- fronteira: mobilização -->
+          <line
+            class="g-fronteira"
+            x1="196"
+            y1="14"
+            x2="196"
+            y2="216"
+            pathLength="1"
+            data-traco
+            style="--traco-atraso:1100ms"
+          />
+
+          <!-- área onde a CSMA atua -->
+          <rect class="g-area" x="34" y="14" width="162" height="202" />
+
+          <g class="g-rotulo">
+            <text x="40" y="30">Custo de mudar</text>
+            <text x="34" y="234">Engenharia</text>
+            <text x="308" y="234" text-anchor="end">Campo</text>
+          </g>
+
+          <g class="g-fronteira-rotulo" data-no style="--no-atraso:1350ms">
+            <text x="190" y="56" text-anchor="end">Mobilização</text>
+          </g>
+
+          <g class="g-marca" data-no style="--no-atraso:1500ms">
+            <rect x="34" y="150" width="140" height="24" />
+            <text x="44" y="166">Janela de decisão</text>
+          </g>
+        </svg>
+        <figcaption class="dado dado--fraco">
+          Enquanto a obra só existe no modelo, mudar o projeto é revisão.
+          Depois da mobilização, é retrabalho.
+        </figcaption>
+      </figure>
+
+      <!-- Cinco situações -->
+      <ol class="desafio__lista" data-rg>
+        {
+          challenge.items.map((it) => (
+            <li class="desafio__item">
+              <span class="dado dado--oxido desafio__n">{it.idx}</span>
+              <div class="desafio__txt">
+                <h3 class="subtitulo">{it.title}</h3>
+                <p class="corpo">{it.text}</p>
+              </div>
+              <span class="dado dado--fraco desafio__tag">{it.tag}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ---------------- A CSMA ---------------- */
+  .empresa__lead { max-width: 40ch; }
+
+  .empresa__blocos {
+    display: grid;
+    gap: 1px;
+    background: var(--fio);
+    border-block: 1px solid var(--fio);
+  }
+  @media (min-width: 56rem) {
+    .empresa__blocos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  .empresa__bloco {
+    background: var(--sup);
+    padding: var(--e-6) var(--e-5) var(--e-7);
+    display: grid;
+    gap: 0.85rem;
+    align-content: start;
+  }
+  .empresa__bloco .corpo { font-size: var(--t-min); line-height: 1.72; }
+
+  .empresa__sigla { display: grid; gap: 0.55rem; margin-top: 0.15rem; }
+  .empresa__sigla li {
+    display: grid;
+    grid-template-columns: 1.4rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.5rem 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--fio);
+  }
+  .empresa__sigla b {
+    font-family: var(--f-mono);
+    font-weight: 500;
+    color: var(--oxido);
+    font-size: var(--t-base);
+  }
+  .empresa__sigla span {
+    font-size: var(--t-min);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--tinta-forte);
+  }
+  .empresa__sigla i {
+    grid-column: 2;
+    font-style: normal;
+    font-family: var(--f-mono);
+    font-size: var(--t-dado);
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--tinta-fraca);
+  }
+
+  /* ---------------- Desafio ---------------- */
+  .desafio { background: var(--grafite-2); }
+  .desafio__lead { max-width: 42ch; }
+
+  .desafio__grade {
+    display: grid;
+    gap: var(--e-7);
+  }
+  @media (min-width: 64rem) {
+    .desafio__grade {
+      grid-template-columns: minmax(0, 0.62fr) minmax(0, 1fr);
+      gap: var(--e-8);
+      align-items: start;
+    }
+  }
+
+  .desafio__diagrama {
+    border: 1px solid var(--fio);
+    padding: var(--e-5);
+    background: rgba(0, 0, 0, 0.2);
+  }
+  .desafio__diagrama svg { width: 100%; height: auto; overflow: visible; }
+  .desafio__diagrama figcaption {
+    margin-top: var(--e-4);
+    text-transform: none;
+    letter-spacing: 0.01em;
+    font-size: var(--t-dado-g);
+    line-height: 1.7;
+    color: var(--aco);
+  }
+  @media (min-width: 64rem) {
+    .desafio__diagrama { position: sticky; top: calc(var(--topo) + 2rem); }
+  }
+
+  .g-eixo { stroke: var(--fio-forte); stroke-width: 1; }
+  .g-grade line { stroke: var(--osso); stroke-width: 1; opacity: 0.07; }
+  .g-curva { stroke: var(--oxido); stroke-width: 2.2; }
+  .g-fronteira { stroke: var(--osso); stroke-width: 1; stroke-dasharray: 5 5; opacity: 0.55; }
+  .g-area { fill: var(--oxido); opacity: 0.05; }
+  .g-rotulo text {
+    fill: var(--aco);
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .g-fronteira-rotulo text {
+    fill: var(--osso);
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+  .g-marca rect { fill: var(--grafite-2); stroke: var(--oxido); stroke-width: 1; opacity: 0.85; }
+  .g-marca text {
+    fill: var(--oxido-claro);
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .desafio__lista { display: grid; }
+  .desafio__item {
+    display: grid;
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+    gap: 0.4rem 1rem;
+    padding-block: var(--e-5);
+    border-top: 1px solid var(--fio);
+    align-items: start;
+  }
+  .desafio__item:last-child { border-bottom: 1px solid var(--fio); }
+  @media (min-width: 44rem) {
+    .desafio__item { grid-template-columns: 2.6rem minmax(0, 1fr) 9rem; }
+  }
+  .desafio__n { padding-top: 0.32rem; }
+  .desafio__txt { display: grid; gap: 0.45rem; }
+  .desafio__txt .corpo { font-size: var(--t-min); line-height: 1.7; max-width: 52ch; }
+  .desafio__tag {
+    justify-self: start;
+    padding: 0.28rem 0.6rem;
+    border: 1px solid var(--fio);
+    line-height: 1.3;
+  }
+  @media (min-width: 44rem) {
+    .desafio__tag { justify-self: end; align-self: start; margin-top: 0.15rem; }
+  }
+</style>

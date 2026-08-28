@@ -1,0 +1,180 @@
+---
+/**
+ * Abertura — direção 02.
+ *
+ * Institucional: metade do viewport é fotografia industrial real (uma das
+ * três imagens dos cases da apresentação), metade é uma coluna branca com a
+ * frase de posicionamento da CSMA — a mesma da última página do PDF.
+ */
+import { Image } from 'astro:assets';
+import { site, hero } from '../../data/site';
+import { casePhoto } from '../../lib/photos';
+
+const foto = casePhoto('montagem-equipamentos');
+---
+
+<section class="abre" id="topo">
+  <div class="abre__grade">
+    <div class="abre__texto">
+      <div class="abre__texto-int">
+        <p class="rotulo" data-e style="--atraso:40ms">{site.legalName}</p>
+
+        <h1 class="h1 abre__titulo" data-e style="--atraso:120ms">{hero.headline}</h1>
+
+        <p class="lead abre__lead" data-e style="--atraso:200ms">{hero.sub}</p>
+
+        <div class="abre__acoes" data-e style="--atraso:280ms">
+          <a class="btn" href="#abordagem">
+            {hero.ctaPrimary.label}
+            <svg viewBox="0 0 20 12" fill="none" aria-hidden="true">
+              <path d="M0 6h18M13 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" />
+            </svg>
+          </a>
+          <a class="btn btn--linha" href="#projetos">Ver projetos</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="abre__figura" data-observa>
+      {
+        foto && (
+          <Image
+            class="abre__foto"
+            src={foto}
+            alt="Conjunto de equipamentos pré-montado em solo, no interior de galpão industrial servido por ponte rolante."
+            quality={86}
+            format="webp"
+            widths={[720, 1080, 1560]}
+            sizes="(min-width: 60rem) 52vw, 100vw"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            data-foto
+          />
+        )
+      }
+      <span class="abre__veu" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <!-- quatro pilares: o que a sigla significa -->
+  <div class="pilares">
+    <div class="faixa pilares__grade" data-eg>
+      {
+        hero.pillars.map((p) => (
+          <div class="pilar">
+            <span class="pilar__en">{p.en}</span>
+            <span class="pilar__pt">{p.pt}</span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .abre { background: var(--branco); }
+
+  .abre__grade { display: grid; }
+  @media (min-width: 60rem) {
+    .abre__grade {
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+      min-height: calc(100svh - var(--topo) - var(--util));
+      align-items: stretch;
+    }
+  }
+
+  /* --- coluna de texto --- */
+  .abre__texto {
+    display: flex;
+    align-items: center;
+    padding: var(--e-7) var(--marg) var(--e-8);
+    max-width: calc(var(--larg) / 2 + var(--marg));
+    margin-left: auto;
+    width: 100%;
+  }
+  @media (min-width: 60rem) {
+    .abre__texto { padding-block: var(--e-9); }
+  }
+  .abre__texto-int { width: 100%; max-width: 34rem; }
+
+  .abre__titulo {
+    margin-top: var(--e-4);
+    max-width: 15ch;
+  }
+  .abre__lead {
+    margin-top: var(--e-5);
+    max-width: 42ch;
+  }
+  .abre__acoes {
+    margin-top: var(--e-6);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e-3);
+  }
+
+  /* --- fotografia --- */
+  .abre__figura {
+    position: relative;
+    overflow: hidden;
+    background: var(--areia-2);
+    min-height: 58vw;
+  }
+  @media (min-width: 60rem) { .abre__figura { min-height: 0; } }
+
+  .abre__foto {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .abre__veu {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 34%);
+  }
+  @media (min-width: 60rem) {
+    .abre__veu {
+      background: linear-gradient(95deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 22%);
+    }
+  }
+
+  /* --- pilares --- */
+  .pilares {
+    border-top: 1px solid var(--fio);
+    border-bottom: 1px solid var(--fio);
+    background: var(--areia);
+  }
+  .pilares__grade {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @media (min-width: 52rem) {
+    .pilares__grade { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  .pilar {
+    padding: var(--e-5) var(--e-4) var(--e-5) 0;
+    display: grid;
+    gap: 0.25rem;
+    border-left: 1px solid var(--fio);
+    padding-left: var(--e-4);
+  }
+  .pilar:first-child { border-left: 0; padding-left: 0; }
+  @media (max-width: 51.9375rem) {
+    .pilar:nth-child(odd) { border-left: 0; padding-left: 0; }
+  }
+  .pilar__en {
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: -0.016em;
+    color: var(--navy);
+  }
+  .pilar__pt {
+    font-size: var(--t-rotulo);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tinta-fraca);
+  }
+</style>

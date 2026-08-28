@@ -1,0 +1,108 @@
+---
+import './worley.css';
+import { site } from '../../data/site';
+import { withBase } from '../../lib/url';
+import { fontFaces, fontPreloads } from '../../lib/fonts';
+import Switcher from '../_shared/Switcher.astro';
+
+/* Serifa para os títulos, sans para o corpo, mono para os numerais. */
+const FAMILIES = ['serif', 'sans', 'mono'] as const;
+const faces = fontFaces(FAMILIES);
+const preloads = fontPreloads(FAMILIES);
+
+const title = `${site.legalName} — Da engenharia à execução | Direção 03`;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={site.description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content="noindex, follow" />
+    <meta name="theme-color" content="#0c1e22" />
+    <meta name="color-scheme" content="dark light" />
+
+    <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
+    <link rel="alternate icon" href={withBase('favicon.ico')} sizes="48x48" />
+
+    {preloads.map((href) => (
+      <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+    ))}
+    <style is:inline set:html={faces}></style>
+  </head>
+
+  <body>
+    <a class="pular" href="#conteudo">Ir para o conteúdo</a>
+    <slot />
+    <Switcher atual="worley" />
+
+    <script>
+      const reduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const alvos = document.querySelectorAll<HTMLElement>('[data-c], [data-cg], [data-observa]');
+
+      if (reduzido) {
+        alvos.forEach((el) => el.classList.add('is-in'));
+      } else {
+        const io = new IntersectionObserver(
+          (entradas) => {
+            for (const e of entradas) {
+              if (!e.isIntersecting) continue;
+              e.target.classList.add('is-in');
+              io.unobserve(e.target);
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.04 }
+        );
+        alvos.forEach((el) => io.observe(el));
+      }
+
+      /* --------------------------------------------------------------
+         Paralaxe discreta: a fotografia do herói desce ~14% da rolagem.
+         Um único rAF, desligado quando o herói sai de cena.
+         -------------------------------------------------------------- */
+      const camada = document.querySelector<HTMLElement>('[data-paralaxe]');
+      if (camada && !reduzido) {
+        let ativo = true;
+        let pendente = false;
+        const mover = () => {
+          const y = window.scrollY;
+          if (y < window.innerHeight * 1.2) {
+            camada.style.transform = `translate3d(0, ${(y * 0.14).toFixed(1)}px, 0)`;
+          }
+          pendente = false;
+        };
+        addEventListener(
+          'scroll',
+          () => {
+            if (!ativo || pendente) return;
+            pendente = true;
+            requestAnimationFrame(mover);
+          },
+          { passive: true }
+        );
+        new IntersectionObserver(
+          ([e]) => { ativo = e?.isIntersecting ?? false; },
+          { threshold: 0 }
+        ).observe(camada.parentElement ?? camada);
+      }
+    </script>
+
+    <style is:global>
+      .sw {
+        --sw-fundo: rgba(12, 30, 34, 0.9);
+        --sw-hover: rgba(23, 56, 61, 0.95);
+        --sw-borda: rgba(233, 227, 216, 0.2);
+        --sw-tinta: #e9e3d8;
+        --sw-ativo-fundo: #7fa298;
+        --sw-ativo-tinta: #0c1e22;
+        --sw-fonte: 'IBM Plex Mono', monospace;
+        --sw-raio: 999px;
+      }
+    </style>
+  </body>
+</html>

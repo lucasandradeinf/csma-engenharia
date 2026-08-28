@@ -1,6 +1,6 @@
 ---
 import Logo from './ui/Logo.astro';
-import { nav, site } from '../data/site';
+import { chapters, site } from '../data/site';
 ---
 
 <header class="hd" id="cabecalho" data-header>
@@ -14,10 +14,10 @@ import { nav, site } from '../data/site';
     <nav class="hd__nav" aria-label="Navegação principal">
       <ul>
         {
-          nav.map((item, i) => (
+          chapters.slice(0, 6).map((item) => (
             <li>
-              <a href={item.href}>
-                <span class="hd__nav-idx">{String(i + 1).padStart(2, '0')}</span>
+              <a href={item.href} data-spy={item.href}>
+                <span class="hd__nav-idx">{item.idx}</span>
                 <span class="hd__nav-label">{item.label}</span>
               </a>
             </li>
@@ -40,7 +40,7 @@ import { nav, site } from '../data/site';
       aria-controls="menu-mobile"
       data-burger
     >
-      <span class="visually-hidden">Abrir menu</span>
+      <span class="visually-hidden">Abrir índice</span>
       <span class="hd__burger-lines" aria-hidden="true"><i></i><i></i></span>
     </button>
   </div>
@@ -48,16 +48,21 @@ import { nav, site } from '../data/site';
   <div class="hd__progress" aria-hidden="true"><span data-progress></span></div>
 </header>
 
+<!-- Índice em tela cheia: estrutura editorial de uma apresentação técnica.
+     Um fio vertical contínuo, capítulos numerados, item corrente marcado
+     por peso e por um traço. Sem caixas e sem checklist. -->
 <div class="mm" id="menu-mobile" data-menu hidden>
-  <div class="mm__grid" aria-hidden="true"></div>
-  <nav class="mm__nav" aria-label="Navegação principal (móvel)">
-    <ul>
+  <nav class="mm__nav" aria-label="Índice dos capítulos">
+    <p class="mono mm__label">Índice</p>
+
+    <ul class="mm__list">
       {
-        nav.map((item, i) => (
+        chapters.map((item) => (
           <li>
-            <a href={item.href} data-menu-link>
-              <span class="mm__idx">{String(i + 1).padStart(2, '0')}</span>
-              <span class="mm__label">{item.label}</span>
+            <a href={item.href} data-menu-link data-spy={item.href}>
+              <span class="mm__idx">{item.idx}</span>
+              <span class="mm__label-text">{item.label}</span>
+              <span class="mm__tick" aria-hidden="true" />
             </a>
           </li>
         ))
@@ -84,8 +89,8 @@ import { nav, site } from '../data/site';
     position: absolute;
     inset: 0;
     background: rgba(1, 25, 59, 0.94);
-    backdrop-filter: saturate(150%) blur(14px);
-    -webkit-backdrop-filter: saturate(150%) blur(14px);
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     opacity: 0;
     transform: translateY(-100%);
@@ -127,7 +132,7 @@ import { nav, site } from '../data/site';
   .hd__nav ul {
     display: flex;
     align-items: center;
-    gap: clamp(1.1rem, 2.1vw, 2.4rem);
+    gap: clamp(1rem, 1.9vw, 2.1rem);
   }
   .hd__nav a {
     display: inline-flex;
@@ -137,19 +142,23 @@ import { nav, site } from '../data/site';
     font-size: var(--fs-micro);
     letter-spacing: var(--ls-micro-tight);
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.74);
+    color: rgba(255, 255, 255, 0.7);
     padding-block: 0.4rem;
     transition: color var(--dur) var(--ease-out);
   }
   .hd__nav a:hover,
-  .hd__nav a:focus-visible {
+  .hd__nav a:focus-visible,
+  .hd__nav a.is-current {
     color: #fff;
   }
   .hd__nav-idx {
     font-size: 0.5625rem;
-    color: var(--c-steel);
-    opacity: 0.8;
+    color: rgba(255, 255, 255, 0.42);
     font-variant-numeric: tabular-nums;
+    transition: color var(--dur) var(--ease-out);
+  }
+  .hd__nav a.is-current .hd__nav-idx {
+    color: var(--c-steel);
   }
   .hd__nav-label {
     position: relative;
@@ -167,7 +176,8 @@ import { nav, site } from '../data/site';
     transition: transform var(--dur) var(--ease-out);
   }
   .hd__nav a:hover .hd__nav-label::after,
-  .hd__nav a:focus-visible .hd__nav-label::after {
+  .hd__nav a:focus-visible .hd__nav-label::after,
+  .hd__nav a.is-current .hd__nav-label::after {
     transform: scaleX(1);
     transform-origin: left;
   }
@@ -178,7 +188,7 @@ import { nav, site } from '../data/site';
     gap: 0.7rem;
     flex: none;
     padding: 0.7rem 1.05rem;
-    border: 1px solid rgba(255, 255, 255, 0.32);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     font-family: var(--font-mono);
     font-size: var(--fs-micro);
     letter-spacing: var(--ls-micro-tight);
@@ -247,14 +257,14 @@ import { nav, site } from '../data/site';
   .hd__progress span {
     display: block;
     height: 100%;
-    background: var(--c-steel);
+    background: rgba(255, 255, 255, 0.55);
     transform: scaleX(var(--p, 0));
     transform-origin: left;
     opacity: 0;
     transition: opacity var(--dur) var(--ease-out);
   }
   .hd.is-stuck .hd__progress span {
-    opacity: 0.9;
+    opacity: 1;
   }
 
   @media (min-width: 62rem) {
@@ -271,7 +281,7 @@ import { nav, site } from '../data/site';
   }
 
   /* ------------------------------------------------------------------
-     Menu em tela cheia (mobile)
+     Índice em tela cheia
      ------------------------------------------------------------------ */
   .mm {
     position: fixed;
@@ -281,9 +291,10 @@ import { nav, site } from '../data/site';
     color: #fff;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: space-between;
     padding: calc(var(--header-h) + var(--space-lg)) var(--gutter) var(--space-lg);
     opacity: 0;
+    overflow-y: auto;
     transition: opacity 340ms var(--ease-out);
   }
   .mm[hidden] {
@@ -293,57 +304,87 @@ import { nav, site } from '../data/site';
     opacity: 1;
   }
 
-  .mm__grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 40px 40px;
-    -webkit-mask-image: radial-gradient(120% 80% at 80% 10%, #000, transparent 75%);
-    mask-image: radial-gradient(120% 80% at 80% 10%, #000, transparent 75%);
-  }
-
   .mm__nav {
     position: relative;
     margin-top: auto;
+    margin-bottom: auto;
   }
-  .mm__nav li + li {
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  .mm__label {
+    color: rgba(255, 255, 255, 0.48);
+    letter-spacing: 0.24em;
+    margin-bottom: var(--space-md);
   }
-  .mm__nav a {
+
+  /* Fio vertical contínuo — o índice é uma coluna, não uma lista de caixas. */
+  .mm__list {
+    position: relative;
+    padding-left: var(--space-md);
+    border-left: 1px solid rgba(255, 255, 255, 0.16);
+  }
+  .mm__list a {
+    position: relative;
     display: flex;
     align-items: baseline;
     gap: 1rem;
-    padding-block: clamp(0.85rem, 3vw, 1.35rem);
+    padding-block: clamp(0.55rem, 2.1vw, 0.9rem);
     opacity: 0;
     transform: translateY(10px);
     transition:
       opacity 500ms var(--ease-out),
-      transform 500ms var(--ease-out);
+      transform 500ms var(--ease-out),
+      color var(--dur) var(--ease-out);
+    color: rgba(255, 255, 255, 0.66);
   }
-  .mm.is-open .mm__nav a {
+  .mm.is-open .mm__list a {
     opacity: 1;
     transform: none;
   }
-  .mm.is-open li:nth-child(1) a { transition-delay: 80ms; }
-  .mm.is-open li:nth-child(2) a { transition-delay: 130ms; }
-  .mm.is-open li:nth-child(3) a { transition-delay: 180ms; }
-  .mm.is-open li:nth-child(4) a { transition-delay: 230ms; }
-  .mm.is-open li:nth-child(5) a { transition-delay: 280ms; }
+  .mm.is-open li:nth-child(1) a { transition-delay: 70ms; }
+  .mm.is-open li:nth-child(2) a { transition-delay: 110ms; }
+  .mm.is-open li:nth-child(3) a { transition-delay: 150ms; }
+  .mm.is-open li:nth-child(4) a { transition-delay: 190ms; }
+  .mm.is-open li:nth-child(5) a { transition-delay: 230ms; }
+  .mm.is-open li:nth-child(6) a { transition-delay: 270ms; }
+  .mm.is-open li:nth-child(7) a { transition-delay: 310ms; }
+
+  .mm__list a.is-current,
+  .mm__list a:hover,
+  .mm__list a:focus-visible {
+    color: #fff;
+  }
+
+  /* Marcador do capítulo corrente: um traço que entra a partir do fio. */
+  .mm__tick {
+    position: absolute;
+    left: calc(var(--space-md) * -1);
+    top: 50%;
+    width: calc(var(--space-md) - 0.4rem);
+    height: 1px;
+    background: #fff;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .mm__list a.is-current .mm__tick {
+    transform: scaleX(1);
+  }
 
   .mm__idx {
     font-family: var(--font-mono);
     font-size: var(--fs-micro);
     letter-spacing: var(--ls-micro-tight);
-    color: var(--c-steel);
+    color: rgba(255, 255, 255, 0.42);
     flex: none;
+    font-variant-numeric: tabular-nums;
   }
-  .mm__label {
+  .mm__list a.is-current .mm__idx {
+    color: var(--c-steel);
+  }
+  .mm__label-text {
     font-family: var(--font-display);
-    font-size: clamp(1.75rem, 8vw, 2.75rem);
-    line-height: 1.1;
-    letter-spacing: -0.015em;
+    font-size: clamp(1.5rem, 6.4vw, 2.25rem);
+    line-height: 1.16;
+    letter-spacing: -0.014em;
   }
 
   .mm__foot {
@@ -354,6 +395,7 @@ import { nav, site } from '../data/site';
     display: flex;
     flex-direction: column;
     gap: var(--space-sm);
+    flex: none;
   }
   .mm__mail {
     font-family: var(--font-mono);
@@ -362,7 +404,7 @@ import { nav, site } from '../data/site';
     align-self: flex-start;
   }
   .mm__sig {
-    color: rgba(255, 255, 255, 0.62);
+    color: rgba(255, 255, 255, 0.56);
     font-size: 0.625rem;
     letter-spacing: 0.14em;
   }
@@ -370,7 +412,7 @@ import { nav, site } from '../data/site';
   @media (prefers-reduced-motion: reduce) {
     .hd__bg,
     .mm,
-    .mm__nav a {
+    .mm__list a {
       transition: none;
     }
   }
@@ -408,14 +450,51 @@ import { nav, site } from '../data/site';
     window.addEventListener('resize', onScroll, { passive: true });
   }
 
-  /* --- Menu em tela cheia -------------------------------------------- */
+  /* --- Capitulo corrente ---------------------------------------------
+     O indice acompanha a leitura: o item ativo e o ultimo capitulo cujo
+     topo ja passou pela linha de leitura (um terco da altura da janela). */
+  const spyLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-spy]'));
+
+  if (spyLinks.length) {
+    const targets = spyLinks
+      .map((a) => a.dataset.spy!)
+      .filter((href, i, all) => all.indexOf(href) === i)
+      .map((href) => ({ href, el: document.querySelector<HTMLElement>(href) }))
+      .filter((t): t is { href: string; el: HTMLElement } => Boolean(t.el));
+
+    let spying = false;
+
+    const spy = () => {
+      const line = window.innerHeight * 0.34;
+      let current = '';
+      for (const t of targets) {
+        if (t.el.getBoundingClientRect().top <= line) current = t.href;
+      }
+      spyLinks.forEach((a) => a.classList.toggle('is-current', a.dataset.spy === current));
+      spying = false;
+    };
+
+    const onSpy = () => {
+      if (spying) return;
+      spying = true;
+      requestAnimationFrame(spy);
+    };
+
+    spy();
+    window.addEventListener('scroll', onSpy, { passive: true });
+    window.addEventListener('resize', onSpy, { passive: true });
+  }
+
+  /* --- Indice em tela cheia ------------------------------------------- */
   if (burger && menu) {
     let open = false;
 
     const setOpen = (next: boolean) => {
       open = next;
       burger.setAttribute('aria-expanded', String(open));
-      burger.querySelector('.visually-hidden')!.textContent = open ? 'Fechar menu' : 'Abrir menu';
+      burger.querySelector('.visually-hidden')!.textContent = open
+        ? 'Fechar índice'
+        : 'Abrir índice';
       document.body.style.overflow = open ? 'hidden' : '';
 
       if (open) {
@@ -442,7 +521,7 @@ import { nav, site } from '../data/site';
         burger.focus();
       }
     });
-    /* O menu so existe abaixo de 62rem. */
+    /* O indice em tela cheia so existe abaixo de 62rem. */
     window.matchMedia('(min-width: 62rem)').addEventListener('change', (e) => {
       if (e.matches && open) setOpen(false);
     });

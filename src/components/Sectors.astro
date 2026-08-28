@@ -1,149 +1,393 @@
 ---
+import { Image } from 'astro:assets';
 import SectionHead from './ui/SectionHead.astro';
 import SectorGlyph from './ui/SectorGlyph.astro';
 import { sectors } from '../data/site';
+
+/* Fotografia dos segmentos.
+   A pasta e lida em tempo de build: basta soltar `mineracao.jpg`,
+   `siderurgia.jpg`, ... em `src/assets/sectors/` para que a fotografia
+   entre no lugar do desenho tecnico. Enquanto o arquivo nao existe, o
+   painel exibe o desenho — o capitulo funciona com zero ou com cinco fotos.
+   Ver `src/assets/sectors/README.md`. */
+const modules = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/sectors/*.{jpg,jpeg,png,webp,avif}',
+  { eager: true }
+);
+
+const photos: Record<string, ImageMetadata> = {};
+for (const [path, mod] of Object.entries(modules)) {
+  const key = path.split('/').pop()!.replace(/\.[^.]+$/, '');
+  photos[key] = mod.default;
+}
+
+const items = sectors.items.map((s) => ({ ...s, image: photos[s.photo] }));
 ---
 
 <section
-  class="chapter sectors"
+  class="chapter sectors is-paper"
   id="segmentos"
   aria-labelledby="sectors-title"
-  style="--surface: var(--c-off-white)"
+  data-sectors
 >
   <div class="shell">
-    <SectionHead num="10" eyebrow={sectors.eyebrow} title={sectors.title} id="sectors-title" />
-  </div>
+    <SectionHead
+      num="10"
+      eyebrow={sectors.eyebrow}
+      title={sectors.title}
+      id="sectors-title"
+      lead={sectors.lead}
+    />
 
-  <ul class="sc__strip" data-reveal-group>
-    {
-      sectors.items.map((s) => (
-        <li class="sc__col">
-          <span class="index-mark sc__num">{s.idx}</span>
-          <div class="sc__art" aria-hidden="true">
-            <SectorGlyph name={s.glyph as any} />
+    <div class="sc__grid">
+      <!-- Painel fixo: o segmento em foco -->
+      <div class="sc__stage" aria-hidden="true">
+        <div class="sc__stage-inner">
+          <div class="sc__plates">
+            {
+              items.map((s, i) => (
+                <div data-plate={i} class:list={['sc__plate', i === 0 && 'is-current']}>
+                  {s.image ? (
+                    <Image
+                      class="sc__photo"
+                      src={s.image}
+                      alt=""
+                      quality={82}
+                      format="webp"
+                      widths={[560, 840, 1120]}
+                      sizes="(min-width: 64rem) 34rem, 90vw"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div class="sc__draw">
+                      <SectorGlyph name={s.glyph as any} />
+                      <span class="sc__draw-note mono">Desenho esquemático</span>
+                    </div>
+                  )}
+                  <span class="sc__plate-name mono">{s.name}</span>
+                </div>
+              ))
+            }
           </div>
-          <h3 class="sc__name">{s.name}</h3>
-          <span class="sc__grid" aria-hidden="true" />
-        </li>
-      ))
-    }
-  </ul>
+
+          <ol class="sc__ticks">
+            {
+              items.map((s, i) => (
+                <li class="sc__tick" data-tick={i}>
+                  <span class="sc__tick-mark" />
+                  <span class="sc__tick-num index-mark">{s.idx}</span>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </div>
+
+      <!-- Segmentos, um painel editorial por vez -->
+      <ol class="sc__list">
+        {
+          items.map((s, i) => (
+            <li class="sc__item" data-sector={i} data-reveal>
+              <span class="sc__num">{s.idx}</span>
+
+              <h3 class="sc__name">{s.name}</h3>
+              <p class="sc__lead">{s.lead}</p>
+
+              {/* No mobile o desenho (ou a foto) acompanha cada segmento. */}
+              <div class="sc__inline" aria-hidden="true">
+                {s.image ? (
+                  <Image
+                    class="sc__photo"
+                    src={s.image}
+                    alt=""
+                    quality={82}
+                    format="webp"
+                    widths={[560, 840]}
+                    sizes="90vw"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <div class="sc__draw">
+                    <SectorGlyph name={s.glyph as any} />
+                  </div>
+                )}
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
 </section>
 
 <style>
-  .sectors {
-    overflow: hidden;
+  .sc__grid {
+    display: grid;
+    gap: var(--space-xl);
   }
 
-  .sc__strip {
-    display: flex;
-    gap: 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    border-top: 1px solid var(--rule-strong);
-    border-bottom: 1px solid var(--rule-strong);
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .sc__strip::-webkit-scrollbar {
+  /* ---------- Painel fixo (desktop) ---------- */
+  .sc__stage {
     display: none;
   }
-
-  .sc__col {
-    position: relative;
-    flex: 0 0 min(62vw, 15rem);
-    scroll-snap-align: start;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-    padding: var(--space-lg) var(--space-md) var(--space-xl);
-    border-right: 1px solid var(--rule);
-    background: var(--surface);
-    color: var(--ink-strong);
-    isolation: isolate;
-    transition:
-      background-color 520ms var(--ease-out),
-      color 520ms var(--ease-out),
-      flex-basis 620ms var(--ease-out),
-      flex-grow 620ms var(--ease-out);
+  .sc__stage-inner {
+    width: 100%;
   }
-  .sc__col:last-child {
-    border-right: 0;
+
+  .sc__plates {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: var(--c-white);
+    border: 1px solid var(--rule-strong);
+    overflow: hidden;
+  }
+  .sc__plate {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 700ms var(--ease-out);
+  }
+  .sc__plate.is-current {
+    opacity: 1;
+  }
+
+  /* A troca é o único efeito: a placa entra por corte, como um slide de
+     apresentação técnica. Nenhum zoom, nenhuma paralaxe. */
+  .sc__plate :global(.sc__photo) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.94) contrast(1.02);
+  }
+
+  .sc__draw {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: clamp(1.25rem, 3vw, 2.25rem);
+    color: var(--ink-strong);
+  }
+  .sc__draw :global(.sector-glyph) {
+    width: 100%;
+    max-width: 32rem;
+  }
+  .sc__draw-note {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+    font-size: 0.5rem;
+    letter-spacing: 0.2em;
+    color: var(--ink-faint);
+  }
+
+  .sc__plate-name {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 0.6rem 0.9rem;
+    background: var(--c-navy);
+    color: #fff;
+    font-size: 0.5625rem;
+    letter-spacing: 0.2em;
+  }
+
+  .sc__ticks {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-top: var(--space-md);
+  }
+  .sc__tick {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .sc__tick-mark {
+    display: block;
+    width: 1.75rem;
+    height: 1px;
+    background: var(--rule-strong);
+    transition:
+      background-color var(--dur) var(--ease-out),
+      width var(--dur) var(--ease-out);
+  }
+  .sc__tick-num {
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease-out);
+  }
+  .sc__tick.is-current .sc__tick-mark {
+    background: var(--ink-strong);
+    width: 2.75rem;
+  }
+  .sc__tick.is-current .sc__tick-num {
+    opacity: 1;
+    color: var(--ink-strong);
+  }
+  .sc__tick.is-done .sc__tick-mark {
+    background: var(--c-gray-tech);
+  }
+
+  /* ---------- Lista editorial ---------- */
+  .sc__list {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+
+  .sc__item {
+    display: grid;
+    gap: var(--space-xs);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--rule-strong);
   }
 
   .sc__num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: var(--ls-micro);
     color: var(--accent);
-    transition: color 520ms var(--ease-out);
-  }
-
-  .sc__art {
-    width: min(100%, 8.5rem);
-    margin-top: auto;
-    opacity: 0.72;
-    transition: opacity 520ms var(--ease-out), transform 620ms var(--ease-out);
+    font-variant-numeric: tabular-nums;
   }
 
   .sc__name {
     font-family: var(--font-display);
-    font-size: clamp(1.25rem, 1rem + 1.1vw, 1.875rem);
-    line-height: 1.1;
-    letter-spacing: -0.014em;
-    margin-top: var(--space-sm);
+    font-size: clamp(2rem, 1.3rem + 3.1vw, 3.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.024em;
+    color: var(--ink-strong);
   }
 
-  /* malha técnica que aparece na coluna ativa */
-  .sc__grid {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background-image:
-      linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-    background-size: 28px 28px;
-    opacity: 0;
-    transition: opacity 520ms var(--ease-out);
+  .sc__lead {
+    color: var(--ink-muted);
+    font-size: var(--fs-lead);
+    font-weight: 300;
+    line-height: 1.5;
+    max-width: 28ch;
   }
 
-  @media (hover: hover) {
-    .sc__col:hover {
-      background: var(--c-navy);
-      color: #fff;
+  .sc__inline {
+    margin-top: var(--space-md);
+    aspect-ratio: 4 / 3;
+    background: var(--c-white);
+    border: 1px solid var(--rule-strong);
+    position: relative;
+    overflow: hidden;
+  }
+  .sc__inline :global(.sc__photo) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.94) contrast(1.02);
+  }
+
+  /* ---------- Desktop: painel fixo + segmentos rolando ---------- */
+  @media (min-width: 64rem) {
+    .sc__grid {
+      grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+      gap: var(--space-2xl);
+      align-items: start;
     }
-    .sc__col:hover .sc__num {
-      color: var(--c-steel);
+    .sc__stage {
+      display: block;
+      position: sticky;
+      top: calc(var(--header-h) + 10vh);
+      order: 2;
     }
-    .sc__col:hover .sc__art {
+    .sc__list {
+      order: 1;
+      gap: 0;
+    }
+    .sc__inline {
+      display: none;
+    }
+    .sc__item {
+      display: grid;
+      grid-template-columns: 3.5rem minmax(0, 1fr);
+      grid-template-areas:
+        'num name'
+        '.   lead';
+      column-gap: 0;
+      row-gap: var(--space-sm);
+      align-content: center;
+      min-height: clamp(20rem, 40vh, 30rem);
+      padding-block: var(--space-lg);
+      padding-top: var(--space-lg);
+      opacity: 0.32;
+      transition: opacity 520ms var(--ease-out);
+    }
+    .sc__item:first-child {
+      border-top: 0;
+    }
+    .sc__item.is-current {
       opacity: 1;
-      transform: translateY(-6px);
     }
-    .sc__col:hover .sc__grid {
-      opacity: 1;
+    .sc__num {
+      grid-area: num;
+      padding-top: 1.15rem;
     }
-  }
-
-  @media (min-width: 62rem) {
-    .sc__strip {
-      overflow: visible;
+    .sc__name {
+      grid-area: name;
+      transition: transform 520ms var(--ease-out);
     }
-    .sc__col {
-      flex: 1 1 0;
-      min-width: 0;
-      padding: var(--space-xl) var(--space-md);
-      min-height: 24rem;
+    .sc__item.is-current .sc__name {
+      transform: translateX(6px);
     }
-    .sc__strip:hover .sc__col {
-      flex-grow: 0.88;
-    }
-    .sc__strip .sc__col:hover {
-      flex-grow: 1.5;
+    .sc__lead {
+      grid-area: lead;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .sc__col,
-    .sc__art {
-      transition: background-color 1ms, color 1ms;
+    .sc__item {
+      opacity: 1 !important;
+    }
+    .sc__name {
       transform: none !important;
+    }
+    .sc__plate {
+      transition: none;
     }
   }
 </style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-sectors]');
+
+  if (root && window.matchMedia('(min-width: 64rem)').matches) {
+    const items = Array.from(root.querySelectorAll<HTMLElement>('[data-sector]'));
+    const plates = Array.from(root.querySelectorAll<HTMLElement>('[data-plate]'));
+    const ticks = Array.from(root.querySelectorAll<HTMLElement>('[data-tick]'));
+
+    let current = -1;
+
+    const setCurrent = (index: number) => {
+      if (index === current) return;
+      current = index;
+      items.forEach((el, i) => el.classList.toggle('is-current', i === index));
+      plates.forEach((el, i) => el.classList.toggle('is-current', i === index));
+      ticks.forEach((el, i) => {
+        el.classList.toggle('is-current', i === index);
+        el.classList.toggle('is-done', i < index);
+      });
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        let best: { index: number; ratio: number } | null = null;
+        for (const e of entries) {
+          const index = Number((e.target as HTMLElement).dataset.sector);
+          if (e.isIntersecting && (!best || e.intersectionRatio > best.ratio)) {
+            best = { index, ratio: e.intersectionRatio };
+          }
+        }
+        if (best) setCurrent(best.index);
+      },
+      { rootMargin: '-45% 0px -45% 0px', threshold: [0, 0.4, 1] }
+    );
+
+    items.forEach((el) => io.observe(el));
+    setCurrent(0);
+  }
+</script>

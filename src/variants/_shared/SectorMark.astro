@@ -1,0 +1,213 @@
+---
+/**
+ * Marcas dos cinco segmentos de atuacao — geometria compartilhada.
+ *
+ * O que e compartilhado aqui e o DESENHO, nao o estilo: as tres direcoes
+ * herdam a mesma familia de simbolos (mesmo formato 240x160, mesma linha de
+ * terreno em y=146, mesma hierarquia de traco) e cada uma define por CSS a
+ * espessura, a cor e o comportamento das classes `.k` / `.s` / `.f`.
+ *
+ * Revisao pedida pelo cliente:
+ *   - mineracao reescrita: cava com bancadas, rampa de acesso, escavadeira
+ *     carregando fora-de-estrada e britagem na crista — nao "uma montanha";
+ *   - proporcoes uniformizadas entre os cinco;
+ *   - traco de engenharia, sem cantos arredondados decorativos, sem emoji.
+ *
+ * `detail` reduz a textura secundaria quando a marca aparece pequena.
+ */
+export type SectorName = 'mineracao' | 'siderurgia' | 'metalurgia' | 'celulose' | 'energia';
+
+interface Props {
+  name: SectorName;
+  class?: string;
+  /** `full` desenha a textura de apoio; `compact` fica so na silhueta. */
+  detail?: 'full' | 'compact';
+  /** Anima o traco quando o bloco recebe `.is-in` (ver animations da variante). */
+  draw?: boolean;
+}
+
+const { name, class: className = '', detail = 'full', draw = false } = Astro.props;
+const full = detail === 'full';
+---
+
+<svg
+  class:list={['sector-mark', `sector-mark--${name}`, className]}
+  viewBox="0 0 240 160"
+  fill="none"
+  aria-hidden="true"
+  stroke="currentColor"
+  stroke-linecap="square"
+  stroke-linejoin="miter"
+  data-mark={name}
+  data-draw-mark={draw ? '' : undefined}
+>
+  {
+    name === 'mineracao' && (
+      <g>
+        {/* Talude oeste — quatro bancadas descendo ate a praca de carregamento */}
+        <path class="k" d="M4 54h26v22h20v22h18v22h16v26" />
+        {/* Talude leste, com a rampa de acesso cortando os patamares */}
+        <path class="k" d="M236 46h-22v22h-24v22h-22v22h-18v26" />
+        <path class="s" d="M214 68 168 90M190 90l-40 22" />
+        {/* Terreno original, antes da lavra */}
+        {full && <path class="f" stroke-dasharray="6 5" d="M30 54h184" />}
+        {/* Crista das bancadas */}
+        {full && <path class="f" d="M34 76v-6M54 98v-6M72 120v-6M210 68v-6M188 90v-6M166 112v-6" />}
+        {/* Praca da cava */}
+        <path class="k" d="M84 146h66" />
+        {/* Fora-de-estrada carregado */}
+        <g class="k">
+          <path d="M104 122h40l-7 18h-33z" />
+          <path d="M86 128h18v12H86z" />
+          <path d="M86 140h58" />
+          <circle cx="95" cy="145" r="6" />
+          <circle cx="132" cy="144" r="7" />
+        </g>
+        {full && <path class="f" d="M110 122l6-8h22l6 8" />}
+        {/* Escavadeira hidraulica carregando pela esquerda */}
+        <g class="s">
+          <path d="M40 140h30v-12H40z" />
+          <path d="M44 128v-10h18v10" />
+          <path d="M62 120 84 108l14 8" />
+          <path d="M96 116l-4 12h14l2-12z" />
+        </g>
+        {/* Torre de transferencia e correia transportadora na crista leste */}
+        <g class="s">
+          <path d="M196 46V14h26v32" />
+          <path d="M196 28h26" />
+          <path d="M196 22 150 42" />
+          <path d="M200 30 154 50" />
+          {full && <path class="f" d="M174 32v10M160 38v10" />}
+        </g>
+        <path class="k" d="M4 146h232" />
+      </g>
+    )
+  }
+
+  {
+    name === 'siderurgia' && (
+      <g>
+        {/* Alto-forno: goela, cuba, ventre, rampa e cadinho */}
+        <path class="k" d="M56 146v-26l-9-22V70l9-40V22h30v8l9 40v28l-9 22v26" />
+        <path class="s" d="M64 22V10h14v12" />
+        {full && <path class="f" d="M47 84h48M53 60h36M56 112h30" />}
+        <path class="s" d="M47 146v-20M95 146v-20" />
+        {/* Anel de ventaneiras */}
+        {full && <path class="f" d="M50 100h42" />}
+        {/* Downcomer ate o primeiro regenerador */}
+        <path class="s" d="M95 28h34a16 16 0 0 1 16 16v18" />
+        {/* Regeneradores */}
+        <path class="k" d="M133 146V74a12 12 0 0 1 24 0v72" />
+        <path class="s" d="M167 146V88a11 11 0 0 1 22 0v58" />
+        {full && <path class="f" d="M133 100h24M133 124h24M167 108h22M167 128h22" />}
+        {/* Canal de corrida e carro-torpedo sobre trilhos */}
+        <path class="s" d="M95 138h24" />
+        <g class="k">
+          <path d="M196 132a14 8 0 0 1 28 0 14 8 0 0 1-28 0z" />
+          <path d="M194 140h32" />
+          <circle cx="202" cy="144" r="3" />
+          <circle cx="218" cy="144" r="3" />
+        </g>
+        <path class="k" d="M4 146h232" />
+      </g>
+    )
+  }
+
+  {
+    name === 'metalurgia' && (
+      <g>
+        {/* Ponte rolante do galpao */}
+        <path class="k" d="M10 18h220" />
+        <path class="s" d="M10 28h220M10 18v10M230 18v10" />
+        <path class="k" d="M96 28h34v10H96z" />
+        <path class="s" d="M113 38v10" />
+        {/* Panela de vazamento com munhoes */}
+        <path class="k" d="M92 50h42l-7 44H99z" />
+        <path class="s" d="M92 50 113 41 134 50" />
+        <circle class="k" cx="88" cy="59" r="6" />
+        <circle class="k" cx="138" cy="59" r="6" />
+        {full && <path class="f" d="M99 68h28M101 80h24" />}
+        {/* Jato de vazamento e lingoteira */}
+        <path class="k" d="M127 94c5 14 7 22 7 32" />
+        <path class="s" d="M118 126h64v20h-64z" />
+        {full && <path class="f" d="M126 133h48M126 139h48" />}
+        {/* Lingotes resfriando e forno de reaquecimento */}
+        {full && <path class="f" d="M28 134h38v12H28zM35 126h24v8H35z" />}
+        <path class="s" d="M186 146v-32h30v32M186 122h30" />
+        {full && <path class="f" d="M196 114v-8h10v8" />}
+        <path class="k" d="M4 146h232" />
+      </g>
+    )
+  }
+
+  {
+    name === 'celulose' && (
+      <g>
+        {/* Digestor continuo */}
+        <path class="k" d="M34 52a22 22 0 0 1 44 0v62l-22 24-22-24z" />
+        {full && <path class="f" d="M34 74h44M34 96h44" />}
+        <path class="s" d="M56 138v8M42 146h28" />
+        {/* Alimentacao de cavacos */}
+        <path class="s" d="M56 30V18h12" />
+        {/* Rack de tubulacao ligando digestor, torre e caldeira */}
+        <path class="k" d="M78 62h44M78 70h44" />
+        <path class="s" d="M94 70v18h12V70M110 70v18" />
+        {/* Torre de processo */}
+        <path class="s" d="M122 146V56a12 12 0 0 1 24 0v90" />
+        {full && <path class="f" d="M122 84h24M122 112h24" />}
+        <path class="s" d="M122 70h-12M146 96h12" />
+        {/* Caldeira de recuperacao e chamine */}
+        <path class="k" d="M164 146V64h34v82" />
+        {full && <path class="f" d="M164 88h34M164 112h34" />}
+        <path class="s" d="M214 146V34h12v112M214 58h12" />
+        <path class="k" d="M4 146h232" />
+      </g>
+    )
+  }
+
+  {
+    name === 'energia' && (
+      <g>
+        {/* Casa de maquinas: turbina e gerador sobre a base */}
+        <path class="k" d="M22 146v-42h74v42" />
+        <path class="s" d="M22 104 40 88h56l18 16" />
+        <path class="k" d="M40 132a18 14 0 0 1 36 0 18 14 0 0 1-36 0z" />
+        {full && <path class="f" d="M58 118v28M44 132h28" />}
+        <path class="s" d="M96 126h22v14H96z" />
+        {/* Transformador com buchas */}
+        <path class="k" d="M132 146v-38h40v38" />
+        <path class="s" d="M138 108v-12M152 108v-16M166 108v-12" />
+        {full && <path class="f" d="M136 96h4M150 92h4M164 96h4M132 122h40M132 134h40" />}
+        {/* Torre de transmissao e vaos de linha */}
+        <path class="k" d="M206 146 214 24l8 122" />
+        <path class="s" d="M198 62h44M202 88h36M206 112h28" />
+        <path class="s" d="M214 24 200 40M214 24l14 16" />
+        <path class="s" d="M198 62 172 74M242 62l-6 4" />
+        {full && <path class="f" d="M208 40h12M206 62l4 26M222 62l-4 26" />}
+        <path class="k" d="M4 146h232" />
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .sector-mark {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  /* Hierarquia de traco. As variantes redefinem estas variaveis. */
+  .sector-mark .k {
+    stroke-width: var(--mark-key, 1.5);
+    opacity: var(--mark-key-o, 1);
+  }
+  .sector-mark .s {
+    stroke-width: var(--mark-soft, 1.2);
+    opacity: var(--mark-soft-o, 0.7);
+  }
+  .sector-mark .f {
+    stroke-width: var(--mark-faint, 1);
+    opacity: var(--mark-faint-o, 0.38);
+  }
+</style>

@@ -1,0 +1,303 @@
+---
+/**
+ * Diferenciais, resultados, contato e rodapé — direção 02.
+ *
+ * O encerramento institucional: por que a CSMA, o que muda para o cliente,
+ * um CTA em navy e um rodapé de quatro colunas.
+ */
+import Mark from '../_shared/Mark.astro';
+import { site, differentials, benefits, closing } from '../../data/site';
+
+const navRodape = [
+  {
+    titulo: 'A CSMA',
+    itens: [
+      { rotulo: 'Quem somos', href: '#a-csma' },
+      { rotulo: 'O cenário atual', href: '#desafio' },
+      { rotulo: 'Nossa abordagem', href: '#abordagem' },
+      { rotulo: 'Metodologia', href: '#metodologia' },
+    ],
+  },
+  {
+    titulo: 'Soluções',
+    itens: [
+      { rotulo: 'Como geramos valor', href: '#solucoes' },
+      { rotulo: 'Entregáveis', href: '#entregaveis' },
+      { rotulo: 'Projetos', href: '#projetos' },
+    ],
+  },
+  {
+    titulo: 'Alcance',
+    itens: [
+      { rotulo: 'Experiência', href: '#experiencia' },
+      { rotulo: 'Segmentos', href: '#segmentos' },
+      { rotulo: 'Diferenciais', href: '#diferenciais' },
+    ],
+  },
+] as const;
+---
+
+<!-- ============================ DIFERENCIAIS ============================ -->
+<section class="bloco diferenciais" id="diferenciais" aria-labelledby="t-dif">
+  <div class="faixa">
+    <div class="secao">
+      <p class="rotulo secao__rotulo" data-e>{differentials.eyebrow}</p>
+      <h2 class="h2" id="t-dif" data-e style="--atraso:60ms">{differentials.title}</h2>
+      <p class="lead" data-e style="--atraso:140ms">
+        Seis pontos declarados pela própria CSMA na apresentação comercial.
+      </p>
+    </div>
+
+    <ul class="diferenciais__grade" data-eg>
+      {
+        differentials.items.map((d) => (
+          <li class="dif">
+            <span class="dif__marca" aria-hidden="true">
+              <svg viewBox="0 0 16 12" fill="none">
+                <path d="M1 6.2 5.6 10.8 15 1.4" stroke="currentColor" stroke-width="2" />
+              </svg>
+            </span>
+            <p class="dif__txt">{d.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ RESULTADOS ============================ -->
+<section class="bloco bloco--areia resultados" id="resultados" aria-labelledby="t-res">
+  <div class="faixa">
+    <div class="secao">
+      <p class="rotulo secao__rotulo" data-e>{benefits.eyebrow}</p>
+      <h2 class="h2" id="t-res" data-e style="--atraso:60ms">{benefits.title}</h2>
+      <p class="lead" data-e style="--atraso:140ms">{benefits.lead}</p>
+    </div>
+
+    <div class="tabela">
+      <div class="tabela__cabeca" aria-hidden="true">
+        <span class="rotulo tabela__cabeca-a">{benefits.columns.before}</span>
+        <span class="rotulo tabela__cabeca-b">{benefits.columns.after}</span>
+      </div>
+
+      <ul data-eg>
+        {
+          benefits.items.map((b) => (
+            <li class="tabela__linha">
+              <p class="tabela__antes">{b.before}</p>
+              <p class="tabela__depois">{b.after}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CONTATO ============================ -->
+<section class="bloco bloco--navy contato" id="contato" aria-labelledby="t-contato">
+  <div class="faixa contato__grade">
+    <div>
+      <p class="rotulo" data-e>Contato</p>
+      <h2 class="h1 contato__frase" id="t-contato" data-e style="--atraso:60ms">
+        {closing.statement}
+      </h2>
+    </div>
+
+    <div class="contato__lado" data-e style="--atraso:160ms">
+      <p class="lead contato__pergunta">{closing.question}</p>
+      <a class="btn btn--claro" href={closing.cta.href}>
+        {closing.cta.label}
+        <svg viewBox="0 0 20 12" fill="none" aria-hidden="true">
+          <path d="M0 6h18M13 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" />
+        </svg>
+      </a>
+      <a class="contato__mail" href={`mailto:${site.email}`}>{site.email}</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ RODAPÉ ============================ -->
+<footer class="rodape">
+  <div class="faixa">
+    <div class="rodape__grade">
+      <div class="rodape__marca">
+        <span class="rodape__marca-svg"><Mark title="CSMA Engenharia" travessao="#7ea2d6" /></span>
+        <p class="rodape__assinatura">{site.signature}</p>
+        <a class="rodape__mail" href={`mailto:${site.email}`}>{site.email}</a>
+      </div>
+
+      {
+        navRodape.map((col) => (
+          <nav class="rodape__col" aria-label={col.titulo}>
+            <p class="rodape__col-titulo">{col.titulo}</p>
+            <ul>
+              {col.itens.map((i) => (
+                <li><a href={i.href}>{i.rotulo}</a></li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+    </div>
+
+    <div class="rodape__base">
+      <span>Direção 02 · Consultoria de engenharia</span>
+      <span>Proposta de design — conteúdo da apresentação comercial CSMA</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* ---------------- diferenciais ---------------- */
+  .diferenciais__grade { display: grid; gap: var(--e-5); }
+  @media (min-width: 48rem) {
+    .diferenciais__grade { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-5) var(--e-7); }
+  }
+  @media (min-width: 76rem) {
+    .diferenciais__grade { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  .dif {
+    display: grid;
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    gap: var(--e-4);
+    padding-top: var(--e-4);
+    border-top: 1px solid var(--fio);
+  }
+  .dif__marca { color: var(--navy); padding-top: 0.4rem; }
+  .dif__marca svg { width: 1.05rem; }
+  .dif__txt {
+    font-size: var(--t-h4);
+    font-weight: 500;
+    letter-spacing: -0.014em;
+    line-height: 1.4;
+    max-width: 26ch;
+  }
+
+  /* ---------------- resultados ---------------- */
+  .tabela { border-top: 2px solid var(--navy); }
+  .tabela__cabeca { display: none; }
+  @media (min-width: 60rem) {
+    .tabela__cabeca {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--e-7);
+      padding-block: var(--e-4);
+      border-bottom: 1px solid var(--fio-forte);
+    }
+    .tabela__cabeca-a { color: var(--tinta-fraca); }
+  }
+
+  .tabela__linha {
+    display: grid;
+    gap: 0.5rem;
+    padding-block: var(--e-5);
+    border-bottom: 1px solid var(--fio-forte);
+  }
+  @media (min-width: 60rem) {
+    .tabela__linha {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--e-7);
+      align-items: center;
+    }
+  }
+  .tabela__antes {
+    font-size: var(--t-min);
+    color: var(--tinta-fraca);
+    line-height: 1.6;
+    max-width: 44ch;
+  }
+  .tabela__depois {
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: -0.016em;
+    line-height: 1.35;
+    color: var(--tinta);
+    position: relative;
+    padding-left: 1.6rem;
+  }
+  .tabela__depois::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 0.9rem;
+    height: 1px;
+    background: var(--navy);
+  }
+
+  /* ---------------- contato ---------------- */
+  .contato__grade { display: grid; gap: var(--e-7); }
+  @media (min-width: 62rem) {
+    .contato__grade {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: var(--e-8);
+      align-items: end;
+    }
+  }
+  .contato__frase { margin-top: var(--e-4); max-width: 16ch; }
+  .contato__lado { display: grid; gap: var(--e-5); justify-items: start; }
+  .contato__pergunta { color: #c6cedb; max-width: 26ch; }
+  .contato__mail {
+    font-size: var(--t-min);
+    color: #c6cedb;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+    padding-bottom: 2px;
+  }
+  .contato__mail:hover { color: #fff; border-bottom-color: #fff; }
+
+  /* ---------------- rodapé ---------------- */
+  .rodape {
+    background: var(--navy-fundo);
+    color: #fff;
+    padding-block: var(--e-8) var(--e-5);
+  }
+  .rodape__grade {
+    display: grid;
+    gap: var(--e-6);
+    padding-bottom: var(--e-7);
+  }
+  @media (min-width: 56rem) {
+    .rodape__grade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 72rem) {
+    .rodape__grade { grid-template-columns: 1.3fr repeat(3, minmax(0, 1fr)); gap: var(--e-7); }
+  }
+
+  .rodape__marca { display: grid; gap: var(--e-4); align-content: start; justify-items: start; }
+  .rodape__marca-svg { display: block; width: 112px; color: #fff; }
+  .rodape__assinatura { font-size: var(--t-min); color: #9aa7ba; max-width: 30ch; }
+  .rodape__mail {
+    font-size: var(--t-min);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+    padding-bottom: 2px;
+  }
+  .rodape__mail:hover { border-bottom-color: #fff; }
+
+  .rodape__col-titulo {
+    font-size: var(--t-rotulo);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #7ea2d6;
+    margin-bottom: var(--e-4);
+  }
+  .rodape__col ul { display: grid; gap: 0.55rem; }
+  .rodape__col a {
+    font-size: var(--t-min);
+    color: #c6cedb;
+    transition: color var(--dur-1) var(--suave);
+  }
+  .rodape__col a:hover { color: #fff; }
+
+  .rodape__base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding-top: var(--e-5);
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    font-size: 0.75rem;
+    color: #8593a8;
+  }
+</style>

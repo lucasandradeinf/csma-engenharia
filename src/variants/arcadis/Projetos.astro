@@ -1,0 +1,143 @@
+---
+/**
+ * Projetos — direção 02.
+ *
+ * Os três casos reais da apresentação em formato de cartão de projeto, como
+ * uma consultoria apresenta portfólio: fotografia, etiqueta, título, a
+ * situação, a solução e os benefícios esperados. Nada foi acrescentado.
+ */
+import { Image } from 'astro:assets';
+import { cases } from '../../data/site';
+import { casePhoto } from '../../lib/photos';
+
+const itens = cases.items.map((c) => ({ ...c, foto: casePhoto(c.image) }));
+---
+
+<section class="bloco projetos" id="projetos" aria-labelledby="t-projetos">
+  <div class="faixa">
+    <div class="secao">
+      <p class="rotulo secao__rotulo" data-e>{cases.eyebrow}</p>
+      <h2 class="h2" id="t-projetos" data-e style="--atraso:60ms">{cases.title}</h2>
+      <p class="lead" data-e style="--atraso:140ms">{cases.lead}</p>
+    </div>
+
+    <div class="projetos__grade">
+      {
+        itens.map((c, i) => (
+          <article class="projeto" data-e data-observa style={`--atraso:${i * 90}ms`}>
+            <figure class="projeto__figura">
+              {c.foto ? (
+                <Image
+                  class="projeto__foto"
+                  src={c.foto}
+                  alt={c.alt}
+                  quality={84}
+                  format="webp"
+                  widths={[480, 720, 1040]}
+                  sizes="(min-width: 68rem) 28rem, (min-width: 44rem) 44vw, 92vw"
+                  loading="lazy"
+                  decoding="async"
+                  data-foto
+                />
+              ) : (
+                <div class="projeto__vazio" aria-hidden="true" />
+              )}
+              <figcaption class="projeto__etiqueta">Caso {c.idx}</figcaption>
+            </figure>
+
+            <div class="projeto__corpo">
+              <h3 class="h3 projeto__titulo">{c.title}</h3>
+
+              <div class="projeto__campo">
+                <p class="rotulo">Situação identificada</p>
+                <p class="min">{c.situation}</p>
+              </div>
+
+              <div class="projeto__campo">
+                <p class="rotulo">Solução CSMA</p>
+                <p class="min projeto__solucao">{c.solution}</p>
+              </div>
+
+              <div class="projeto__campo">
+                <p class="rotulo">Benefícios esperados</p>
+                <ul class="confere">
+                  {c.benefits.map((b) => (
+                    <li>{b}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .projetos__grade {
+    display: grid;
+    gap: var(--e-6);
+  }
+  @media (min-width: 44rem) {
+    .projetos__grade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 68rem) {
+    .projetos__grade { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--e-5); }
+  }
+
+  .projeto {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    background: var(--branco);
+    border: 1px solid var(--fio);
+    border-radius: var(--raio);
+    overflow: hidden;
+    transition: box-shadow var(--dur-1) var(--suave), border-color var(--dur-1) var(--suave);
+  }
+  .projeto:hover {
+    border-color: var(--fio-forte);
+    box-shadow: 0 16px 38px rgba(18, 39, 68, 0.08);
+  }
+
+  .projeto__figura {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--areia-2);
+  }
+  .projeto__foto,
+  .projeto__vazio {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .projeto__vazio { background: var(--areia-2); }
+
+  .projeto__etiqueta {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background: var(--navy);
+    color: #fff;
+    font-size: var(--t-rotulo);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.45rem 0.85rem;
+  }
+
+  .projeto__corpo {
+    padding: var(--e-5);
+    display: grid;
+    gap: var(--e-4);
+    align-content: start;
+  }
+  .projeto__titulo { font-size: var(--t-h4); }
+  .projeto__campo { display: grid; gap: 0.4rem; }
+  .projeto__campo .rotulo { font-size: 0.6875rem; color: var(--tinta-fraca); }
+  .projeto__solucao { color: var(--tinta); font-weight: 500; }
+</style>

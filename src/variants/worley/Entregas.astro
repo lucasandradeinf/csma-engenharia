@@ -1,0 +1,129 @@
+---
+/**
+ * Ato 03 — o que a CSMA faz e o que fica com o cliente.
+ *
+ * Duas colunas editoriais: à esquerda as seis frentes de atuação, à direita
+ * os seis entregáveis. Texto idêntico ao da apresentação comercial.
+ */
+import { services, deliverables } from '../../data/site';
+---
+
+<section class="ato areia entregas" id="entregas" aria-labelledby="t-entregas">
+  <div class="faixa">
+    <div class="abertura">
+      <p class="num abertura__num" data-c>Ato 03 — {services.eyebrow}</p>
+      <h2 class="tit tit--h2" id="t-entregas" data-c style="--atraso:80ms">{services.title}</h2>
+      <p class="lead" data-c style="--atraso:160ms">{services.lead}</p>
+    </div>
+
+    <div class="entregas__par">
+      <div class="entregas__col">
+        <p class="num num--simples entregas__rotulo">Frentes de atuação</p>
+        <ol class="frentes" data-cg>
+          {
+            services.items.map((s) => (
+              <li class="frente">
+                <span class="frente__n">{s.idx}</span>
+                <span class="frente__nome">{s.title}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <div class="entregas__col entregas__col--doc">
+        <p class="num num--simples entregas__rotulo">{deliverables.eyebrow}</p>
+        <h3 class="tit tit--h3 entregas__doc-titulo">{deliverables.title}</h3>
+        <p class="min entregas__doc-lead">{deliverables.lead}</p>
+
+        <ul class="docs" data-cg>
+          {
+            deliverables.items.map((d) => (
+              <li class="doc">
+                <span class="doc__n">{d.idx}</span>
+                <span class="doc__nome">{d.title}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .entregas__par { display: grid; gap: var(--e-7); }
+  @media (min-width: 64rem) {
+    .entregas__par {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: var(--e-8);
+      align-items: start;
+    }
+  }
+
+  .entregas__rotulo { color: var(--mineral-forte); display: block; margin-bottom: var(--e-5); }
+
+  /* --- frentes --- */
+  .frentes { display: grid; }
+  .frente {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: var(--e-4);
+    padding-block: var(--e-4);
+    border-top: 1px solid var(--fio);
+    transition: padding-left var(--dur-1) var(--cine);
+  }
+  .frente:last-child { border-bottom: 1px solid var(--fio); }
+  .frente:hover { padding-left: 0.4rem; }
+  .frente__n {
+    font-family: var(--f-num);
+    font-size: var(--t-num);
+    letter-spacing: 0.18em;
+    color: var(--mineral-forte);
+  }
+  .frente__nome {
+    font-family: var(--f-titulo);
+    font-size: clamp(1.125rem, 0.85rem + 1.1vw, 1.75rem);
+    line-height: 1.2;
+    color: var(--txt-forte);
+  }
+
+  /* --- entregáveis --- */
+  .entregas__col--doc {
+    background: var(--petroleo);
+    color: var(--areia);
+    border-radius: var(--raio);
+    padding: var(--e-6) var(--e-5) var(--e-7);
+  }
+  .entregas__col--doc .entregas__rotulo { color: var(--mineral); }
+  .entregas__doc-titulo { color: #fff; }
+  .entregas__doc-lead {
+    margin: var(--e-4) 0 var(--e-5);
+    color: #93a5a2;
+    max-width: 34ch;
+  }
+
+  .docs { display: grid; }
+  .doc {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.85rem;
+    padding-block: 0.85rem;
+    border-top: 1px solid rgba(233, 227, 216, 0.16);
+  }
+  .doc:last-child { border-bottom: 1px solid rgba(233, 227, 216, 0.16); }
+  .doc__n {
+    font-family: var(--f-num);
+    font-size: var(--t-num);
+    letter-spacing: 0.16em;
+    color: var(--mineral);
+  }
+  .doc__nome {
+    font-size: var(--t-min);
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--areia);
+  }
+</style>

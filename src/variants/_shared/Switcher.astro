@@ -1,0 +1,101 @@
+---
+/**
+ * Comutador de direções — recurso de apresentação, não faz parte do site.
+ *
+ * Existe apenas para o cliente saltar entre as três propostas sem digitar URL.
+ * Cada variante estiliza o bloco pelas variáveis `--sw-*`, então ele nunca
+ * "vaza" a identidade de uma direção para outra.
+ */
+import { withBase } from '../../lib/url';
+
+interface Props {
+  atual: 'phd' | 'arcadis' | 'worley';
+}
+const { atual } = Astro.props;
+
+const direcoes = [
+  { id: 'phd', num: '01', nome: 'Especialista' },
+  { id: 'arcadis', num: '02', nome: 'Consultoria' },
+  { id: 'worley', num: '03', nome: 'Jornada' },
+] as const;
+---
+
+<nav class="sw" aria-label="Direções de design">
+  <span class="sw__rotulo">Direção</span>
+  {
+    direcoes.map((d) => (
+      <a
+        class:list={['sw__item', d.id === atual && 'is-atual']}
+        href={withBase(`${d.id}/`)}
+        aria-current={d.id === atual ? 'page' : undefined}
+      >
+        <span class="sw__num">{d.num}</span>
+        <span class="sw__nome">{d.nome}</span>
+      </a>
+    ))
+  }
+</nav>
+
+<style>
+  .sw {
+    position: fixed;
+    z-index: 70;
+    right: 1rem;
+    bottom: 1rem;
+    display: flex;
+    align-items: stretch;
+    gap: 1px;
+    padding: 1px;
+    background: var(--sw-borda, rgba(255, 255, 255, 0.16));
+    color: var(--sw-tinta, #fff);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: var(--sw-raio, 0);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.32);
+    font-family: var(--sw-fonte, var(--f-mono, monospace));
+    max-width: calc(100vw - 2rem);
+  }
+
+  .sw__rotulo {
+    display: none;
+    align-items: center;
+    padding: 0.55rem 0.85rem;
+    background: var(--sw-fundo, rgba(14, 17, 19, 0.86));
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+  @media (min-width: 34rem) {
+    .sw__rotulo { display: flex; }
+  }
+
+  .sw__item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.55rem 0.9rem;
+    background: var(--sw-fundo, rgba(14, 17, 19, 0.86));
+    font-size: 0.6875rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background 180ms ease, color 180ms ease;
+  }
+  .sw__item:hover { background: var(--sw-hover, rgba(40, 46, 50, 0.94)); }
+
+  .sw__num { opacity: 0.5; font-variant-numeric: tabular-nums; }
+
+  .sw__item.is-atual {
+    background: var(--sw-ativo-fundo, #c4661f);
+    color: var(--sw-ativo-tinta, #fff);
+  }
+  .sw__item.is-atual .sw__num { opacity: 0.75; }
+
+  @media (max-width: 33.9375rem) {
+    .sw__nome { display: none; }
+    .sw__item { padding-inline: 1.1rem; }
+  }
+
+  @media print { .sw { display: none; } }
+</style>

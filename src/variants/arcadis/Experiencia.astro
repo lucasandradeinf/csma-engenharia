@@ -1,0 +1,247 @@
+---
+/**
+ * Experiência — direção 02.
+ *
+ * Onde uma consultoria prova maturidade: grandezas, áreas de domínio, tipos
+ * de empreendimento e composição de equipe. Todas as grandezas são as da
+ * apresentação comercial, sem fechamento numérico que ela não faça.
+ */
+import { team, experience } from '../../data/site';
+---
+
+<section class="bloco experiencia" id="experiencia" aria-labelledby="t-exp">
+  <div class="faixa">
+    <div class="secao">
+      <p class="rotulo secao__rotulo" data-e>{experience.eyebrow}</p>
+      <h2 class="h2" id="t-exp" data-e style="--atraso:60ms">{experience.title}</h2>
+      <p class="lead" data-e style="--atraso:140ms">{experience.lead}</p>
+    </div>
+
+    <!-- grandezas -->
+    <ul class="grandezas" data-eg>
+      {
+        experience.metrics.map((m) => (
+          <li class="grandeza">
+            <span class="grandeza__mag">{m.magnitude}</span>
+            <span class="grandeza__txt">{m.text}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <!-- domínios + tipos -->
+    <div class="experiencia__par">
+      <div>
+        <p class="rotulo" data-e>Domínios de atuação</p>
+        <ul class="dominios" data-eg>
+          {
+            experience.areas.map((a) => (
+              <li class="dominio">
+                <span class="dominio__n">{a.idx}</span>
+                <span class="dominio__txt">{a.title}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <aside class="tipos" data-e>
+        <p class="rotulo">Tipos de empreendimento</p>
+        <ul class="tipos__lista">
+          {experience.projectTypes.map((t) => <li>{t}</li>)}
+        </ul>
+        <p class="min tipos__nota">{experience.scopeNote}</p>
+      </aside>
+    </div>
+  </div>
+
+  <!-- equipe -->
+  <div class="equipe">
+    <div class="faixa equipe__grade">
+      <div class="equipe__intro">
+        <p class="rotulo" data-e>{team.eyebrow}</p>
+        <h3 class="h2 equipe__titulo" data-e style="--atraso:60ms">{team.title}</h3>
+        <p class="lead equipe__lead" data-e style="--atraso:140ms">{team.lead}</p>
+
+        <div class="equipe__cifra" data-e style="--atraso:220ms">
+          <span class="equipe__num">{team.metric.prefix}{team.metric.value}</span>
+          <span class="equipe__unidade">{team.metric.unit}</span>
+          <p class="min equipe__caption">{team.metricCaption}</p>
+        </div>
+      </div>
+
+      <div class="equipe__papeis">
+        <ul class="papeis" data-eg>
+          {
+            team.roles.map((r) => (
+              <li class="papel">
+                <span class="papel__n">{r.idx}</span>
+                <span class="papel__nome">{r.title}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="min equipe__nota">{team.footnote}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .experiencia { padding-bottom: 0; }
+
+  /* --- grandezas --- */
+  .grandezas {
+    display: grid;
+    gap: var(--e-5);
+    padding-bottom: var(--e-8);
+    border-bottom: 1px solid var(--fio);
+    margin-bottom: var(--e-8);
+  }
+  @media (min-width: 44rem) {
+    .grandezas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 72rem) {
+    .grandezas { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--e-6); }
+  }
+  .grandeza {
+    display: grid;
+    gap: 0.4rem;
+    padding-top: var(--e-4);
+    border-top: 2px solid var(--navy);
+  }
+  .grandeza__mag {
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--navy);
+    line-height: 1.05;
+  }
+  .grandeza__txt { font-size: var(--t-min); color: var(--tinta-media); }
+
+  /* --- domínios --- */
+  .experiencia__par { display: grid; gap: var(--e-7); }
+  @media (min-width: 62rem) {
+    .experiencia__par {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      gap: var(--e-8);
+      align-items: start;
+    }
+  }
+  .dominios { display: grid; margin-top: var(--e-4); }
+  .dominio {
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: var(--e-4);
+    align-items: baseline;
+    padding-block: var(--e-4);
+    border-top: 1px solid var(--fio);
+  }
+  .dominio:last-child { border-bottom: 1px solid var(--fio); }
+  .dominio__n {
+    font-size: var(--t-rotulo);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--tinta-fraca);
+  }
+  .dominio__txt {
+    font-size: var(--t-h4);
+    font-weight: 500;
+    letter-spacing: -0.014em;
+    line-height: 1.4;
+  }
+
+  .tipos {
+    background: var(--areia);
+    border-radius: var(--raio);
+    padding: var(--e-6) var(--e-5);
+    display: grid;
+    gap: var(--e-4);
+    align-content: start;
+  }
+  .tipos__lista { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .tipos__lista li {
+    background: var(--branco);
+    border: 1px solid var(--fio);
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    font-size: var(--t-min);
+    font-weight: 500;
+  }
+  .tipos__nota { max-width: 40ch; }
+
+  /* --- equipe --- */
+  .equipe {
+    margin-top: var(--e-9);
+    background: var(--areia);
+    border-top: 1px solid var(--fio);
+    padding-block: var(--e-9);
+  }
+  .equipe__grade { display: grid; gap: var(--e-7); }
+  @media (min-width: 62rem) {
+    .equipe__grade {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: var(--e-8);
+      align-items: start;
+    }
+  }
+  .equipe__titulo { margin-top: var(--e-4); }
+  .equipe__lead { margin-top: var(--e-4); }
+
+  .equipe__cifra {
+    margin-top: var(--e-6);
+    padding-top: var(--e-4);
+    border-top: 2px solid var(--navy);
+    display: grid;
+    gap: 0.2rem;
+  }
+  .equipe__num {
+    font-size: var(--t-cifra);
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    color: var(--navy);
+    font-variant-numeric: tabular-nums;
+  }
+  .equipe__unidade {
+    font-size: var(--t-rotulo);
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--tinta-fraca);
+  }
+  .equipe__caption { margin-top: 0.6rem; max-width: 32ch; }
+
+  .papeis {
+    display: grid;
+    gap: 1px;
+    background: var(--fio);
+    border: 1px solid var(--fio);
+    border-radius: var(--raio);
+    overflow: hidden;
+  }
+  @media (min-width: 44rem) {
+    .papeis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .papel:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  }
+  .papel {
+    background: var(--branco);
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 1rem 1.1rem;
+  }
+  .papel__n {
+    font-size: var(--t-rotulo);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--tinta-fraca);
+  }
+  .papel__nome {
+    font-size: var(--t-min);
+    font-weight: 500;
+    line-height: 1.45;
+  }
+  .equipe__nota { margin-top: var(--e-4); }
+</style>

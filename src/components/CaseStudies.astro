@@ -7,7 +7,9 @@ import formaPerdida from '../assets/cases/forma-perdida.jpg';
 import montagemEquipamentos from '../assets/cases/montagem-equipamentos.jpg';
 import tubulacao from '../assets/cases/tubulacao.jpg';
 
-/* Fotografias reais dos casos, extraídas da apresentação institucional. */
+/* Fotografias reais dos casos, extraídas da apresentação institucional.
+   São as únicas fotos autenticadas do material — recebem enquadramento
+   editorial e moldura técnica, mas nenhum tratamento que as descaracterize. */
 const photos: Record<string, ImageMetadata> = {
   'forma-perdida': formaPerdida,
   'montagem-equipamentos': montagemEquipamentos,
@@ -15,9 +17,15 @@ const photos: Record<string, ImageMetadata> = {
 };
 ---
 
-<section class="chapter cases" id="cases" aria-labelledby="cases-title">
+<section class="chapter cases is-alt" id="cases" aria-labelledby="cases-title">
   <div class="shell">
-    <SectionHead num="06" eyebrow={cases.eyebrow} title={cases.title} id="cases-title" />
+    <SectionHead
+      num="06"
+      eyebrow={cases.eyebrow}
+      title={cases.title}
+      id="cases-title"
+      lead={cases.lead}
+    />
 
     <div class="cs__list">
       {
@@ -33,20 +41,18 @@ const photos: Record<string, ImageMetadata> = {
                     <Image
                       src={photos[item.image]!}
                       alt={item.alt}
-                      quality={84}
+                      quality={86}
                       format="webp"
                       loading="lazy"
                       decoding="async"
-                      sizes="(min-width: 64rem) 28rem, 88vw"
+                      sizes="(min-width: 64rem) 32rem, 88vw"
                     />
-                    <span class="cs__mesh" aria-hidden="true" />
                   </div>
 
                   <span class="cs__corner cs__corner--tl" aria-hidden="true" />
                   <span class="cs__corner cs__corner--tr" aria-hidden="true" />
                   <span class="cs__corner cs__corner--bl" aria-hidden="true" />
                   <span class="cs__corner cs__corner--br" aria-hidden="true" />
-                  <span class="cs__code mono" aria-hidden="true">{item.code}</span>
                 </div>
 
                 <figcaption class="cs__caption">
@@ -83,9 +89,7 @@ const photos: Record<string, ImageMetadata> = {
                 <ul data-reveal-group>
                   {item.benefits.map((b) => (
                     <li>
-                      <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
-                        <path d="M0 5.5h11M5.5 0v11" stroke="currentColor" stroke-width="1" />
-                      </svg>
+                      <span class="cs__benefit-mark" aria-hidden="true" />
                       <span>{b}</span>
                     </li>
                   ))}
@@ -100,10 +104,6 @@ const photos: Record<string, ImageMetadata> = {
 </section>
 
 <style>
-  .cases {
-    background: var(--c-white);
-  }
-
   .cs__list {
     display: grid;
     gap: var(--space-3xl);
@@ -122,7 +122,7 @@ const photos: Record<string, ImageMetadata> = {
   }
   .cs__frame {
     position: relative;
-    padding: 14px;
+    padding: 12px;
   }
   .cs__frame-outline {
     position: absolute;
@@ -134,70 +134,35 @@ const photos: Record<string, ImageMetadata> = {
     position: relative;
     overflow: hidden;
     background: var(--c-navy-deep);
+    aspect-ratio: 4 / 3;
   }
   .cs__image :global(img) {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
     display: block;
-    filter: saturate(0.82) contrast(1.06);
+    /* A fotografia é real: só um respiro de contraste, nada de tingir. */
+    filter: contrast(1.04);
     transform: scale(1.001);
     transition: filter 700ms var(--ease-out), transform 900ms var(--ease-out);
-  }
-  .cs__image::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(200deg, rgba(1, 25, 59, 0.3), rgba(1, 25, 59, 0.08) 55%);
-    mix-blend-mode: multiply;
-    transition: opacity 700ms var(--ease-out);
-    pointer-events: none;
-  }
-  .cs__mesh {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(to right, rgba(255, 255, 255, 0.11) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.11) 1px, transparent 1px);
-    background-size: 34px 34px;
-    opacity: 0.5;
-    transition: opacity 700ms var(--ease-out);
-    pointer-events: none;
   }
 
   @media (hover: hover) {
     .cs__figure:hover .cs__image :global(img) {
-      filter: saturate(1) contrast(1);
-      transform: scale(1.02);
-    }
-    .cs__figure:hover .cs__image::after {
-      opacity: 0.35;
-    }
-    .cs__figure:hover .cs__mesh {
-      opacity: 0;
+      transform: scale(1.015);
     }
   }
 
   .cs__corner {
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 9px;
+    height: 9px;
     border: 0 solid var(--ink-strong);
   }
   .cs__corner--tl { top: 0; left: 0; border-top-width: 1px; border-left-width: 1px; }
   .cs__corner--tr { top: 0; right: 0; border-top-width: 1px; border-right-width: 1px; }
   .cs__corner--bl { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; }
   .cs__corner--br { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; }
-
-  .cs__code {
-    position: absolute;
-    top: 14px;
-    left: 14px;
-    padding: 0.35rem 0.55rem;
-    background: rgba(1, 25, 59, 0.82);
-    color: #fff;
-    font-size: 0.5625rem;
-    letter-spacing: 0.16em;
-  }
 
   .cs__caption {
     display: flex;
@@ -229,9 +194,9 @@ const photos: Record<string, ImageMetadata> = {
   }
   .cs__title {
     font-family: var(--font-display);
-    font-size: clamp(1.625rem, 1.1rem + 2.2vw, 3rem);
-    line-height: 1.08;
-    letter-spacing: -0.02em;
+    font-size: clamp(1.5rem, 1.1rem + 1.9vw, 2.625rem);
+    line-height: 1.1;
+    letter-spacing: -0.018em;
     color: var(--ink-strong);
     max-width: 16ch;
   }
@@ -275,16 +240,18 @@ const photos: Record<string, ImageMetadata> = {
     color: var(--ink);
     font-size: var(--fs-base);
   }
-  .cs__benefits li svg {
+  .cs__benefit-mark {
     flex: none;
-    color: var(--accent);
-    transform: translateY(2px);
+    width: 0.75rem;
+    height: 1px;
+    background: var(--accent);
+    transform: translateY(-0.3em);
   }
 
   /* ---------- Desktop: alternância editorial ---------- */
   @media (min-width: 64rem) {
     .cs__case {
-      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: var(--space-2xl);
       align-items: start;
       padding-top: var(--space-xl);
@@ -298,7 +265,7 @@ const photos: Record<string, ImageMetadata> = {
     .cs__figure {
       position: sticky;
       top: calc(var(--header-h) + 8vh);
-      max-width: 30rem;
+      max-width: 33rem;
     }
     .cs__case:nth-child(even) .cs__figure {
       margin-left: auto;

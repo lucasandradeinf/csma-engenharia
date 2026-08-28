@@ -1,0 +1,301 @@
+---
+/**
+ * Navegação — direção 01.
+ *
+ * Minimalista e técnica: uma barra de 1px, o logotipo, quatro atalhos em
+ * monoespaçada e um índice em tela cheia que abre como uma folha de rosto de
+ * projeto. Nenhum menu "hambúrguer" genérico: no mobile o mesmo índice cobre
+ * a tela inteira.
+ */
+import Mark from '../_shared/Mark.astro';
+import { site } from '../../data/site';
+import { capitulos, atalhos } from './nav';
+---
+
+<header class="nav" data-nav>
+  <div class="nav__barra">
+    <a class="nav__marca" href="#topo" aria-label="CSMA — início">
+      <span class="nav__marca-svg"><Mark travessao="var(--oxido)" /></span>
+      <span class="nav__disciplina dado">Construtibilidade</span>
+    </a>
+
+    <nav class="nav__atalhos" aria-label="Atalhos">
+      {
+        atalhos.map((c) => (
+          <a class="nav__atalho" href={c.href}>
+            <span class="nav__atalho-n">{c.n}</span>
+            {c.rotulo}
+          </a>
+        ))
+      }
+    </nav>
+
+    <button class="nav__abrir dado" type="button" data-indice-abrir aria-expanded="false" aria-controls="indice">
+      <span class="nav__abrir-txt">Índice</span>
+      <span class="nav__abrir-marca" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
+  </div>
+
+  <div class="nav__fio" aria-hidden="true"></div>
+</header>
+
+<div class="indice" id="indice" data-indice hidden>
+  <div class="indice__cruz indice__cruz--a" aria-hidden="true"></div>
+  <div class="indice__cruz indice__cruz--b" aria-hidden="true"></div>
+
+  <div class="indice__topo faixa">
+    <span class="dado dado--oxido">Índice do projeto</span>
+    <button class="indice__fechar dado" type="button" data-indice-fechar>
+      Fechar <span aria-hidden="true">&#215;</span>
+    </button>
+  </div>
+
+  <div class="indice__corpo faixa">
+    <ol class="indice__lista">
+      {
+        capitulos.map((c) => (
+          <li>
+            <a href={c.href} data-indice-link>
+              <span class="indice__n">{c.n}</span>
+              <span class="indice__rotulo">{c.rotulo}</span>
+              <span class="indice__fio" aria-hidden="true" />
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="indice__lado">
+      <p class="dado dado--fraco">Contato direto</p>
+      <a class="indice__mail" href={`mailto:${site.email}`}>{site.email}</a>
+      <p class="dado dado--fraco indice__assinatura">{site.signatureUpper}</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const abrir = document.querySelector<HTMLButtonElement>('[data-indice-abrir]');
+  const painel = document.querySelector<HTMLElement>('[data-indice]');
+  const fechar = document.querySelector<HTMLButtonElement>('[data-indice-fechar]');
+  const barra = document.querySelector<HTMLElement>('[data-nav]');
+
+  function alternar(aberto: boolean) {
+    if (!painel || !abrir) return;
+    painel.hidden = !aberto;
+    abrir.setAttribute('aria-expanded', String(aberto));
+    document.documentElement.style.overflow = aberto ? 'hidden' : '';
+    if (aberto) {
+      requestAnimationFrame(() => painel.classList.add('is-aberto'));
+      painel.querySelector<HTMLAnchorElement>('[data-indice-link]')?.focus();
+    } else {
+      painel.classList.remove('is-aberto');
+    }
+  }
+
+  abrir?.addEventListener('click', () => alternar(Boolean(painel?.hidden ?? true)));
+  fechar?.addEventListener('click', () => alternar(false));
+  painel?.querySelectorAll('[data-indice-link]').forEach((a) =>
+    a.addEventListener('click', () => alternar(false))
+  );
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && painel && !painel.hidden) alternar(false);
+  });
+
+  /* A barra ganha fundo assim que o herói sai de cena. */
+  const sentinela = () => {
+    barra?.classList.toggle('is-fixa', window.scrollY > window.innerHeight * 0.7);
+  };
+  addEventListener('scroll', sentinela, { passive: true });
+  sentinela();
+</script>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    transition: background 320ms var(--saida), backdrop-filter 320ms var(--saida);
+  }
+  .nav.is-fixa {
+    background: rgba(14, 17, 19, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .nav__barra {
+    max-width: var(--larg);
+    margin-inline: auto;
+    padding-inline: var(--marg);
+    height: var(--topo);
+    display: flex;
+    align-items: center;
+    gap: var(--e-5);
+  }
+
+  .nav__fio {
+    height: 1px;
+    background: var(--fio);
+    opacity: 0;
+    transition: opacity 320ms var(--saida);
+  }
+  .nav.is-fixa .nav__fio { opacity: 1; }
+
+  .nav__marca {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    color: var(--osso);
+    flex: none;
+  }
+  .nav__marca-svg { display: block; width: 82px; flex: none; }
+  .nav__disciplina {
+    display: none;
+    color: var(--aco-claro);
+    padding-left: 0.9rem;
+    border-left: 1px solid var(--fio);
+    line-height: 1;
+  }
+  @media (min-width: 48rem) { .nav__disciplina { display: block; } }
+
+  .nav__atalhos {
+    display: none;
+    margin-left: auto;
+    gap: var(--e-5);
+  }
+  @media (min-width: 68rem) { .nav__atalhos { display: flex; } }
+
+  .nav__atalho {
+    font-family: var(--f-mono);
+    font-size: var(--t-dado);
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--aco-claro);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    padding-block: 0.3rem;
+    border-bottom: 1px solid transparent;
+    transition: color var(--dur-1) var(--saida), border-color var(--dur-1) var(--saida);
+  }
+  .nav__atalho-n { color: var(--oxido); opacity: 0.85; }
+  .nav__atalho:hover { color: #fff; border-bottom-color: var(--oxido); }
+
+  .nav__abrir {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--osso);
+    padding: 0.5rem 0;
+  }
+  @media (min-width: 68rem) { .nav__abrir { margin-left: 0; } }
+
+  .nav__abrir-marca {
+    display: grid;
+    gap: 3px;
+    width: 20px;
+  }
+  .nav__abrir-marca i {
+    display: block;
+    height: 1px;
+    background: currentColor;
+    transition: width var(--dur-1) var(--saida);
+  }
+  .nav__abrir-marca i:nth-child(1) { width: 20px; }
+  .nav__abrir-marca i:nth-child(2) { width: 13px; }
+  .nav__abrir-marca i:nth-child(3) { width: 17px; }
+  .nav__abrir:hover .nav__abrir-marca i { width: 20px; }
+  .nav__abrir:hover { color: var(--oxido-claro); }
+
+  /* ---------- Índice em tela cheia ---------- */
+  .indice {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    background: var(--grafite);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 260ms var(--saida);
+    overflow-y: auto;
+  }
+  /* `display: flex` venceria o atributo `hidden`; devolvemos a ele a palavra final. */
+  .indice[hidden] { display: none; }
+  .indice.is-aberto { opacity: 1; }
+
+  .indice__cruz {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-color: var(--fio-forte);
+    pointer-events: none;
+  }
+  .indice__cruz--a { top: 1.2rem; left: 1.2rem; border-top: 1px solid; border-left: 1px solid; }
+  .indice__cruz--b { bottom: 1.2rem; right: 1.2rem; border-bottom: 1px solid; border-right: 1px solid; }
+
+  .indice__topo {
+    height: var(--topo);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: none;
+  }
+  .indice__fechar { color: var(--osso); display: inline-flex; gap: 0.6rem; align-items: center; }
+  .indice__fechar:hover { color: var(--oxido-claro); }
+
+  .indice__corpo {
+    flex: 1;
+    display: grid;
+    gap: var(--e-7);
+    align-content: center;
+    padding-block: var(--e-7);
+  }
+  @media (min-width: 62rem) {
+    .indice__corpo {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.4fr);
+      gap: var(--e-8);
+      align-items: end;
+    }
+  }
+
+  .indice__lista { display: grid; }
+  .indice__lista a {
+    display: grid;
+    grid-template-columns: 3.2rem minmax(0, auto) minmax(1.5rem, 1fr);
+    align-items: center;
+    gap: 1rem;
+    padding-block: clamp(0.5rem, 0.2rem + 0.9vw, 0.95rem);
+    border-top: 1px solid var(--fio);
+    color: var(--osso);
+    transition: color var(--dur-1) var(--saida);
+  }
+  .indice__lista li:last-child a { border-bottom: 1px solid var(--fio); }
+  .indice__n {
+    font-family: var(--f-mono);
+    font-size: var(--t-dado);
+    letter-spacing: 0.12em;
+    color: var(--oxido);
+  }
+  .indice__rotulo {
+    font-size: clamp(1.25rem, 0.8rem + 2.1vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+  .indice__fio { height: 1px; background: var(--fio); transition: background var(--dur-1) var(--saida); }
+  .indice__lista a:hover { color: var(--oxido-claro); }
+  .indice__lista a:hover .indice__fio { background: var(--oxido); }
+
+  .indice__lado { display: grid; gap: 0.65rem; align-content: end; }
+  .indice__mail {
+    font-family: var(--f-mono);
+    font-size: var(--t-min);
+    color: var(--osso);
+    border-bottom: 1px solid var(--oxido);
+    justify-self: start;
+    padding-bottom: 2px;
+  }
+  .indice__mail:hover { color: var(--oxido-claro); }
+  .indice__assinatura { margin-top: var(--e-4); line-height: 1.8; }
+</style>

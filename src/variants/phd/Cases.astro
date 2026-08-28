@@ -1,0 +1,155 @@
+---
+/**
+ * Capítulo 07 — construtibilidade na prática.
+ *
+ * Os três casos reais da apresentação, lidos como folhas de análise: a
+ * fotografia de campo à esquerda e, à direita, a mesma sequência de um
+ * relatório de construtibilidade — situação identificada, solução, benefícios.
+ * Nenhum cliente, número ou resultado foi acrescentado.
+ */
+import { Image } from 'astro:assets';
+import { cases } from '../../data/site';
+import { casePhoto } from '../../lib/photos';
+
+const itens = cases.items.map((c) => ({ ...c, foto: casePhoto(c.image) }));
+---
+
+<section class="cap claro casos" id="cases" aria-labelledby="t-casos">
+  <div class="malha" aria-hidden="true"></div>
+
+  <div class="faixa">
+    <div class="cabec cabec--largo">
+      <p class="cabec__cota">07 / {cases.eyebrow}</p>
+      <h2 class="enunciado" id="t-casos" data-r>{cases.title}</h2>
+      <p class="lead casos__lead" data-r style="--atraso:120ms">{cases.lead}</p>
+    </div>
+
+    <div class="casos__lista">
+      {
+        itens.map((c, i) => (
+          <article class:list={['caso', i % 2 === 1 && 'caso--invertido']} data-r data-observa>
+            <figure class="caso__figura">
+              {c.foto ? (
+                <Image
+                  class="caso__foto"
+                  src={c.foto}
+                  alt={c.alt}
+                  quality={84}
+                  format="webp"
+                  widths={[560, 840, 1200]}
+                  sizes="(min-width: 66rem) 40rem, 92vw"
+                  loading="lazy"
+                  decoding="async"
+                  data-corte
+                />
+              ) : (
+                <div class="caso__vazio" aria-hidden="true" />
+              )}
+              <figcaption class="dado dado--fraco caso__legenda">{c.caption}</figcaption>
+            </figure>
+
+            <div class="caso__folha">
+              <header class="caso__cabeca">
+                <span class="dado dado--oxido">Caso {c.idx}</span>
+                <h3 class="caso__titulo">{c.title}</h3>
+              </header>
+
+              <dl class="caso__campos">
+                <div class="caso__campo">
+                  <dt class="dado dado--fraco">Situação identificada</dt>
+                  <dd class="corpo">{c.situation}</dd>
+                </div>
+                <div class="caso__campo">
+                  <dt class="dado dado--fraco">Solução CSMA</dt>
+                  <dd class="corpo caso__solucao">{c.solution}</dd>
+                </div>
+                <div class="caso__campo">
+                  <dt class="dado dado--fraco">Benefícios esperados</dt>
+                  <dd>
+                    <ul class="checks">
+                      {c.benefits.map((b) => (
+                        <li>{b}</li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .casos { background: var(--osso-2); }
+  .casos__lead { max-width: 42ch; }
+
+  .casos__lista { display: grid; gap: var(--e-8); }
+
+  .caso {
+    display: grid;
+    gap: var(--e-5);
+    border-top: 1px solid var(--fio-forte);
+    padding-top: var(--e-6);
+  }
+  @media (min-width: 66rem) {
+    .caso {
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+      gap: var(--e-7);
+      align-items: start;
+    }
+    .caso--invertido .caso__figura { order: 2; }
+  }
+
+  .caso__figura { margin: 0; }
+  .caso__foto {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    filter: grayscale(0.15) contrast(1.04);
+  }
+  .caso__vazio {
+    aspect-ratio: 4 / 3;
+    background: var(--osso);
+    border: 1px solid var(--fio);
+  }
+  .caso__legenda {
+    margin-top: 0.7rem;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    font-size: var(--t-dado-g);
+    color: #626a71;
+  }
+
+  .caso__cabeca { display: grid; gap: 0.55rem; margin-bottom: var(--e-5); }
+  .caso__titulo {
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    text-transform: uppercase;
+    color: var(--tinta-forte);
+    line-height: 1.05;
+  }
+
+  .caso__campos { display: grid; }
+  .caso__campo {
+    display: grid;
+    gap: 0.5rem;
+    padding-block: var(--e-4);
+    border-top: 1px solid var(--fio);
+  }
+  @media (min-width: 40rem) {
+    .caso__campo {
+      grid-template-columns: 9.5rem minmax(0, 1fr);
+      gap: var(--e-4);
+      align-items: start;
+    }
+    .caso__campo dt { padding-top: 0.22rem; }
+  }
+  .caso__campo dd { margin: 0; }
+  .caso__campo .corpo { font-size: var(--t-min); line-height: 1.72; }
+  .caso__solucao { color: var(--tinta-forte); font-weight: 500; }
+</style>

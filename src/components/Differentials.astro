@@ -2,9 +2,7 @@
 import { differentials } from '../data/site';
 ---
 
-<section class="chapter differentials is-dark" id="diferenciais" aria-labelledby="differentials-title">
-  <div class="blueprint" aria-hidden="true"></div>
-
+<section class="chapter differentials" id="diferenciais" aria-labelledby="differentials-title">
   <div class="shell">
     <div class="df__grid">
       <!-- Título fixo -->
@@ -37,7 +35,7 @@ import { differentials } from '../data/site';
 
 <style>
   .differentials {
-    background: var(--c-navy);
+    background: var(--c-white);
   }
 
   .df__grid {
@@ -64,9 +62,9 @@ import { differentials } from '../data/site';
   .df__title {
     font-family: var(--font-display);
     font-size: var(--fs-h2);
-    line-height: 1.06;
-    letter-spacing: -0.02em;
-    color: #fff;
+    line-height: 1.08;
+    letter-spacing: -0.018em;
+    color: var(--ink-strong);
     max-width: 12ch;
   }
 
@@ -88,16 +86,16 @@ import { differentials } from '../data/site';
     background: var(--rule);
   }
   .df__item-num {
-    color: var(--c-steel);
+    color: var(--accent);
     padding-top: 0.5rem;
   }
   .df__item-text {
     font-family: var(--font-display);
-    font-size: clamp(1.25rem, 0.95rem + 1.4vw, 2.125rem);
-    line-height: 1.2;
-    letter-spacing: -0.014em;
-    color: #fff;
-    max-width: 24ch;
+    font-size: clamp(1.1875rem, 0.95rem + 1.2vw, 1.875rem);
+    line-height: 1.22;
+    letter-spacing: -0.012em;
+    color: var(--ink-strong);
+    max-width: 32ch;
   }
 
   @media (min-width: 62rem) {

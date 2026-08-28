@@ -1,0 +1,112 @@
+---
+/**
+ * Ato 01 — quem é a CSMA e por que ela existe.
+ *
+ * Abre em areia (respiro editorial) e fecha em petróleo com o diagnóstico:
+ * cinco situações que se repetem em empreendimentos industriais.
+ */
+import { about, challenge } from '../../data/site';
+---
+
+<!-- ============================ A CSMA ============================ -->
+<section class="ato areia contexto" id="a-csma" aria-labelledby="t-contexto">
+  <div class="faixa">
+    <div class="abertura">
+      <p class="num abertura__num" data-c>Ato 01 — {about.eyebrow}</p>
+      <h2 class="tit tit--h2" id="t-contexto" data-c style="--atraso:80ms">{about.title}</h2>
+      <p class="lead" data-c style="--atraso:160ms">{about.lead}</p>
+    </div>
+
+    <div class="contexto__blocos" data-cg>
+      {
+        about.blocks.map((b) => (
+          <article class="contexto__bloco">
+            <span class="num num--simples">{b.idx}</span>
+            <h3 class="tit tit--h3">{b.label}</h3>
+            <p class="corpo">{b.text}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ============================ DESAFIO ============================ -->
+<section class="ato escuro desafio" id="desafio" aria-labelledby="t-desafio">
+  <div class="faixa">
+    <div class="abertura">
+      <p class="num abertura__num" data-c>{challenge.eyebrow}</p>
+      <h2 class="tit tit--h2" id="t-desafio" data-c style="--atraso:80ms">{challenge.title}</h2>
+      <p class="lead" data-c style="--atraso:160ms">{challenge.lead}</p>
+    </div>
+
+    <ol class="desafio__linhas" data-cg>
+      {
+        challenge.items.map((it) => (
+          <li class="linha">
+            <span class="linha__n">{it.idx}</span>
+            <h3 class="tit tit--h3 linha__titulo">{it.title}</h3>
+            <p class="linha__txt">{it.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="desafio__vira" data-c>
+      Quase sempre, o problema já estava no projeto antes de aparecer no canteiro.
+    </p>
+  </div>
+</section>
+
+<style>
+  /* ---------------- contexto ---------------- */
+  .contexto__blocos { display: grid; gap: var(--e-7); }
+  @media (min-width: 56rem) {
+    .contexto__blocos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-8); }
+  }
+  .contexto__bloco {
+    display: grid;
+    gap: var(--e-4);
+    align-content: start;
+    padding-top: var(--e-5);
+    border-top: 1px solid var(--fio-forte);
+  }
+  .contexto__bloco .corpo { max-width: 44ch; color: var(--tinta-media); }
+
+  /* ---------------- desafio ---------------- */
+  .desafio__linhas { display: grid; }
+  .linha {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: 0.5rem var(--e-5);
+    padding-block: var(--e-5);
+    border-top: 1px solid var(--fio);
+    align-items: baseline;
+  }
+  .linha:last-child { border-bottom: 1px solid var(--fio); }
+  @media (min-width: 60rem) {
+    .linha { grid-template-columns: 4rem minmax(0, 0.9fr) minmax(0, 1fr); gap: var(--e-6); }
+  }
+  .linha__n {
+    font-family: var(--f-num);
+    font-size: var(--t-num);
+    letter-spacing: 0.18em;
+    color: var(--mineral);
+  }
+  .linha__titulo { font-size: var(--t-h3); }
+  .linha__txt {
+    font-size: var(--t-min);
+    line-height: 1.7;
+    color: var(--txt-fraco);
+    max-width: 46ch;
+  }
+
+  .desafio__vira {
+    margin-top: var(--e-7);
+    font-family: var(--f-titulo);
+    font-size: var(--t-h3);
+    line-height: 1.15;
+    color: var(--mineral);
+    max-width: 24ch;
+  }
+</style>

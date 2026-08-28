@@ -1,0 +1,146 @@
+---
+/**
+ * Ato 04 — projetos. Os três casos reais, em corte cinematográfico.
+ *
+ * Cada caso ocupa uma faixa de borda a borda: fotografia real de um lado,
+ * a decisão do outro. A sequência é sempre a mesma — o que se viu, o que a
+ * CSMA propôs, o que a obra ganhou.
+ */
+import { Image } from 'astro:assets';
+import { cases } from '../../data/site';
+import { casePhoto } from '../../lib/photos';
+
+const itens = cases.items.map((c) => ({ ...c, foto: casePhoto(c.image) }));
+---
+
+<section class="ato escuro ato--sangra projetos" id="projetos" aria-labelledby="t-projetos">
+  <div class="faixa">
+    <div class="abertura">
+      <p class="num abertura__num" data-c>Ato 04 — {cases.eyebrow}</p>
+      <h2 class="tit tit--h2" id="t-projetos" data-c style="--atraso:80ms">{cases.title}</h2>
+      <p class="lead" data-c style="--atraso:160ms">{cases.lead}</p>
+    </div>
+  </div>
+
+  <div class="projetos__lista">
+    {
+      itens.map((c, i) => (
+        <article class:list={['corte', i % 2 === 1 && 'corte--espelho']} data-observa>
+          <figure class="corte__figura">
+            {c.foto ? (
+              <Image
+                class="corte__foto"
+                src={c.foto}
+                alt={c.alt}
+                quality={86}
+                format="webp"
+                widths={[720, 1080, 1560]}
+                sizes="(min-width: 64rem) 52vw, 100vw"
+                loading="lazy"
+                decoding="async"
+                data-cine
+              />
+            ) : (
+              <div class="corte__vazio" aria-hidden="true" />
+            )}
+            <span class="etiqueta corte__etiqueta">Caso {c.idx}</span>
+            <figcaption class="corte__legenda">{c.caption}</figcaption>
+          </figure>
+
+          <div class="corte__texto">
+            <div class="corte__int">
+              <h3 class="tit tit--h2 corte__titulo" data-c>{c.title}</h3>
+
+              <div class="corte__campo" data-c style="--atraso:80ms">
+                <p class="num num--simples">O que se viu</p>
+                <p class="corte__p">{c.situation}</p>
+              </div>
+
+              <div class="corte__campo" data-c style="--atraso:140ms">
+                <p class="num num--simples">O que a CSMA propôs</p>
+                <p class="corte__p corte__p--forte">{c.solution}</p>
+              </div>
+
+              <div class="corte__campo" data-c style="--atraso:200ms">
+                <p class="num num--simples">O que a obra ganhou</p>
+                <ul class="ganhos">
+                  {c.benefits.map((b) => (
+                    <li>{b}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .projetos { padding-bottom: 0; }
+  .projetos__lista { display: grid; }
+
+  .corte {
+    display: grid;
+    border-top: 1px solid var(--fio);
+  }
+  @media (min-width: 64rem) {
+    .corte { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); align-items: stretch; }
+    .corte--espelho .corte__figura { order: 2; }
+  }
+
+  /* --- fotografia --- */
+  .corte__figura {
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    background: var(--petroleo-2);
+    aspect-ratio: 16 / 10;
+  }
+  @media (min-width: 64rem) { .corte__figura { aspect-ratio: auto; min-height: 34rem; } }
+
+  .corte__foto,
+  .corte__vazio {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .corte__vazio { background: var(--petroleo-3); }
+
+  .corte__etiqueta { position: absolute; top: var(--e-5); left: var(--e-5); }
+  .corte__legenda {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: var(--e-6) var(--e-5) var(--e-4);
+    background: linear-gradient(to top, rgba(12, 30, 34, 0.9), rgba(12, 30, 34, 0));
+    color: rgba(233, 227, 216, 0.9);
+    font-size: var(--t-min);
+  }
+
+  /* --- texto --- */
+  .corte__texto {
+    display: flex;
+    align-items: center;
+    background: var(--petroleo);
+    padding: var(--e-7) var(--marg);
+  }
+  @media (min-width: 64rem) { .corte__texto { padding-block: var(--e-8); } }
+  .corte__int {
+    width: 100%;
+    max-width: 34rem;
+    display: grid;
+    gap: var(--e-5);
+  }
+  .corte__titulo { color: #fff; max-width: 16ch; }
+  .corte__campo { display: grid; gap: 0.5rem; }
+  .corte__p {
+    font-size: var(--t-min);
+    line-height: 1.7;
+    color: var(--txt-fraco);
+    max-width: 46ch;
+  }
+  .corte__p--forte { color: var(--areia); font-weight: 500; }
+</style>

@@ -1,0 +1,194 @@
+---
+/**
+ * Abertura — direção 03.
+ *
+ * Cinematográfica: fotografia industrial real ocupando o viewport inteiro,
+ * gradiente de petróleo por cima, título em serifa editorial e, no rodapé,
+ * uma fita rolante com os seis verbos da jornada — a promessa da narrativa
+ * antes de ela começar.
+ */
+import { Image } from 'astro:assets';
+import { site, closing } from '../../data/site';
+import { casePhoto } from '../../lib/photos';
+import { jornada } from './jornada';
+
+const foto = casePhoto('tubulacao');
+/* A fita é duplicada para que o laço não tenha emenda visível. */
+const fita = [...jornada, ...jornada];
+---
+
+<section class="capa" id="topo" data-observa>
+  <div class="capa__fundo">
+    <div class="capa__camada" data-paralaxe>
+      {
+        foto && (
+          <Image
+            class="capa__foto"
+            src={foto}
+            alt=""
+            quality={86}
+            format="webp"
+            widths={[1080, 1560, 2000]}
+            sizes="100vw"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            data-cine
+          />
+        )
+      }
+    </div>
+    <span class="capa__veu" aria-hidden="true"></span>
+  </div>
+
+  <div class="faixa capa__conteudo">
+    <p class="num capa__eyebrow" data-c style="--atraso:80ms">{site.signature}</p>
+
+    <h1 class="tit tit--h1 capa__titulo" data-c style="--atraso:180ms">
+      A execução começa<br />
+      <em>muito</em> antes do canteiro.
+    </h1>
+
+    <p class="lead capa__lead" data-c style="--atraso:300ms">
+      {closing.statement}
+    </p>
+
+    <div class="capa__acoes" data-c style="--atraso:400ms">
+      <a class="pilula" href="#jornada">
+        Percorrer a jornada
+        <svg viewBox="0 0 20 12" fill="none" aria-hidden="true">
+          <path d="M0 6h18M13 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" />
+        </svg>
+      </a>
+      <a class="pilula pilula--vazia" href="#projetos">Ver projetos</a>
+    </div>
+  </div>
+
+  <!-- fita da jornada -->
+  <div class="fita" aria-hidden="true">
+    <div class="fita__trilho">
+      {
+        fita.map((j) => (
+          <span class="fita__item">
+            <i>{j.n}</i>
+            {j.verbo}
+          </span>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .capa {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    color: var(--areia);
+    background: var(--petroleo);
+    overflow: hidden;
+    padding-top: var(--topo);
+  }
+
+  .capa__fundo { position: absolute; inset: 0; z-index: 0; }
+  .capa__camada { position: absolute; inset: -8% 0 0 0; will-change: transform; }
+  .capa__foto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.85) contrast(1.05);
+  }
+  .capa__veu {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to top, rgba(12, 30, 34, 0.97) 4%, rgba(12, 30, 34, 0.72) 38%, rgba(12, 30, 34, 0.36) 72%),
+      linear-gradient(to right, rgba(12, 30, 34, 0.8), rgba(12, 30, 34, 0.05) 62%);
+  }
+
+  .capa__conteudo {
+    position: relative;
+    z-index: 1;
+    padding-block: var(--e-8) var(--e-7);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .capa__eyebrow { color: var(--mineral); }
+  .capa__titulo {
+    margin-top: var(--e-5);
+    color: #fff;
+    max-width: 16ch;
+  }
+  .capa__titulo em {
+    font-style: italic;
+    color: var(--mineral);
+  }
+  .capa__lead {
+    margin-top: var(--e-5);
+    color: rgba(233, 227, 216, 0.9);
+    max-width: 42ch;
+  }
+  .capa__acoes {
+    margin-top: var(--e-6);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e-3);
+  }
+
+  /* --- fita rolante --- */
+  .fita {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(233, 227, 216, 0.18);
+    background: rgba(12, 30, 34, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    overflow: hidden;
+    flex: none;
+  }
+  .fita__trilho {
+    display: flex;
+    width: max-content;
+    animation: csma-fita 42s linear infinite;
+  }
+  .fita__item {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.95rem 2rem 0.95rem 0;
+    margin-right: 2rem;
+    font-size: var(--t-min);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: rgba(233, 227, 216, 0.85);
+    white-space: nowrap;
+    position: relative;
+  }
+  .fita__item::after {
+    content: '';
+    position: absolute;
+    right: -0.35rem;
+    top: 50%;
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background: var(--mineral);
+    transform: translateY(-50%);
+  }
+  .fita__item i {
+    font-style: normal;
+    font-family: var(--f-num);
+    font-size: var(--t-num);
+    letter-spacing: 0.14em;
+    color: var(--mineral);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fita__trilho { animation: none; }
+  }
+</style>

@@ -3,7 +3,7 @@ import SectionHead from './ui/SectionHead.astro';
 import { about } from '../data/site';
 ---
 
-<section class="chapter about" id="a-csma" aria-labelledby="about-title" style="--surface: var(--c-off-white)">
+<section class="chapter about is-alt" id="a-csma" aria-labelledby="about-title">
   <div class="blueprint" aria-hidden="true"></div>
 
   <div class="shell">
@@ -102,12 +102,11 @@ import { about } from '../data/site';
     }
     .about__spine-dot {
       position: absolute;
-      left: -3px;
-      top: 0.5rem;
-      width: 7px;
-      height: 7px;
-      border: 1px solid var(--accent);
-      background: var(--surface);
+      left: -5px;
+      top: 0.6rem;
+      width: 11px;
+      height: 1px;
+      background: var(--accent);
     }
     .about__lead {
       max-width: 32ch;

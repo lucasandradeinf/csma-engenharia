@@ -1,0 +1,319 @@
+---
+/**
+ * Navegação — direção 02.
+ *
+ * Institucional e estruturada, como se lê num escritório internacional de
+ * engenharia: uma barra utilitária discreta em cima, a navegação principal
+ * embaixo, um painel de "Soluções" que abre a arquitetura de informação
+ * inteira, e um CTA fixo à direita. Nada de menu em tela cheia.
+ */
+import Mark from '../_shared/Mark.astro';
+import { site, services, deliverables } from '../../data/site';
+
+interface ItemNav {
+  rotulo: string;
+  href: string;
+  /** Abre o painel de soluções em vez de navegar direto. */
+  painel?: boolean;
+}
+
+const principal: ItemNav[] = [
+  { rotulo: 'A CSMA', href: '#a-csma' },
+  { rotulo: 'Soluções', href: '#solucoes', painel: true },
+  { rotulo: 'Experiência', href: '#experiencia' },
+  { rotulo: 'Projetos', href: '#projetos' },
+  { rotulo: 'Segmentos', href: '#segmentos' },
+  { rotulo: 'Contato', href: '#contato' },
+];
+---
+
+<header class="topo" data-topo>
+  <!-- barra utilitária -->
+  <div class="topo__util">
+    <div class="faixa topo__util-linha">
+      <span>{site.signature}</span>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+    </div>
+  </div>
+
+  <!-- navegação principal -->
+  <div class="topo__principal">
+    <div class="faixa topo__linha">
+      <a class="topo__marca" href="#topo" aria-label="CSMA — início">
+        <span class="topo__marca-svg"><Mark travessao="var(--tinta-fraca)" /></span>
+      </a>
+
+      <nav class="topo__nav" aria-label="Navegação principal">
+        {
+          principal.map((i) =>
+            i.painel ? (
+              <button
+                class="topo__item topo__item--painel"
+                type="button"
+                data-painel-abrir
+                aria-expanded="false"
+                aria-controls="painel-solucoes"
+              >
+                {i.rotulo}
+                <svg viewBox="0 0 12 8" fill="none" aria-hidden="true">
+                  <path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" />
+                </svg>
+              </button>
+            ) : (
+              <a class="topo__item" href={i.href}>
+                {i.rotulo}
+              </a>
+            )
+          )
+        }
+      </nav>
+
+      <a class="btn topo__cta" href={`mailto:${site.email}`}>
+        Fale com a CSMA
+        <svg viewBox="0 0 20 12" fill="none" aria-hidden="true">
+          <path d="M0 6h18M13 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" />
+        </svg>
+      </a>
+
+      <button class="topo__movel" type="button" data-movel-abrir aria-expanded="false" aria-controls="menu-movel">
+        <span class="topo__movel-txt">Menu</span>
+        <span class="topo__movel-marca" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- painel de soluções (desktop) -->
+  <div class="painel" id="painel-solucoes" data-painel hidden>
+    <div class="faixa painel__grade">
+      <div class="painel__col">
+        <p class="rotulo">{services.eyebrow}</p>
+        <h2 class="h4 painel__titulo">{services.title}</h2>
+        <ul class="painel__lista">
+          {services.items.map((s) => (
+            <li><a href="#solucoes">{s.title}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="painel__col">
+        <p class="rotulo">{deliverables.eyebrow}</p>
+        <h2 class="h4 painel__titulo">{deliverables.title}</h2>
+        <ul class="painel__lista">
+          {deliverables.items.map((d) => (
+            <li><a href="#entregaveis">{d.title}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="painel__col painel__col--nota">
+        <p class="rotulo">Abordagem</p>
+        <p class="min painel__nota">{services.lead}</p>
+        <a class="link" href="#abordagem">
+          Conheça nossa abordagem
+          <svg viewBox="0 0 20 12" fill="none" aria-hidden="true">
+            <path d="M0 6h18M13 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- menu móvel -->
+  <nav class="movel" id="menu-movel" data-movel hidden aria-label="Navegação">
+    <ul>
+      {principal.map((i) => <li><a href={i.href} data-movel-link>{i.rotulo}</a></li>)}
+      <li><a href="#entregaveis" data-movel-link>Entregáveis</a></li>
+      <li><a href="#abordagem" data-movel-link>Construtibilidade</a></li>
+    </ul>
+    <a class="btn movel__cta" href={`mailto:${site.email}`}>Fale com a CSMA</a>
+  </nav>
+</header>
+
+<script>
+  const topo = document.querySelector<HTMLElement>('[data-topo]');
+  const abrirPainel = document.querySelector<HTMLButtonElement>('[data-painel-abrir]');
+  const painel = document.querySelector<HTMLElement>('[data-painel]');
+  const abrirMovel = document.querySelector<HTMLButtonElement>('[data-movel-abrir]');
+  const movel = document.querySelector<HTMLElement>('[data-movel]');
+
+  function alternarPainel(aberto: boolean) {
+    if (!painel || !abrirPainel) return;
+    painel.hidden = !aberto;
+    abrirPainel.setAttribute('aria-expanded', String(aberto));
+    abrirPainel.classList.toggle('is-ativo', aberto);
+    if (aberto) requestAnimationFrame(() => painel.classList.add('is-aberto'));
+    else painel.classList.remove('is-aberto');
+  }
+
+  function alternarMovel(aberto: boolean) {
+    if (!movel || !abrirMovel) return;
+    movel.hidden = !aberto;
+    abrirMovel.setAttribute('aria-expanded', String(aberto));
+    abrirMovel.classList.toggle('is-ativo', aberto);
+    document.documentElement.style.overflow = aberto ? 'hidden' : '';
+  }
+
+  abrirPainel?.addEventListener('click', () => alternarPainel(Boolean(painel?.hidden ?? true)));
+  abrirMovel?.addEventListener('click', () => alternarMovel(Boolean(movel?.hidden ?? true)));
+  movel?.querySelectorAll('[data-movel-link]').forEach((a) =>
+    a.addEventListener('click', () => alternarMovel(false))
+  );
+
+  /* O painel fecha ao sair com o ponteiro ou ao rolar. */
+  topo?.addEventListener('mouseleave', () => alternarPainel(false));
+  addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    alternarPainel(false);
+    alternarMovel(false);
+  });
+  addEventListener(
+    'scroll',
+    () => {
+      if (painel && !painel.hidden) alternarPainel(false);
+      topo?.classList.toggle('is-rolado', window.scrollY > 12);
+    },
+    { passive: true }
+  );
+</script>
+
+<style>
+  .topo {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--branco);
+    transition: box-shadow var(--dur-1) var(--suave);
+  }
+  .topo.is-rolado { box-shadow: 0 1px 0 var(--fio), 0 8px 26px rgba(18, 39, 68, 0.06); }
+
+  /* --- barra utilitária --- */
+  .topo__util {
+    background: var(--areia);
+    border-bottom: 1px solid var(--fio);
+    display: none;
+  }
+  @media (min-width: 60rem) { .topo__util { display: block; } }
+  .topo__util-linha {
+    height: var(--util);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e-5);
+    font-size: var(--t-min);
+    color: var(--tinta-fraca);
+  }
+  .topo__util-linha a { transition: color var(--dur-1) var(--suave); }
+  .topo__util-linha a:hover { color: var(--navy); }
+
+  /* --- principal --- */
+  .topo__linha {
+    height: var(--topo);
+    display: flex;
+    align-items: center;
+    gap: var(--e-5);
+  }
+  .topo__marca { flex: none; }
+  .topo__marca-svg { display: block; width: 96px; color: var(--navy); }
+
+  .topo__nav {
+    display: none;
+    margin-inline: auto;
+    gap: clamp(1rem, 0.2rem + 1.6vw, 2.1rem);
+  }
+  @media (min-width: 66rem) { .topo__nav { display: flex; } }
+
+  .topo__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: var(--t-min);
+    font-weight: 500;
+    color: var(--tinta);
+    padding-block: 0.4rem;
+    border-bottom: 2px solid transparent;
+    transition: color var(--dur-1) var(--suave), border-color var(--dur-1) var(--suave);
+  }
+  .topo__item svg { width: 0.65rem; opacity: 0.6; transition: transform var(--dur-1) var(--suave); }
+  .topo__item:hover,
+  .topo__item.is-ativo { color: var(--navy); border-bottom-color: var(--navy); }
+  .topo__item.is-ativo svg { transform: rotate(180deg); }
+
+  .topo__cta { display: none; flex: none; padding: 0.7rem 1.15rem; }
+  @media (min-width: 66rem) { .topo__cta { display: inline-flex; } }
+
+  .topo__movel {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-size: var(--t-min);
+    font-weight: 600;
+    color: var(--navy);
+  }
+  @media (min-width: 66rem) { .topo__movel { display: none; } }
+  .topo__movel-marca { display: grid; gap: 5px; width: 20px; }
+  .topo__movel-marca i { display: block; height: 2px; background: currentColor; }
+  .topo__movel.is-ativo .topo__movel-marca i:first-child { transform: translateY(3.5px) rotate(45deg); }
+  .topo__movel.is-ativo .topo__movel-marca i:last-child { transform: translateY(-3.5px) rotate(-45deg); }
+  .topo__movel-marca i { transition: transform var(--dur-1) var(--suave); }
+
+  /* --- painel de soluções --- */
+  .painel {
+    position: absolute;
+    inset: 100% 0 auto 0;
+    background: var(--branco);
+    border-top: 1px solid var(--fio);
+    box-shadow: 0 18px 40px rgba(18, 39, 68, 0.1);
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity var(--dur-1) var(--suave), transform var(--dur-1) var(--suave);
+  }
+  .painel[hidden] { display: none; }
+  .painel.is-aberto { opacity: 1; transform: none; }
+
+  .painel__grade {
+    display: grid;
+    gap: var(--e-6);
+    padding-block: var(--e-6) var(--e-7);
+  }
+  @media (min-width: 66rem) {
+    .painel__grade { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--e-7); }
+  }
+  .painel__titulo { margin: 0.55rem 0 var(--e-4); }
+  .painel__lista { display: grid; gap: 0.1rem; }
+  .painel__lista a {
+    display: block;
+    padding: 0.5rem 0;
+    font-size: var(--t-min);
+    color: var(--tinta-media);
+    border-bottom: 1px solid var(--fio);
+    transition: color var(--dur-1) var(--suave), padding-left var(--dur-1) var(--suave);
+  }
+  .painel__lista a:hover { color: var(--navy); padding-left: 0.35rem; }
+  .painel__col--nota { align-content: start; }
+  .painel__nota { margin: 0.55rem 0 var(--e-4); max-width: 34ch; }
+
+  /* --- menu móvel --- */
+  .movel {
+    position: fixed;
+    inset: calc(var(--topo)) 0 0 0;
+    background: var(--branco);
+    padding: var(--e-6) var(--marg) var(--e-8);
+    overflow-y: auto;
+    display: grid;
+    align-content: start;
+    gap: var(--e-6);
+  }
+  .movel[hidden] { display: none; }
+  @media (min-width: 66rem) { .movel { display: none !important; } }
+  .movel ul { display: grid; }
+  .movel a {
+    display: block;
+    padding: 1rem 0;
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: -0.018em;
+    border-bottom: 1px solid var(--fio);
+  }
+  .movel__cta { justify-self: start; }
+</style>

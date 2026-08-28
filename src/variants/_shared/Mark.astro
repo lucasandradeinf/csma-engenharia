@@ -1,0 +1,98 @@
+---
+/**
+ * Logotipo CSMA — reconstrucao vetorial (identidade, compartilhada).
+ *
+ * As tres direcoes usam o MESMO logotipo: e a mesma empresa. A geometria foi
+ * obtida medindo o arquivo de logotipo embutido na apresentacao comercial
+ * (XObject 1090x230, fundo #01193B): traco uniforme de 23u, altura de caixa
+ * alta 22u->209u, "C" com raio 82u, "S" com arcos de 41,25u e 40,75u,
+ * hastes do "M" em x=569,5 e 778,5, e travessao metalico no "A".
+ *
+ * O que muda por variante e apenas a cor (currentColor) e a cor do travessao.
+ */
+interface Props {
+  /** Nome acessivel. Vazio => elemento decorativo. */
+  title?: string;
+  class?: string;
+  /** Anima a entrada glifo a glifo quando um ancestral recebe `.is-in`. */
+  animado?: boolean;
+  /** Cor do travessao do "A". */
+  travessao?: string;
+}
+
+const {
+  title = '',
+  class: className = '',
+  animado = false,
+  travessao = 'currentColor',
+} = Astro.props;
+
+const decorativo = title.length === 0;
+---
+
+<svg
+  class:list={['marca', animado && 'marca--anim', className]}
+  viewBox="0 0 1090 230"
+  fill="none"
+  role={decorativo ? 'presentation' : 'img'}
+  aria-hidden={decorativo ? 'true' : undefined}
+  aria-label={decorativo ? undefined : title}
+  style={`--travessao:${travessao}`}
+>
+  {!decorativo && <title>{title}</title>}
+
+  <g stroke="currentColor" stroke-width="23" stroke-linecap="butt" stroke-linejoin="miter">
+    <path class="marca__g" style="--i:0" d="M246 33.5 H114 A82 82 0 0 0 114 197.5 H246" />
+    <path
+      class="marca__g"
+      style="--i:1"
+      d="M498 33.5 H342.75 A41.25 41.25 0 0 0 342.75 116 H448.75 A40.75 40.75 0 0 1 448.75 197.5 H290.5"
+    />
+    <path
+      class="marca__g"
+      style="--i:2"
+      d="M569.5 22 V209 M778.5 22 V209 M569.5 33.5 L674 144 L778.5 33.5"
+    />
+  </g>
+
+  <path
+    class="marca__g"
+    style="--i:3"
+    fill="currentColor"
+    d="M825.9 209 L938.5 22 H958 L1070.6 209 H1043.8 L948.25 50.3 L852.7 209 Z"
+  />
+  <path
+    class="marca__g marca__travessao"
+    style="--i:4"
+    fill="var(--travessao)"
+    d="M906.5 187.5 H987.5 L996.5 205 H897.5 Z"
+  />
+</svg>
+
+<style>
+  .marca {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .marca--anim .marca__g {
+    opacity: 0;
+    transform: translateY(7px);
+    transform-box: fill-box;
+    transform-origin: center;
+    transition:
+      opacity 620ms cubic-bezier(0.16, 0.84, 0.34, 1),
+      transform 620ms cubic-bezier(0.16, 0.84, 0.34, 1);
+    transition-delay: calc(var(--i) * 90ms + var(--marca-atraso, 0ms));
+  }
+  .marca--anim.is-in .marca__g,
+  .is-in .marca--anim .marca__g {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marca--anim .marca__g { opacity: 1; transform: none; }
+  }
+</style>

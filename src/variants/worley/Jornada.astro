@@ -1,0 +1,287 @@
+---
+/**
+ * Ato 02 — A jornada. O centro da direção 03.
+ *
+ * O capítulo gruda: à esquerda, um painel fixo com o verbo do momento e a
+ * trilha de seis pontos; à direita, os capítulos passam. O leitor percorre
+ * a metodologia da CSMA como quem percorre um projeto — do diagnóstico à
+ * entrega — sem nunca perder de vista onde está.
+ *
+ * Os seis capítulos são as seis etapas da apresentação comercial.
+ */
+import { constructibility as c } from '../../data/site';
+import { jornada } from './jornada';
+---
+
+<section class="ato escuro jornada" id="jornada" aria-labelledby="t-jornada">
+  <div class="faixa">
+    <div class="abertura">
+      <p class="num abertura__num" data-c>Ato 02 — Metodologia CSMA</p>
+      <h2 class="tit tit--h2" id="t-jornada" data-c style="--atraso:80ms">
+        A jornada de um projeto com a CSMA
+      </h2>
+      <p class="lead" data-c style="--atraso:160ms">{c.lead}</p>
+    </div>
+  </div>
+
+  <div class="faixa jornada__palco" data-jornada>
+    <!-- painel fixo -->
+    <aside class="palco__fixo" aria-hidden="true">
+      <div class="palco__verbos">
+        {
+          jornada.map((j, i) => (
+            <div class:list={['verbo', i === 0 && 'is-ativo']} data-verbo={i}>
+              <span class="verbo__n">{j.n}</span>
+              <h3 class="tit verbo__nome">{j.verbo}</h3>
+              <p class="verbo__resumo">{j.resumo}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <ol class="palco__trilha">
+        {
+          jornada.map((j, i) => (
+            <li class:list={['trilha__ponto', i === 0 && 'is-ativo']} data-ponto={i}>
+              <span class="trilha__marca" />
+              <span class="trilha__rot">{j.verbo}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </aside>
+
+    <!-- capítulos -->
+    <ol class="palco__capitulos">
+      {
+        jornada.map((j, i) => (
+          <li class="capitulo" data-capitulo={i}>
+            <div class="capitulo__cabeca">
+              <span class="capitulo__n">{j.n}</span>
+              <h3 class="tit tit--h3 capitulo__verbo">{j.verbo}</h3>
+            </div>
+
+            <p class="capitulo__etapa">{j.titulo}</p>
+            <p class="capitulo__texto">{j.texto}</p>
+
+            <ul class="marcas capitulo__saidas">
+              {j.saidas.map((s) => (
+                <li>{s}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  <div class="faixa">
+    <div class="jornada__fecho" data-c>
+      <p class="jornada__frase">{c.statement}</p>
+      <p class="min jornada__obs">{c.note}</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  const palco = document.querySelector<HTMLElement>('[data-jornada]');
+  if (palco) {
+    const capitulos = [...palco.querySelectorAll<HTMLElement>('[data-capitulo]')];
+    const verbos = [...palco.querySelectorAll<HTMLElement>('[data-verbo]')];
+    const pontos = [...palco.querySelectorAll<HTMLElement>('[data-ponto]')];
+
+    let atual = -1;
+    const focar = (i: number) => {
+      if (i === atual) return;
+      atual = i;
+      verbos.forEach((v, j) => v.classList.toggle('is-ativo', i === j));
+      pontos.forEach((p, j) => {
+        p.classList.toggle('is-ativo', i === j);
+        p.classList.toggle('is-passado', j < i);
+      });
+    };
+
+    const io = new IntersectionObserver(
+      (entradas) => {
+        for (const e of entradas) {
+          if (!e.isIntersecting) continue;
+          const i = Number((e.target as HTMLElement).dataset.capitulo);
+          focar(i);
+        }
+      },
+      { rootMargin: '-45% 0px -45% 0px', threshold: 0 }
+    );
+    capitulos.forEach((cap) => io.observe(cap));
+  }
+</script>
+
+<style>
+  .jornada { padding-bottom: var(--e-8); }
+
+  .jornada__palco { display: grid; gap: var(--e-6); }
+  @media (min-width: 64rem) {
+    .jornada__palco {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      gap: var(--e-8);
+      align-items: start;
+    }
+  }
+
+  /* ---------------- painel fixo ---------------- */
+  .palco__fixo { display: none; }
+  @media (min-width: 64rem) {
+    .palco__fixo {
+      display: grid;
+      gap: var(--e-7);
+      align-content: start;
+      position: sticky;
+      top: calc(var(--topo) + 12vh);
+      min-height: 22rem;
+    }
+  }
+
+  .palco__verbos { position: relative; min-height: 15rem; }
+  .verbo {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    gap: var(--e-3);
+    align-content: start;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity var(--dur-2) var(--cine), transform var(--dur-2) var(--cine);
+    pointer-events: none;
+  }
+  .verbo.is-ativo { opacity: 1; transform: none; }
+  .verbo__n {
+    font-family: var(--f-num);
+    font-size: var(--t-num-g);
+    letter-spacing: 0.22em;
+    color: var(--mineral);
+  }
+  .verbo__nome {
+    font-size: clamp(2.5rem, 1.4rem + 3.4vw, 4.5rem);
+    line-height: 0.98;
+    color: #fff;
+  }
+  .verbo__resumo {
+    font-size: var(--t-min);
+    line-height: 1.65;
+    color: var(--txt-fraco);
+    max-width: 30ch;
+  }
+
+  .palco__trilha { display: grid; gap: 0.15rem; }
+  .trilha__ponto {
+    display: grid;
+    grid-template-columns: 1.35rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.85rem;
+    padding-block: 0.35rem;
+  }
+  .trilha__marca {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    border: 1px solid var(--fio-forte);
+    justify-self: center;
+    transition: background var(--dur-1) var(--cine), border-color var(--dur-1) var(--cine),
+      transform var(--dur-1) var(--cine);
+  }
+  .trilha__rot {
+    font-family: var(--f-num);
+    font-size: var(--t-num);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(233, 227, 216, 0.4);
+    transition: color var(--dur-1) var(--cine);
+  }
+  .trilha__ponto.is-passado .trilha__marca { background: var(--fio-forte); border-color: transparent; }
+  .trilha__ponto.is-ativo .trilha__marca {
+    background: var(--mineral);
+    border-color: var(--mineral);
+    transform: scale(1.5);
+  }
+  .trilha__ponto.is-ativo .trilha__rot { color: #fff; }
+
+  /* ---------------- capítulos ---------------- */
+  .palco__capitulos { display: grid; gap: var(--e-6); }
+  @media (min-width: 64rem) {
+    .palco__capitulos { gap: 0; }
+  }
+
+  .capitulo {
+    border-top: 1px solid var(--fio);
+    padding-block: var(--e-6);
+    display: grid;
+    gap: var(--e-4);
+    align-content: center;
+  }
+  @media (min-width: 64rem) {
+    .capitulo { min-height: 68vh; padding-block: var(--e-7); }
+  }
+  .capitulo:last-child { border-bottom: 1px solid var(--fio); }
+
+  .capitulo__cabeca {
+    display: flex;
+    align-items: baseline;
+    gap: var(--e-4);
+  }
+  .capitulo__n {
+    font-family: var(--f-num);
+    font-size: var(--t-num-g);
+    letter-spacing: 0.2em;
+    color: var(--mineral);
+  }
+  .capitulo__verbo { color: #fff; }
+  @media (min-width: 64rem) {
+    /* No desktop o verbo já está no painel fixo: aqui ele vira contraponto discreto. */
+    .capitulo__verbo {
+      font-size: var(--t-h4);
+      color: var(--mineral);
+      font-family: var(--f-corpo);
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+  }
+
+  .capitulo__etapa {
+    font-family: var(--f-titulo);
+    font-size: var(--t-h3);
+    line-height: 1.12;
+    color: #fff;
+    max-width: 20ch;
+  }
+  .capitulo__texto {
+    font-size: var(--t-base);
+    line-height: 1.72;
+    color: var(--txt-fraco);
+    max-width: 48ch;
+  }
+  .capitulo__saidas { margin-top: 0.35rem; }
+
+  /* ---------------- fecho ---------------- */
+  .jornada__fecho {
+    margin-top: var(--e-8);
+    padding-top: var(--e-6);
+    border-top: 1px solid var(--fio);
+    display: grid;
+    gap: var(--e-4);
+  }
+  @media (min-width: 62rem) {
+    .jornada__fecho {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--e-7);
+      align-items: start;
+    }
+  }
+  .jornada__frase {
+    font-family: var(--f-titulo);
+    font-size: var(--t-h3);
+    line-height: 1.14;
+    color: #fff;
+    max-width: 20ch;
+  }
+  .jornada__obs { max-width: 48ch; }
+</style>

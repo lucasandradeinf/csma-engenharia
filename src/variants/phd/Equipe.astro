@@ -1,0 +1,255 @@
+---
+/**
+ * Capítulo 09 — equipe e experiência do corpo técnico.
+ *
+ * Uma empresa especialista se prova pelas pessoas. A cifra de +100 anos é a
+ * da apresentação; as grandezas (milhares de toneladas, milhões de
+ * homens-hora, centenas de projetos) também. Nenhuma foi convertida em número
+ * fechado, porque a apresentação não fecha nenhuma.
+ */
+import { team, experience } from '../../data/site';
+---
+
+<section class="cap claro equipe" id="equipe" aria-labelledby="t-equipe">
+  <div class="malha" aria-hidden="true"></div>
+
+  <div class="faixa">
+    <div class="cabec cabec--largo">
+      <p class="cabec__cota">09 / {team.eyebrow}</p>
+      <h2 class="enunciado" id="t-equipe" data-r>{team.title}</h2>
+      <p class="lead equipe__lead" data-r style="--atraso:120ms">{team.lead}</p>
+    </div>
+
+    <div class="equipe__topo">
+      <!-- cifra -->
+      <div class="equipe__cifra" data-r data-observa>
+        <span class="equipe__num">
+          <i>{team.metric.prefix}</i>{team.metric.value}
+        </span>
+        <span class="dado equipe__unidade">{team.metric.unit}</span>
+        <p class="corpo equipe__caption">{team.metricCaption}</p>
+      </div>
+
+      <!-- especialidades mobilizadas -->
+      <div class="equipe__papeis">
+        <h3 class="dado dado--oxido equipe__legenda">Especialidades mobilizadas</h3>
+        <ul class="equipe__lista" data-rg>
+          {
+            team.roles.map((r) => (
+              <li class="equipe__papel">
+                <span class="dado equipe__papel-n">{r.idx}</span>
+                <span class="equipe__papel-nome">{r.title}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="dado dado--fraco equipe__nota">{team.footnote}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- experiência do corpo técnico ---------- -->
+  <div class="equipe__campo">
+    <div class="faixa">
+      <div class="cabec cabec--largo">
+        <p class="cabec__cota">09.1 / {experience.eyebrow}</p>
+        <h3 class="enunciado equipe__h3" data-r>{experience.title}</h3>
+        <p class="lead equipe__lead" data-r style="--atraso:120ms">{experience.lead}</p>
+      </div>
+
+      <div class="equipe__areas" data-rg>
+        {
+          experience.areas.map((a) => (
+            <article class="equipe__area">
+              <span class="dado dado--oxido">{a.idx}</span>
+              <p class="equipe__area-txt">{a.title}</p>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="equipe__grandezas" data-rg>
+        {
+          experience.metrics.map((m) => (
+            <div class="equipe__grandeza">
+              <span class="equipe__mag">{m.magnitude}</span>
+              <span class="dado dado--fraco">{m.text}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="equipe__escopo">
+        <p class="corpo equipe__escopo-txt" data-r>{experience.scopeNote}</p>
+        <ul class="equipe__tipos" data-rg>
+          {experience.projectTypes.map((t) => <li class="dado">{t}</li>)}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .equipe { background: var(--osso); padding-bottom: 0; }
+  .equipe__lead { max-width: 42ch; }
+
+  .equipe__topo {
+    display: grid;
+    gap: var(--e-7);
+    padding-bottom: var(--e-9);
+  }
+  @media (min-width: 64rem) {
+    .equipe__topo {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: var(--e-8);
+      align-items: start;
+    }
+  }
+
+  /* --- cifra --- */
+  .equipe__cifra {
+    border-top: 2px solid var(--oxido);
+    padding-top: var(--e-4);
+  }
+  .equipe__num {
+    display: block;
+    font-size: var(--t-cifra);
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    line-height: 0.86;
+    color: var(--tinta-forte);
+    font-variant-numeric: tabular-nums;
+  }
+  .equipe__num i {
+    font-style: normal;
+    color: var(--oxido);
+    font-size: 0.5em;
+    vertical-align: 0.42em;
+    letter-spacing: 0;
+  }
+  .equipe__unidade {
+    display: block;
+    margin-top: 0.6rem;
+    color: var(--tinta-fraca);
+  }
+  .equipe__caption {
+    margin-top: var(--e-4);
+    font-size: var(--t-min);
+    line-height: 1.7;
+    max-width: 32ch;
+  }
+
+  /* --- papéis --- */
+  .equipe__legenda { display: block; margin-bottom: var(--e-4); }
+  .equipe__lista {
+    display: grid;
+    gap: 1px;
+    background: var(--fio);
+    border-block: 1px solid var(--fio);
+  }
+  @media (min-width: 44rem) {
+    .equipe__lista { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    /* Sete papéis em duas colunas deixariam uma célula vazia: a última ocupa a linha. */
+    .equipe__papel:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  }
+  .equipe__papel {
+    background: var(--osso);
+    display: grid;
+    grid-template-columns: 2.2rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.8rem;
+    padding: 0.95rem 0.5rem;
+  }
+  .equipe__papel-n { color: var(--oxido); }
+  .equipe__papel-nome {
+    font-size: var(--t-min);
+    font-weight: 500;
+    color: var(--tinta-forte);
+    line-height: 1.45;
+  }
+  .equipe__nota { margin-top: var(--e-4); text-transform: none; letter-spacing: 0.02em; font-size: var(--t-dado-g); }
+
+  /* --- experiência (bloco escuro dentro do capítulo claro) --- */
+  .equipe__campo {
+    background: var(--grafite);
+    color: var(--osso);
+    padding-block: var(--e-9);
+    --sup: var(--grafite);
+    --tinta: var(--osso);
+    --tinta-forte: #fff;
+    --tinta-fraca: #98a0a7;
+    --fio: rgba(232, 229, 222, 0.14);
+    --fio-forte: rgba(232, 229, 222, 0.3);
+  }
+  .equipe__campo .corpo { color: var(--tinta-fraca); }
+  .equipe__h3 { font-size: var(--t-h2); }
+
+  .equipe__areas {
+    display: grid;
+    gap: 1px;
+    background: var(--fio);
+    border-block: 1px solid var(--fio);
+    margin-bottom: var(--e-7);
+  }
+  @media (min-width: 48rem) {
+    .equipe__areas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 72rem) {
+    .equipe__areas { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  .equipe__area {
+    background: var(--grafite);
+    padding: var(--e-5) var(--e-4) var(--e-6);
+    display: grid;
+    gap: 0.7rem;
+    align-content: start;
+  }
+  .equipe__area-txt {
+    font-size: var(--t-min);
+    font-weight: 500;
+    line-height: 1.5;
+    color: #fff;
+  }
+
+  .equipe__grandezas {
+    display: grid;
+    gap: var(--e-5);
+    padding-block: var(--e-6);
+    border-bottom: 1px solid var(--fio);
+  }
+  @media (min-width: 44rem) {
+    .equipe__grandezas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 72rem) {
+    .equipe__grandezas { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  .equipe__grandeza { display: grid; gap: 0.4rem; }
+  .equipe__mag {
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: -0.028em;
+    text-transform: uppercase;
+    color: var(--oxido-claro);
+    line-height: 1;
+  }
+
+  .equipe__escopo {
+    margin-top: var(--e-6);
+    display: grid;
+    gap: var(--e-4);
+  }
+  @media (min-width: 62rem) {
+    .equipe__escopo {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--e-7);
+      align-items: start;
+    }
+  }
+  .equipe__escopo-txt { font-size: var(--t-min); line-height: 1.7; max-width: 46ch; }
+  .equipe__tipos { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .equipe__tipos li {
+    padding: 0.36rem 0.7rem;
+    border: 1px solid var(--fio);
+    color: var(--osso);
+  }
+</style>

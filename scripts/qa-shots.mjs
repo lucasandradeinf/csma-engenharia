@@ -22,7 +22,7 @@ const clickSelector = process.env.QA_CLICK || '';
 
 const sections = (
   process.argv[5] ||
-  'topo,a-csma,desafio,abordagem,metodologia,solucoes,cases,entregaveis,equipe,experiencia,segmentos,diferenciais,resultados,contato'
+  'topo,a-csma,desafio,construtibilidade,metodologia,solucoes,cases,entregaveis,equipe,experiencia,segmentos,diferenciais,resultados,contato'
 ).split(',');
 
 const PORT = 9333 + (Number(process.env.QA_PORT_OFFSET) || 0);

@@ -4,12 +4,7 @@ import ServiceMark from './ui/ServiceMark.astro';
 import { services } from '../data/site';
 ---
 
-<section
-  class="chapter services"
-  id="solucoes"
-  aria-labelledby="services-title"
-  style="--surface: var(--c-off-white)"
->
+<section class="chapter services" id="solucoes" aria-labelledby="services-title">
   <div class="shell">
     <SectionHead
       num="05"
@@ -37,6 +32,10 @@ import { services } from '../data/site';
 </section>
 
 <style>
+  .services {
+    background: var(--c-white);
+  }
+
   .sv__list {
     border-top: 1px solid var(--rule-strong);
   }
@@ -68,7 +67,7 @@ import { services } from '../data/site';
     line-height: 1.1;
     letter-spacing: -0.018em;
     color: var(--ink-strong);
-    max-width: 22ch;
+    max-width: 30ch;
     transition: transform var(--dur) var(--ease-out);
   }
 

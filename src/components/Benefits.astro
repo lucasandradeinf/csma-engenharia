@@ -1,128 +1,164 @@
 ---
 import SectionHead from './ui/SectionHead.astro';
-import { benefits, challenge } from '../data/site';
+import { benefits } from '../data/site';
 
-/* Cada resultado remete ao ponto de falha correspondente do capítulo 02 —
-   a leitura fecha o ciclo problema → intervenção → resultado. */
-const faultTitle = new Map(challenge.items.map((i) => [i.code, i.title]));
+/* O capitulo fecha o raciocinio aberto em "O desafio dos projetos industriais":
+   a situacao que se repete no campo, e o que a CSMA entrega no lugar dela.
+   Sem siglas e sem legenda — a leitura tem que funcionar sozinha. */
 ---
 
-<section class="chapter benefits" id="resultados" aria-labelledby="benefits-title">
+<section class="chapter benefits is-alt" id="resultados" aria-labelledby="benefits-title">
   <div class="shell">
-    <SectionHead num="12" eyebrow={benefits.eyebrow} title={benefits.title} id="benefits-title" />
+    <SectionHead
+      num="12"
+      eyebrow={benefits.eyebrow}
+      title={benefits.title}
+      id="benefits-title"
+      lead={benefits.lead}
+    />
 
-    <ol class="bf__list">
-      {
-        benefits.items.map((item, i) => (
-          <li class="bf__item" data-reveal style={`--reveal-delay:${i * 70}ms`}>
-            <div class="bf__chain">
-              <span class="bf__from mono">{item.from}</span>
-              <svg class="bf__arrow" width="34" height="9" viewBox="0 0 34 9" fill="none" aria-hidden="true">
-                <path d="M0 4.5h31M28 1l3.5 3.5L28 8" stroke="currentColor" stroke-width="1" />
-              </svg>
-              <span class="bf__to mono">{item.code}</span>
-            </div>
+    <div class="bf__table">
+      <div class="bf__legend" aria-hidden="true">
+        <span class="mono bf__legend-before">{benefits.columns.before}</span>
+        <span class="mono bf__legend-after">{benefits.columns.after}</span>
+      </div>
 
-            <p class="bf__text">{item.text}</p>
+      <ol class="bf__rows">
+        {
+          benefits.items.map((item) => (
+            <li class="bf__row" data-reveal>
+              <p class="bf__before">
+                <span class="visually-hidden">{benefits.columns.before}: </span>
+                {item.before}
+              </p>
 
-            <p class="bf__origin">
-              <span class="visually-hidden">Responde ao ponto de falha</span>
-              <span aria-hidden="true">{faultTitle.get(item.from)}</span>
-            </p>
-          </li>
-        ))
-      }
-    </ol>
+              <span class="bf__link" aria-hidden="true">
+                <span class="bf__link-rule" />
+                <svg class="bf__link-arrow" width="9" height="12" viewBox="0 0 9 12" fill="none">
+                  <path d="M4.5 0v10M1 7l3.5 3.5L8 7" stroke="currentColor" stroke-width="1" />
+                </svg>
+              </span>
 
-    <p class="bf__legend mono" data-reveal>
-      F — ponto de falha identificado &nbsp;·&nbsp; R — resultado entregue
-    </p>
+              <p class="bf__after">
+                <span class="visually-hidden">{benefits.columns.after}: </span>
+                {item.after}
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
   </div>
 </section>
 
 <style>
   .benefits {
-    background: var(--c-white);
+    background: var(--surface);
   }
 
-  .bf__list {
-    display: grid;
-    gap: 0;
+  .bf__table {
     border-top: 1px solid var(--rule-strong);
   }
 
-  .bf__item {
+  .bf__legend {
+    display: none;
+  }
+
+  .bf__rows {
+    display: grid;
+  }
+
+  .bf__row {
     display: grid;
     gap: var(--space-xs);
     padding-block: var(--space-lg);
     border-bottom: 1px solid var(--rule);
-    transition: background-color var(--dur) var(--ease-out);
   }
 
-  .bf__chain {
+  .bf__before {
+    color: var(--ink-faint);
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+    max-width: 46ch;
+  }
+
+  /* A seta é a própria afirmação: a situação vira resultado. */
+  .bf__link {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    color: var(--ink-faint);
-  }
-  .bf__from {
-    color: var(--ink-faint);
-    letter-spacing: 0.16em;
-  }
-  .bf__to {
+    gap: 0.7rem;
     color: var(--accent);
-    letter-spacing: 0.16em;
   }
-  .bf__arrow {
+  .bf__link-rule {
+    display: block;
+    width: 1.75rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.5;
+  }
+  .bf__link-arrow {
     flex: none;
     transition: transform var(--dur) var(--ease-out);
   }
 
-  .bf__text {
+  .bf__after {
     font-family: var(--font-display);
-    font-size: clamp(1.125rem, 0.92rem + 0.95vw, 1.625rem);
+    font-size: clamp(1.1875rem, 0.95rem + 1.2vw, 1.875rem);
     line-height: 1.2;
     letter-spacing: -0.012em;
     color: var(--ink-strong);
-    max-width: 24ch;
+    max-width: 30ch;
   }
 
-  .bf__origin {
-    font-size: var(--fs-sm);
-    color: var(--ink-faint);
-  }
+  /* ---------- Desktop: duas colunas, leitura da esquerda para a direita ---------- */
+  @media (min-width: 62rem) {
+    .bf__legend {
+      display: grid;
+      grid-template-columns: minmax(0, 0.66fr) 4.5rem minmax(0, 1.34fr);
+      align-items: baseline;
+      padding-block: var(--space-sm);
+      border-bottom: 1px solid var(--rule);
+      color: var(--ink-faint);
+    }
+    .bf__legend-before {
+      letter-spacing: 0.18em;
+    }
+    .bf__legend-after {
+      grid-column: 3;
+      letter-spacing: 0.18em;
+      color: var(--ink);
+    }
 
-  .bf__legend {
-    margin-top: var(--space-lg);
-    color: var(--ink-faint);
-    letter-spacing: 0.14em;
-  }
-
-  @media (hover: hover) {
-    .bf__item:hover .bf__arrow {
-      transform: translateX(4px);
+    .bf__row {
+      grid-template-columns: minmax(0, 0.66fr) 4.5rem minmax(0, 1.34fr);
+      align-items: center;
+      gap: 0;
+      padding-block: var(--space-lg);
+    }
+    .bf__before {
+      padding-right: var(--space-md);
+      max-width: none;
+    }
+    .bf__link {
+      justify-content: center;
+    }
+    .bf__link-rule {
+      width: 1.5rem;
+    }
+    .bf__link-arrow {
+      transform: rotate(-90deg);
     }
   }
 
-  @media (min-width: 48rem) {
-    .bf__list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      column-gap: var(--space-2xl);
-    }
-  }
-
-  @media (min-width: 78rem) {
-    .bf__list {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    .bf__item {
-      padding-block: var(--space-xl);
+  @media (hover: hover) and (min-width: 62rem) {
+    .bf__row:hover .bf__link-arrow {
+      transform: rotate(-90deg) translateY(3px);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .bf__arrow {
-      transform: none !important;
+    .bf__link-arrow {
+      transition: none;
     }
   }
 </style>

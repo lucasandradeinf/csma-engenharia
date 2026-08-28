@@ -1,0 +1,80 @@
+---
+import './arcadis.css';
+import { site } from '../../data/site';
+import { withBase } from '../../lib/url';
+import { fontFaces, fontPreloads } from '../../lib/fonts';
+import Switcher from '../_shared/Switcher.astro';
+
+/* Uma família só: a direção institucional não mistura tipografias. */
+const FAMILIES = ['sans'] as const;
+const faces = fontFaces(FAMILIES);
+const preloads = fontPreloads(FAMILIES);
+
+const title = `${site.legalName} — Consultoria de construtibilidade | Direção 02`;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={site.description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content="noindex, follow" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="color-scheme" content="light" />
+
+    <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
+    <link rel="alternate icon" href={withBase('favicon.ico')} sizes="48x48" />
+
+    {preloads.map((href) => (
+      <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+    ))}
+    <style is:inline set:html={faces}></style>
+  </head>
+
+  <body>
+    <a class="pular" href="#conteudo">Ir para o conteúdo</a>
+    <slot />
+    <Switcher atual="arcadis" />
+
+    <script>
+      const reduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const alvos = document.querySelectorAll<HTMLElement>('[data-e], [data-eg], [data-observa]');
+
+      if (reduzido) {
+        alvos.forEach((el) => el.classList.add('is-in'));
+      } else {
+        const io = new IntersectionObserver(
+          (entradas) => {
+            for (const e of entradas) {
+              if (!e.isIntersecting) continue;
+              e.target.classList.add('is-in');
+              io.unobserve(e.target);
+            }
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.05 }
+        );
+        alvos.forEach((el) => io.observe(el));
+      }
+    </script>
+
+    <style is:global>
+      /* O comutador de direções assume a linguagem institucional. */
+      .sw {
+        --sw-fundo: rgba(255, 255, 255, 0.94);
+        --sw-hover: #f0eeea;
+        --sw-borda: #d8d6d0;
+        --sw-tinta: #14181c;
+        --sw-ativo-fundo: #122744;
+        --sw-ativo-tinta: #ffffff;
+        --sw-fonte: 'IBM Plex Sans', system-ui, sans-serif;
+        --sw-raio: 2px;
+      }
+      .sw__item { font-weight: 600; letter-spacing: 0.06em; }
+    </style>
+  </body>
+</html>
