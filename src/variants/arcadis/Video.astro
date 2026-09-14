@@ -1,0 +1,262 @@
+---
+/**
+ * Video institucional — direcao 02.
+ *
+ * O filme entregue pelo cliente e vertical (1080x1920, 1min32, com narracao).
+ * Por isso ele nao entra como faixa de largura total: entra como peca de
+ * formato retrato, emoldurada em navy, ao lado de uma coluna editorial.
+ *
+ * Carregamento: o arquivo tem o atomo `moov` na frente (faststart), entao
+ * `preload="metadata"` baixa so o indice (~103 KB) e a reproducao comeca
+ * assim que o visitante clica — sem esperar os 60 MB. Com `preload="none"`
+ * o Chrome nao inicia o carregamento de forma confiavel num arquivo deste
+ * tamanho. O cartaz e uma imagem otimizada pelo Astro.
+ * Nao ha autoplay: o video tem narracao e reproduzir som sem pedido e mau
+ * uso do tempo de quem visita.
+ */
+import { getImage } from 'astro:assets';
+import cartazOriginal from '../../assets/video/institucional-poster.jpg';
+import { withBase } from '../../lib/url';
+import { filme } from './conteudo';
+
+const cartaz = await getImage({
+  src: cartazOriginal,
+  format: 'jpeg',
+  quality: 72,
+  width: 720,
+  height: 1280,
+});
+
+const arquivo = withBase(filme.file);
+---
+
+<section class="bloco bloco--areia filme" id="video" aria-labelledby="t-filme">
+  <div class="faixa filme__grade">
+    <div class="filme__texto">
+      <p class="rotulo" data-e>{filme.eyebrow}</p>
+      <h2 class="h2 filme__titulo" id="t-filme" data-e style="--atraso:60ms">{filme.title}</h2>
+      <p class="lead filme__lead" data-e style="--atraso:140ms">{filme.lead}</p>
+
+      <dl class="filme__ficha" data-e style="--atraso:220ms">
+        <div>
+          <dt>Duração</dt>
+          <dd>{filme.duration}</dd>
+        </div>
+        <div>
+          <dt>Áudio</dt>
+          <dd>Com narração</dd>
+        </div>
+      </dl>
+
+      <p class="min filme__nota" data-e style="--atraso:280ms">{filme.note}</p>
+    </div>
+
+    <figure class="filme__palco" data-e style="--atraso:120ms">
+      <div class="filme__moldura">
+        <video
+          class="filme__video"
+          data-video
+          poster={cartaz.src}
+          preload="metadata"
+          playsinline
+          controls
+          controlslist="nodownload"
+          aria-label={`${filme.title} — vídeo institucional da CSMA Engenharia, ${filme.duration}, com narração.`}
+        >
+          <source src={arquivo} type="video/mp4" />
+          Seu navegador não reproduz vídeo. <a href={arquivo}>Baixe o filme institucional</a>.
+        </video>
+
+        <button class="filme__play" type="button" data-play hidden>
+          <span class="filme__play-disco" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M8 5.5v13l11-6.5-11-6.5Z" fill="currentColor" />
+            </svg>
+          </span>
+          <span class="filme__play-txt">
+            {filme.cta}
+            <span class="filme__play-dur">{filme.duration}</span>
+          </span>
+        </button>
+      </div>
+      <figcaption class="filme__legenda">{filme.posterAlt}</figcaption>
+    </figure>
+  </div>
+</section>
+
+<script>
+  const video = document.querySelector<HTMLVideoElement>('[data-video]');
+  const play = document.querySelector<HTMLButtonElement>('[data-play]');
+
+  if (video && play) {
+    /* Sem JavaScript o visitante fica com os controles nativos sobre o cartaz;
+       com JavaScript, ganha a capa limpa com o botao de reproducao. */
+    play.hidden = false;
+    video.controls = false;
+
+    const esconder = () => {
+      play.hidden = true;
+      video.controls = true;
+    };
+
+    play.addEventListener('click', () => {
+      esconder();
+      video.play().catch(() => {
+        /* Se o navegador recusar, os controles nativos ja estao a mostra. */
+      });
+    });
+
+    video.addEventListener('ended', () => {
+      video.controls = true;
+    });
+  }
+</script>
+
+<style>
+  .filme__grade {
+    display: grid;
+    gap: var(--e-7);
+    align-items: center;
+  }
+  @media (min-width: 62rem) {
+    .filme__grade {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.78fr);
+      gap: var(--e-9);
+    }
+  }
+
+  /* ---------------- coluna editorial ---------------- */
+  .filme__texto { max-width: 34rem; }
+  .filme__titulo { margin-top: var(--e-4); }
+  .filme__lead { margin-top: var(--e-4); }
+
+  .filme__ficha {
+    margin-top: var(--e-6);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e-6);
+    padding-top: var(--e-4);
+    border-top: 1px solid var(--fio-forte);
+  }
+  .filme__ficha dt {
+    font-size: var(--t-rotulo);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tinta-fraca);
+  }
+  .filme__ficha dd {
+    margin: 0.3rem 0 0;
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: -0.014em;
+    color: var(--navy);
+    font-variant-numeric: tabular-nums;
+  }
+  .filme__nota { margin-top: var(--e-4); max-width: 36ch; }
+
+  /* ---------------- palco do filme ---------------- */
+  .filme__palco {
+    margin: 0;
+    display: grid;
+    justify-items: center;
+    gap: var(--e-4);
+  }
+
+  .filme__moldura {
+    position: relative;
+    width: 100%;
+    max-width: 24rem;
+    aspect-ratio: 9 / 16;
+    background: var(--navy-fundo);
+    border-radius: var(--raio);
+    overflow: hidden;
+    box-shadow: 0 18px 44px rgba(18, 39, 68, 0.14);
+  }
+  @media (min-width: 62rem) {
+    .filme__moldura { max-width: min(100%, 25rem); max-height: min(78svh, 44rem); }
+  }
+  .filme__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: var(--navy-fundo);
+  }
+
+  /* ---------------- capa de reproducao ---------------- */
+  .filme__play[hidden] { display: none; }
+  .filme__play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-content: end;
+    justify-items: start;
+    gap: var(--e-4);
+    padding: var(--e-5);
+    text-align: left;
+    color: #fff;
+    background: linear-gradient(
+      to top,
+      rgba(14, 31, 54, 0.78) 0%,
+      rgba(14, 31, 54, 0.22) 42%,
+      rgba(14, 31, 54, 0) 68%
+    );
+    transition: background var(--dur-1) var(--suave);
+  }
+  .filme__play:hover {
+    background: linear-gradient(
+      to top,
+      rgba(14, 31, 54, 0.84) 0%,
+      rgba(14, 31, 54, 0.3) 46%,
+      rgba(14, 31, 54, 0.04) 72%
+    );
+  }
+
+  .filme__play-disco {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(2px);
+    transition: background var(--dur-1) var(--suave), transform var(--dur-1) var(--suave);
+  }
+  .filme__play-disco svg { width: 1.5rem; margin-left: 2px; }
+  .filme__play:hover .filme__play-disco {
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--navy);
+    transform: scale(1.04);
+  }
+
+  .filme__play-txt {
+    display: grid;
+    gap: 0.15rem;
+    font-size: var(--t-min);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .filme__play-dur {
+    font-size: var(--t-rotulo);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .filme__legenda {
+    font-size: var(--t-rotulo);
+    line-height: 1.6;
+    color: var(--tinta-fraca);
+    max-width: 24rem;
+    text-align: center;
+  }
+  @media (max-width: 34rem) {
+    .filme__legenda { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .filme__play-disco { transition: none; }
+  }
+</style>

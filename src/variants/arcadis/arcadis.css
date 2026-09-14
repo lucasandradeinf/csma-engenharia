@@ -245,12 +245,13 @@ p { text-wrap: pretty; }
 }
 .confere li::before {
   content: '';
-  margin-top: 0.5rem;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-left: 1.5px solid var(--navy);
+  margin-top: 0.34rem;
+  margin-left: 0.15rem;
+  width: 0.42rem;
+  height: 0.72rem;
+  border-right: 1.5px solid var(--navy);
   border-bottom: 1.5px solid var(--navy);
-  transform: rotate(-45deg);
+  transform: rotate(45deg);
 }
 .bloco--navy .confere li::before { border-color: #8fb0e0; }
 

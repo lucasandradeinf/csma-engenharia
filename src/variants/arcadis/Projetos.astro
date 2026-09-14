@@ -1,70 +1,73 @@
 ---
 /**
- * Projetos — direção 02.
+ * Construtibilidade na pratica — pagina 7 da apresentacao revisada.
  *
- * Os três casos reais da apresentação em formato de cartão de projeto, como
- * uma consultoria apresenta portfólio: fotografia, etiqueta, título, a
- * situação, a solução e os benefícios esperados. Nada foi acrescentado.
+ * Os Cases sao a unica fotografia que o cliente quis manter no site, e por
+ * isso ganharam o tratamento mais generoso da pagina: cada caso ocupa uma
+ * faixa inteira, com a fotografia grande de um lado e o raciocinio de
+ * engenharia do outro, alternando o lado a cada caso.
  */
 import { Image } from 'astro:assets';
-import { cases } from '../../data/site';
+import { cases } from './conteudo';
 import { casePhoto } from '../../lib/photos';
 
 const itens = cases.items.map((c) => ({ ...c, foto: casePhoto(c.image) }));
 ---
 
-<section class="bloco projetos" id="projetos" aria-labelledby="t-projetos">
+<section class="bloco bloco--areia casos" id="cases" aria-labelledby="t-cases">
   <div class="faixa">
     <div class="secao">
       <p class="rotulo secao__rotulo" data-e>{cases.eyebrow}</p>
-      <h2 class="h2" id="t-projetos" data-e style="--atraso:60ms">{cases.title}</h2>
+      <h2 class="h2" id="t-cases" data-e style="--atraso:60ms">{cases.title}</h2>
       <p class="lead" data-e style="--atraso:140ms">{cases.lead}</p>
     </div>
 
-    <div class="projetos__grade">
+    <div class="casos__lista">
       {
-        itens.map((c, i) => (
-          <article class="projeto" data-e data-observa style={`--atraso:${i * 90}ms`}>
-            <figure class="projeto__figura">
+        itens.map((c) => (
+          <article class="caso" data-observa>
+            <figure class="caso__figura" data-e>
               {c.foto ? (
                 <Image
-                  class="projeto__foto"
+                  class="caso__foto"
                   src={c.foto}
                   alt={c.alt}
                   quality={84}
                   format="webp"
-                  widths={[480, 720, 1040]}
-                  sizes="(min-width: 68rem) 28rem, (min-width: 44rem) 44vw, 92vw"
+                  widths={[640, 960, 1360]}
+                  sizes="(min-width: 62rem) 46vw, 92vw"
                   loading="lazy"
                   decoding="async"
                   data-foto
                 />
               ) : (
-                <div class="projeto__vazio" aria-hidden="true" />
+                <div class="caso__vazio" aria-hidden="true" />
               )}
-              <figcaption class="projeto__etiqueta">Caso {c.idx}</figcaption>
+              <figcaption class="caso__etiqueta">Caso {c.idx}</figcaption>
             </figure>
 
-            <div class="projeto__corpo">
-              <h3 class="h3 projeto__titulo">{c.title}</h3>
+            <div class="caso__corpo" data-e style="--atraso:120ms">
+              <h3 class="h3 caso__titulo">{c.title}</h3>
 
-              <div class="projeto__campo">
-                <p class="rotulo">Situação identificada</p>
-                <p class="min">{c.situation}</p>
-              </div>
+              <div class="caso__campos">
+                <div class="caso__campo">
+                  <p class="rotulo caso__rotulo">{cases.columns.situation}</p>
+                  <p class="min">{c.situation}</p>
+                </div>
 
-              <div class="projeto__campo">
-                <p class="rotulo">Solução CSMA</p>
-                <p class="min projeto__solucao">{c.solution}</p>
-              </div>
+                <div class="caso__campo">
+                  <p class="rotulo caso__rotulo">{cases.columns.solution}</p>
+                  <p class="min caso__solucao">{c.solution}</p>
+                </div>
 
-              <div class="projeto__campo">
-                <p class="rotulo">Benefícios esperados</p>
-                <ul class="confere">
-                  {c.benefits.map((b) => (
-                    <li>{b}</li>
-                  ))}
-                </ul>
+                <div class="caso__campo">
+                  <p class="rotulo caso__rotulo">{cases.columns.benefits}</p>
+                  <ul class="confere">
+                    {c.benefits.map((b) => (
+                      <li>{b}</li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
           </article>
@@ -75,49 +78,44 @@ const itens = cases.items.map((c) => ({ ...c, foto: casePhoto(c.image) }));
 </section>
 
 <style>
-  .projetos__grade {
+  .casos__lista {
     display: grid;
-    gap: var(--e-6);
-  }
-  @media (min-width: 44rem) {
-    .projetos__grade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
-  @media (min-width: 68rem) {
-    .projetos__grade { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--e-5); }
+    gap: var(--e-9);
   }
 
-  .projeto {
+  .caso {
     display: grid;
-    grid-template-rows: auto 1fr;
-    background: var(--branco);
-    border: 1px solid var(--fio);
-    border-radius: var(--raio);
-    overflow: hidden;
-    transition: box-shadow var(--dur-1) var(--suave), border-color var(--dur-1) var(--suave);
+    gap: var(--e-5);
+    align-items: center;
   }
-  .projeto:hover {
-    border-color: var(--fio-forte);
-    box-shadow: 0 16px 38px rgba(18, 39, 68, 0.08);
+  @media (min-width: 62rem) {
+    .caso {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: var(--e-8);
+    }
+    /* O lado da fotografia alterna a cada caso. */
+    .caso:nth-child(even) .caso__figura { order: 2; }
   }
 
-  .projeto__figura {
+  .caso__figura {
     position: relative;
     margin: 0;
     aspect-ratio: 4 / 3;
     overflow: hidden;
+    border-radius: var(--raio);
     background: var(--areia-2);
   }
-  .projeto__foto,
-  .projeto__vazio {
+  .caso__foto,
+  .caso__vazio {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-  .projeto__vazio { background: var(--areia-2); }
+  .caso__vazio { background: var(--areia-2); }
 
-  .projeto__etiqueta {
+  .caso__etiqueta {
     position: absolute;
     left: 0;
     bottom: 0;
@@ -125,19 +123,28 @@ const itens = cases.items.map((c) => ({ ...c, foto: casePhoto(c.image) }));
     color: #fff;
     font-size: var(--t-rotulo);
     font-weight: 600;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    padding: 0.45rem 0.85rem;
+    padding: 0.5rem 0.95rem;
   }
 
-  .projeto__corpo {
-    padding: var(--e-5);
+  .caso__corpo { display: grid; gap: var(--e-5); align-content: start; }
+  .caso__titulo { max-width: 20ch; }
+
+  .caso__campos {
     display: grid;
-    gap: var(--e-4);
-    align-content: start;
+    gap: var(--e-5);
   }
-  .projeto__titulo { font-size: var(--t-h4); }
-  .projeto__campo { display: grid; gap: 0.4rem; }
-  .projeto__campo .rotulo { font-size: 0.6875rem; color: var(--tinta-fraca); }
-  .projeto__solucao { color: var(--tinta); font-weight: 500; }
+  @media (min-width: 44rem) and (max-width: 61.9375rem) {
+    .caso__campos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-5) var(--e-6); }
+    .caso__campos > :last-child { grid-column: 1 / -1; }
+  }
+  .caso__campo {
+    display: grid;
+    gap: 0.5rem;
+    padding-top: var(--e-3);
+    border-top: 1px solid var(--fio-forte);
+  }
+  .caso__rotulo { font-size: 0.6875rem; color: var(--tinta-fraca); }
+  .caso__solucao { color: var(--tinta); font-weight: 500; }
 </style>

@@ -6,3 +6,8 @@ dist/
 .env
 .env.production
 .vscode/
+
+# Material de origem: a apresentação comercial fica fora do Git.
+# O vídeo institucional NÃO entra aqui — ele vive em `public/video/` e
+# precisa ser versionado para o GitHub Pages publicá-lo.
+CSMA_Apresentacao_Comercial.pdf

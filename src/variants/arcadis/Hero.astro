@@ -1,59 +1,33 @@
 ---
 /**
- * Abertura — direção 02.
+ * Abertura — direcao 02 (versao escolhida pelo cliente).
  *
- * Institucional: metade do viewport é fotografia industrial real (uma das
- * três imagens dos cases da apresentação), metade é uma coluna branca com a
- * frase de posicionamento da CSMA — a mesma da última página do PDF.
+ * O cliente pediu para tirar as fotografias do inicio do site: a abertura e
+ * agora inteiramente tipografica. Uma coluna de texto sobre branco, muito
+ * espaco negativo e a faixa dos quatro pilares da sigla. A fotografia volta
+ * so nos Cases, mais abaixo.
  */
-import { Image } from 'astro:assets';
-import { site, hero } from '../../data/site';
-import { casePhoto } from '../../lib/photos';
-
-const foto = casePhoto('montagem-equipamentos');
+import { capa, marca } from './conteudo';
 ---
 
 <section class="abre" id="topo">
-  <div class="abre__grade">
+  <div class="faixa abre__int">
     <div class="abre__texto">
-      <div class="abre__texto-int">
-        <p class="rotulo" data-e style="--atraso:40ms">{site.legalName}</p>
+      <p class="rotulo abre__rotulo" data-e style="--atraso:40ms">{marca.legalName}</p>
 
-        <h1 class="h1 abre__titulo" data-e style="--atraso:120ms">{hero.headline}</h1>
+      <h1 class="h1 abre__titulo" data-e style="--atraso:120ms">{capa.headline}</h1>
 
-        <p class="lead abre__lead" data-e style="--atraso:200ms">{hero.sub}</p>
+      <p class="lead abre__lead" data-e style="--atraso:200ms">{capa.sub}</p>
 
-        <div class="abre__acoes" data-e style="--atraso:280ms">
-          <a class="btn" href="#abordagem">
-            {hero.ctaPrimary.label}
-            <svg viewBox="0 0 20 12" fill="none" aria-hidden="true">
-              <path d="M0 6h18M13 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" />
-            </svg>
-          </a>
-          <a class="btn btn--linha" href="#projetos">Ver projetos</a>
-        </div>
+      <div class="abre__acoes" data-e style="--atraso:280ms">
+        <a class="btn" href={capa.ctaPrimary.href}>
+          {capa.ctaPrimary.label}
+          <svg viewBox="0 0 20 12" fill="none" aria-hidden="true">
+            <path d="M0 6h18M13 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" />
+          </svg>
+        </a>
+        <a class="btn btn--linha" href={capa.ctaSecondary.href}>{capa.ctaSecondary.label}</a>
       </div>
-    </div>
-
-    <div class="abre__figura" data-observa>
-      {
-        foto && (
-          <Image
-            class="abre__foto"
-            src={foto}
-            alt="Conjunto de equipamentos pré-montado em solo, no interior de galpão industrial servido por ponte rolante."
-            quality={86}
-            format="webp"
-            widths={[720, 1080, 1560]}
-            sizes="(min-width: 60rem) 52vw, 100vw"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-            data-foto
-          />
-        )
-      }
-      <span class="abre__veu" aria-hidden="true"></span>
     </div>
   </div>
 
@@ -61,7 +35,7 @@ const foto = casePhoto('montagem-equipamentos');
   <div class="pilares">
     <div class="faixa pilares__grade" data-eg>
       {
-        hero.pillars.map((p) => (
+        capa.pillars.map((p) => (
           <div class="pilar">
             <span class="pilar__en">{p.en}</span>
             <span class="pilar__pt">{p.pt}</span>
@@ -75,69 +49,40 @@ const foto = casePhoto('montagem-equipamentos');
 <style>
   .abre { background: var(--branco); }
 
-  .abre__grade { display: grid; }
+  .abre__int {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: var(--e-8) var(--e-9);
+  }
   @media (min-width: 60rem) {
-    .abre__grade {
-      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-      min-height: calc(100svh - var(--topo) - var(--util));
-      align-items: stretch;
+    .abre__int {
+      min-height: calc(100svh - var(--topo) - var(--util) - 7rem);
+      padding-block: var(--e-9);
     }
   }
 
-  /* --- coluna de texto --- */
-  .abre__texto {
-    display: flex;
-    align-items: center;
-    padding: var(--e-7) var(--marg) var(--e-8);
-    max-width: calc(var(--larg) / 2 + var(--marg));
-    margin-left: auto;
-    width: 100%;
+  .abre__texto { width: 100%; max-width: 52rem; }
+
+  .abre__rotulo {
+    padding-top: var(--e-4);
+    border-top: 2px solid var(--navy);
+    display: inline-block;
   }
-  @media (min-width: 60rem) {
-    .abre__texto { padding-block: var(--e-9); }
-  }
-  .abre__texto-int { width: 100%; max-width: 34rem; }
 
   .abre__titulo {
-    margin-top: var(--e-4);
-    max-width: 15ch;
+    margin-top: var(--e-5);
+    max-width: 17ch;
   }
   .abre__lead {
-    margin-top: var(--e-5);
-    max-width: 42ch;
+    margin-top: var(--e-6);
+    max-width: 48ch;
   }
   .abre__acoes {
-    margin-top: var(--e-6);
+    margin-top: var(--e-7);
     display: flex;
     flex-wrap: wrap;
     gap: var(--e-3);
-  }
-
-  /* --- fotografia --- */
-  .abre__figura {
-    position: relative;
-    overflow: hidden;
-    background: var(--areia-2);
-    min-height: 58vw;
-  }
-  @media (min-width: 60rem) { .abre__figura { min-height: 0; } }
-
-  .abre__foto {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .abre__veu {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(100deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 34%);
-  }
-  @media (min-width: 60rem) {
-    .abre__veu {
-      background: linear-gradient(95deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 22%);
-    }
   }
 
   /* --- pilares --- */
@@ -154,11 +99,10 @@ const foto = casePhoto('montagem-equipamentos');
     .pilares__grade { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
   .pilar {
-    padding: var(--e-5) var(--e-4) var(--e-5) 0;
+    padding: var(--e-5) var(--e-4) var(--e-5) var(--e-4);
     display: grid;
     gap: 0.25rem;
     border-left: 1px solid var(--fio);
-    padding-left: var(--e-4);
   }
   .pilar:first-child { border-left: 0; padding-left: 0; }
   @media (max-width: 51.9375rem) {

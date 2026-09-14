@@ -1,0 +1,145 @@
+---
+/**
+ * Nosso corpo tecnico — pagina 9 da apresentacao revisada.
+ *
+ * A revisao fundiu "Equipe Multidisciplinar" e "Experiencia do Corpo Tecnico"
+ * numa pagina so. Os quatro "dominios de atuacao" que o site antigo listava
+ * sairam da apresentacao — e, portanto, saem daqui. Ficam as quatro grandezas,
+ * os sete especialistas e as tres notas de alcance.
+ */
+import { corpoTecnico as e } from './conteudo';
+---
+
+<section class="bloco equipe" id="equipe" aria-labelledby="t-equipe">
+  <div class="faixa">
+    <div class="secao">
+      <p class="rotulo secao__rotulo" data-e>{e.eyebrow}</p>
+      <h2 class="h2" id="t-equipe" data-e style="--atraso:60ms">{e.title}</h2>
+      <p class="lead" data-e style="--atraso:140ms">{e.lead}</p>
+    </div>
+
+    <!-- grandezas -->
+    <ul class="grandezas" data-eg>
+      {
+        e.metrics.map((m) => (
+          <li class="grandeza">
+            <span class="grandeza__mag">
+              {m.magnitude}
+              {m.unit && <span class="grandeza__un"> {m.unit}</span>}
+            </span>
+            <span class="grandeza__txt">{m.text}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="equipe__par">
+      <div>
+        <p class="rotulo" data-e>Especialistas mobilizados</p>
+        <ul class="papeis" data-eg>
+          {
+            e.roles.map((r) => (
+              <li class="papel">
+                <span class="papel__n">{r.idx}</span>
+                <span class="papel__nome">{r.title}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <aside class="alcance" data-e style="--atraso:120ms">
+        <p class="rotulo">Alcance</p>
+        <ul class="alcance__lista">
+          {e.notes.map((n) => <li class="min">{n}</li>)}
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* --- grandezas --- */
+  .grandezas {
+    display: grid;
+    gap: var(--e-5);
+    padding-bottom: var(--e-8);
+    border-bottom: 1px solid var(--fio);
+    margin-bottom: var(--e-8);
+  }
+  @media (min-width: 44rem) {
+    .grandezas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 72rem) {
+    .grandezas { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--e-6); }
+  }
+  .grandeza {
+    display: grid;
+    gap: 0.4rem;
+    padding-top: var(--e-4);
+    border-top: 2px solid var(--navy);
+  }
+  .grandeza__mag {
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--navy);
+    line-height: 1.05;
+  }
+  .grandeza__un {
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: -0.014em;
+  }
+  .grandeza__txt { font-size: var(--t-min); color: var(--tinta-media); }
+
+  /* --- especialistas + alcance --- */
+  .equipe__par { display: grid; gap: var(--e-7); }
+  @media (min-width: 62rem) {
+    .equipe__par {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+      gap: var(--e-8);
+      align-items: start;
+    }
+  }
+
+  .papeis { display: grid; margin-top: var(--e-4); }
+  .papel {
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: var(--e-4);
+    align-items: baseline;
+    padding-block: var(--e-4);
+    border-top: 1px solid var(--fio);
+  }
+  .papel:last-child { border-bottom: 1px solid var(--fio); }
+  .papel__n {
+    font-size: var(--t-rotulo);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--tinta-fraca);
+    font-variant-numeric: tabular-nums;
+  }
+  .papel__nome {
+    font-size: var(--t-h4);
+    font-weight: 500;
+    letter-spacing: -0.014em;
+    line-height: 1.4;
+  }
+
+  .alcance {
+    background: var(--areia);
+    border-radius: var(--raio);
+    padding: var(--e-6) var(--e-5);
+    display: grid;
+    gap: var(--e-4);
+    align-content: start;
+  }
+  .alcance__lista { display: grid; gap: var(--e-4); }
+  .alcance__lista li {
+    padding-top: var(--e-3);
+    border-top: 1px solid var(--fio-forte);
+    max-width: 40ch;
+  }
+  .alcance__lista li:first-child { border-top: 0; padding-top: 0; }
+</style>

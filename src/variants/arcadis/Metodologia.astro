@@ -1,0 +1,80 @@
+---
+/**
+ * Metodologia CSMA — pagina 6 da apresentacao revisada.
+ *
+ * Seis etapas numeradas com a linha de saida de cada uma, exatamente como a
+ * apresentacao as descreve, e a nota de metodo (AWP) fechando o capitulo.
+ */
+import { metodologia as m } from './conteudo';
+---
+
+<section class="bloco metodo" id="metodologia" aria-labelledby="t-metodo">
+  <div class="faixa">
+    <div class="secao">
+      <p class="rotulo secao__rotulo" data-e>{m.eyebrow}</p>
+      <h2 class="h2" id="t-metodo" data-e style="--atraso:60ms">{m.title}</h2>
+      <p class="lead" data-e style="--atraso:140ms">{m.lead}</p>
+    </div>
+
+    <ol class="metodo__grade" data-eg>
+      {
+        m.steps.map((s) => (
+          <li class="passo">
+            <span class="passo__n">{s.idx}</span>
+            <div class="passo__corpo">
+              <h3 class="h4">{s.title}</h3>
+              <p class="min passo__txt">{s.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="metodo__awp" data-e>
+      <span class="rotulo">Referência de método</span>
+      <span>{m.footnote}</span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .metodo__grade { display: grid; gap: var(--e-5); }
+  @media (min-width: 50rem) {
+    .metodo__grade { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-6) var(--e-7); }
+  }
+  @media (min-width: 76rem) {
+    .metodo__grade { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
+  .passo {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr);
+    gap: var(--e-4);
+    padding-top: var(--e-4);
+    border-top: 1px solid var(--fio);
+  }
+  .passo__n {
+    font-size: var(--t-rotulo);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--navy);
+    line-height: 2.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .passo__corpo { display: grid; gap: 0.5rem; }
+  .passo__txt { max-width: 34ch; }
+
+  .metodo__awp {
+    margin-top: var(--e-7);
+    padding-top: var(--e-4);
+    border-top: 2px solid var(--navy);
+    display: grid;
+    gap: 0.3rem;
+  }
+  .metodo__awp > span:last-child {
+    font-size: var(--t-h4);
+    font-weight: 600;
+    letter-spacing: -0.014em;
+    color: var(--tinta);
+  }
+</style>

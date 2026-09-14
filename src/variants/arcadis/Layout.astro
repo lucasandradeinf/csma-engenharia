@@ -1,17 +1,19 @@
 ---
 import './arcadis.css';
-import { site } from '../../data/site';
 import { withBase } from '../../lib/url';
 import { fontFaces, fontPreloads } from '../../lib/fonts';
-import Switcher from '../_shared/Switcher.astro';
+import { marca } from './conteudo';
 
 /* Uma família só: a direção institucional não mistura tipografias. */
 const FAMILIES = ['sans'] as const;
 const faces = fontFaces(FAMILIES);
 const preloads = fontPreloads(FAMILIES);
 
-const title = `${site.legalName} — Consultoria de construtibilidade | Direção 02`;
+const title = marca.title;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
+const ogImage = Astro.site
+  ? new URL(withBase('og.png'), Astro.site).href
+  : withBase('og.png');
 ---
 
 <!doctype html>
@@ -21,14 +23,30 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
-    <meta name="description" content={site.description} />
+    <meta name="description" content={marca.description} />
     <link rel="canonical" href={canonical} />
     <meta name="robots" content="noindex, follow" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#122744" />
     <meta name="color-scheme" content="light" />
+
+    <!-- Open Graph / redes -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={marca.legalName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={marca.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={`${marca.legalName} — ${marca.signature}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={marca.description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
     <link rel="alternate icon" href={withBase('favicon.ico')} sizes="48x48" />
+    <link rel="apple-touch-icon" href={withBase('apple-touch-icon.png')} />
+    <link rel="manifest" href={withBase('site.webmanifest')} />
 
     {preloads.map((href) => (
       <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
@@ -39,7 +57,6 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
   <body>
     <a class="pular" href="#conteudo">Ir para o conteúdo</a>
     <slot />
-    <Switcher atual="arcadis" />
 
     <script>
       const reduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -62,19 +79,5 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
       }
     </script>
 
-    <style is:global>
-      /* O comutador de direções assume a linguagem institucional. */
-      .sw {
-        --sw-fundo: rgba(255, 255, 255, 0.94);
-        --sw-hover: #f0eeea;
-        --sw-borda: #d8d6d0;
-        --sw-tinta: #14181c;
-        --sw-ativo-fundo: #122744;
-        --sw-ativo-tinta: #ffffff;
-        --sw-fonte: 'IBM Plex Sans', system-ui, sans-serif;
-        --sw-raio: 2px;
-      }
-      .sw__item { font-weight: 600; letter-spacing: 0.06em; }
-    </style>
   </body>
 </html>

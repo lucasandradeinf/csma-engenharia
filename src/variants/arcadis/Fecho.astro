@@ -1,63 +1,63 @@
 ---
 /**
- * Diferenciais, resultados, contato e rodapé — direção 02.
+ * Beneficios, contato e rodape — paginas 11 e 13 da apresentacao revisada.
  *
- * O encerramento institucional: por que a CSMA, o que muda para o cliente,
- * um CTA em navy e um rodapé de quatro colunas.
+ * A pagina 11 traz apenas os seis beneficios (a coluna "o que costuma
+ * acontecer" era leitura do site antigo, nao da apresentacao — saiu). A
+ * pagina 13 ganhou telefone, que agora acompanha o e-mail no fecho e no
+ * rodape.
  */
 import Mark from '../_shared/Mark.astro';
-import { site, differentials, benefits, closing } from '../../data/site';
+import { marca, resultados, fecho } from './conteudo';
 
 const navRodape = [
   {
     titulo: 'A CSMA',
     itens: [
       { rotulo: 'Quem somos', href: '#a-csma' },
+      { rotulo: 'Vídeo institucional', href: '#video' },
       { rotulo: 'O cenário atual', href: '#desafio' },
       { rotulo: 'Nossa abordagem', href: '#abordagem' },
-      { rotulo: 'Metodologia', href: '#metodologia' },
     ],
   },
   {
     titulo: 'Soluções',
     itens: [
+      { rotulo: 'Estudo de construtibilidade', href: '#construtibilidade' },
       { rotulo: 'Como geramos valor', href: '#solucoes' },
       { rotulo: 'Entregáveis', href: '#entregaveis' },
-      { rotulo: 'Projetos', href: '#projetos' },
+      { rotulo: 'Metodologia', href: '#metodologia' },
     ],
   },
   {
     titulo: 'Alcance',
     itens: [
-      { rotulo: 'Experiência', href: '#experiencia' },
+      { rotulo: 'Cases', href: '#cases' },
+      { rotulo: 'Corpo técnico', href: '#equipe' },
       { rotulo: 'Segmentos', href: '#segmentos' },
-      { rotulo: 'Diferenciais', href: '#diferenciais' },
+      { rotulo: 'Resultados', href: '#resultados' },
     ],
   },
 ] as const;
+
+const ano = new Date().getFullYear();
 ---
 
-<!-- ============================ DIFERENCIAIS ============================ -->
-<section class="bloco diferenciais" id="diferenciais" aria-labelledby="t-dif">
+<!-- ============================ RESULTADOS ============================ -->
+<section class="bloco resultados" id="resultados" aria-labelledby="t-res">
   <div class="faixa">
     <div class="secao">
-      <p class="rotulo secao__rotulo" data-e>{differentials.eyebrow}</p>
-      <h2 class="h2" id="t-dif" data-e style="--atraso:60ms">{differentials.title}</h2>
-      <p class="lead" data-e style="--atraso:140ms">
-        Seis pontos declarados pela própria CSMA na apresentação comercial.
-      </p>
+      <p class="rotulo secao__rotulo" data-e>{resultados.eyebrow}</p>
+      <h2 class="h2" id="t-res" data-e style="--atraso:60ms">{resultados.title}</h2>
+      <p class="lead" data-e style="--atraso:140ms">{resultados.lead}</p>
     </div>
 
-    <ul class="diferenciais__grade" data-eg>
+    <ul class="beneficios" data-eg>
       {
-        differentials.items.map((d) => (
-          <li class="dif">
-            <span class="dif__marca" aria-hidden="true">
-              <svg viewBox="0 0 16 12" fill="none">
-                <path d="M1 6.2 5.6 10.8 15 1.4" stroke="currentColor" stroke-width="2" />
-              </svg>
-            </span>
-            <p class="dif__txt">{d.text}</p>
+        resultados.items.map((b) => (
+          <li class="beneficio">
+            <span class="beneficio__n">{b.idx}</span>
+            <p class="beneficio__txt">{b.text}</p>
           </li>
         ))
       }
@@ -65,54 +65,28 @@ const navRodape = [
   </div>
 </section>
 
-<!-- ============================ RESULTADOS ============================ -->
-<section class="bloco bloco--areia resultados" id="resultados" aria-labelledby="t-res">
-  <div class="faixa">
-    <div class="secao">
-      <p class="rotulo secao__rotulo" data-e>{benefits.eyebrow}</p>
-      <h2 class="h2" id="t-res" data-e style="--atraso:60ms">{benefits.title}</h2>
-      <p class="lead" data-e style="--atraso:140ms">{benefits.lead}</p>
-    </div>
-
-    <div class="tabela">
-      <div class="tabela__cabeca" aria-hidden="true">
-        <span class="rotulo tabela__cabeca-a">{benefits.columns.before}</span>
-        <span class="rotulo tabela__cabeca-b">{benefits.columns.after}</span>
-      </div>
-
-      <ul data-eg>
-        {
-          benefits.items.map((b) => (
-            <li class="tabela__linha">
-              <p class="tabela__antes">{b.before}</p>
-              <p class="tabela__depois">{b.after}</p>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </div>
-</section>
-
 <!-- ============================ CONTATO ============================ -->
 <section class="bloco bloco--navy contato" id="contato" aria-labelledby="t-contato">
   <div class="faixa contato__grade">
     <div>
-      <p class="rotulo" data-e>Contato</p>
+      <p class="rotulo" data-e>{fecho.eyebrow}</p>
       <h2 class="h1 contato__frase" id="t-contato" data-e style="--atraso:60ms">
-        {closing.statement}
+        {fecho.statement}
       </h2>
     </div>
 
     <div class="contato__lado" data-e style="--atraso:160ms">
-      <p class="lead contato__pergunta">{closing.question}</p>
-      <a class="btn btn--claro" href={closing.cta.href}>
-        {closing.cta.label}
+      <p class="lead contato__pergunta">{fecho.question}</p>
+      <a class="btn btn--claro" href={fecho.cta.href}>
+        {fecho.cta.label}
         <svg viewBox="0 0 20 12" fill="none" aria-hidden="true">
           <path d="M0 6h18M13 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" />
         </svg>
       </a>
-      <a class="contato__mail" href={`mailto:${site.email}`}>{site.email}</a>
+      <div class="contato__dados">
+        <a class="contato__linha" href={`mailto:${marca.email}`}>{marca.email}</a>
+        <a class="contato__linha" href={marca.phoneHref}>{marca.phone}</a>
+      </div>
     </div>
   </div>
 </section>
@@ -123,8 +97,9 @@ const navRodape = [
     <div class="rodape__grade">
       <div class="rodape__marca">
         <span class="rodape__marca-svg"><Mark title="CSMA Engenharia" travessao="#7ea2d6" /></span>
-        <p class="rodape__assinatura">{site.signature}</p>
-        <a class="rodape__mail" href={`mailto:${site.email}`}>{site.email}</a>
+        <p class="rodape__assinatura">{marca.signature}</p>
+        <a class="rodape__mail" href={`mailto:${marca.email}`}>{marca.email}</a>
+        <a class="rodape__mail" href={marca.phoneHref}>{marca.phone}</a>
       </div>
 
       {
@@ -142,88 +117,50 @@ const navRodape = [
     </div>
 
     <div class="rodape__base">
-      <span>Direção 02 · Consultoria de engenharia</span>
-      <span>Proposta de design — conteúdo da apresentação comercial CSMA</span>
+      <span>© {ano} {marca.legalName}</span>
+      <span>Construtibilidade · Planejamento · Gestão da implantação</span>
     </div>
   </div>
 </footer>
 
 <style>
-  /* ---------------- diferenciais ---------------- */
-  .diferenciais__grade { display: grid; gap: var(--e-5); }
-  @media (min-width: 48rem) {
-    .diferenciais__grade { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-5) var(--e-7); }
-  }
-  @media (min-width: 76rem) {
-    .diferenciais__grade { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  }
-  .dif {
+  /* ---------------- resultados ---------------- */
+  .beneficios {
     display: grid;
-    grid-template-columns: 1.75rem minmax(0, 1fr);
-    gap: var(--e-4);
-    padding-top: var(--e-4);
-    border-top: 1px solid var(--fio);
+    gap: 1px;
+    background: var(--fio);
+    border-block: 1px solid var(--fio);
   }
-  .dif__marca { color: var(--navy); padding-top: 0.4rem; }
-  .dif__marca svg { width: 1.05rem; }
-  .dif__txt {
+  @media (min-width: 44rem) {
+    .beneficios { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 68rem) {
+    .beneficios { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  .beneficio {
+    background: var(--branco);
+    padding: var(--e-6) var(--e-5) var(--e-7);
+    display: grid;
+    gap: var(--e-4);
+    align-content: start;
+    min-height: 10.5rem;
+    transition: background var(--dur-1) var(--suave);
+  }
+  .beneficio:hover { background: var(--areia); }
+  .beneficio__n {
+    font-size: var(--t-rotulo);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--tinta-fraca);
+    font-variant-numeric: tabular-nums;
+  }
+  .beneficio__txt {
     font-size: var(--t-h4);
     font-weight: 500;
-    letter-spacing: -0.014em;
-    line-height: 1.4;
-    max-width: 26ch;
-  }
-
-  /* ---------------- resultados ---------------- */
-  .tabela { border-top: 2px solid var(--navy); }
-  .tabela__cabeca { display: none; }
-  @media (min-width: 60rem) {
-    .tabela__cabeca {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: var(--e-7);
-      padding-block: var(--e-4);
-      border-bottom: 1px solid var(--fio-forte);
-    }
-    .tabela__cabeca-a { color: var(--tinta-fraca); }
-  }
-
-  .tabela__linha {
-    display: grid;
-    gap: 0.5rem;
-    padding-block: var(--e-5);
-    border-bottom: 1px solid var(--fio-forte);
-  }
-  @media (min-width: 60rem) {
-    .tabela__linha {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: var(--e-7);
-      align-items: center;
-    }
-  }
-  .tabela__antes {
-    font-size: var(--t-min);
-    color: var(--tinta-fraca);
-    line-height: 1.6;
-    max-width: 44ch;
-  }
-  .tabela__depois {
-    font-size: var(--t-h4);
-    font-weight: 600;
     letter-spacing: -0.016em;
-    line-height: 1.35;
+    line-height: 1.4;
     color: var(--tinta);
-    position: relative;
-    padding-left: 1.6rem;
-  }
-  .tabela__depois::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.62em;
-    width: 0.9rem;
-    height: 1px;
-    background: var(--navy);
+    max-width: 26ch;
   }
 
   /* ---------------- contato ---------------- */
@@ -238,13 +175,14 @@ const navRodape = [
   .contato__frase { margin-top: var(--e-4); max-width: 16ch; }
   .contato__lado { display: grid; gap: var(--e-5); justify-items: start; }
   .contato__pergunta { color: #c6cedb; max-width: 26ch; }
-  .contato__mail {
+  .contato__dados { display: grid; gap: 0.6rem; justify-items: start; }
+  .contato__linha {
     font-size: var(--t-min);
     color: #c6cedb;
     border-bottom: 1px solid rgba(255, 255, 255, 0.35);
     padding-bottom: 2px;
   }
-  .contato__mail:hover { color: #fff; border-bottom-color: #fff; }
+  .contato__linha:hover { color: #fff; border-bottom-color: #fff; }
 
   /* ---------------- rodapé ---------------- */
   .rodape {

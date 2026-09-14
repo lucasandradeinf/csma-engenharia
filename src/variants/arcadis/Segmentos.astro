@@ -1,182 +1,120 @@
 ---
 /**
- * Segmentos de atuação — direção 02.
+ * Onde atuamos & diferenciais — pagina 10 da apresentacao revisada.
  *
- * Leitura editorial e corporativa: uma lista de cinco linhas em tipografia
- * grande, com um painel fixo à direita que troca conforme o segmento em foco.
- * Enquanto a fotografia real não existe, o painel mostra o desenho técnico.
+ * A revisao juntou "Segmentos de Atuacao" e "Diferenciais" numa pagina so, e
+ * o site acompanha. O painel de imagens que existia aqui saiu: a apresentacao
+ * so declara os cinco nomes, e o cliente pediu menos fotografia decorativa.
+ * Fica a leitura editorial — cinco segmentos em tipografia grande, seis
+ * diferenciais em lista conferida.
  */
-import { Image } from 'astro:assets';
-import { sectors } from '../../data/site';
-import { sectorPhoto } from '../../lib/photos';
-import SectorMark from '../_shared/SectorMark.astro';
-
-const itens = sectors.items.map((s) => ({ ...s, foto: sectorPhoto(s.photo) }));
+import { segmentos as s } from './conteudo';
 ---
 
-<section class="bloco bloco--areia segmentos" id="segmentos" aria-labelledby="t-seg">
+<section class="bloco bloco--areia atuacao" id="segmentos" aria-labelledby="t-atuacao">
   <div class="faixa">
     <div class="secao">
-      <p class="rotulo secao__rotulo" data-e>{sectors.eyebrow}</p>
-      <h2 class="h2" id="t-seg" data-e style="--atraso:60ms">{sectors.title}</h2>
-      <p class="lead" data-e style="--atraso:140ms">{sectors.lead}</p>
+      <p class="rotulo secao__rotulo" data-e>{s.eyebrow}</p>
+      <h2 class="h2" id="t-atuacao" data-e style="--atraso:60ms">{s.title}</h2>
     </div>
 
-    <div class="segmentos__grade" data-segmentos>
-      <ol class="segmentos__lista" data-eg>
-        {
-          itens.map((s, i) => (
-            <li>
-              <a
-                class:list={['linha', i === 0 && 'is-foco']}
-                href="#segmentos"
-                data-seg={i}
-              >
-                <span class="linha__n">{s.idx}</span>
-                <span class="linha__nome">{s.name}</span>
-                <span class="linha__lead">{s.lead}</span>
-              </a>
-            </li>
-          ))
-        }
-      </ol>
-
-      <div class="segmentos__painel" aria-hidden="true">
-        <div class="segmentos__quadro">
+    <div class="atuacao__grade">
+      <!-- segmentos -->
+      <div class="atuacao__col">
+        <p class="rotulo" data-e>{s.sectorsLabel}</p>
+        <ol class="setores" data-eg>
           {
-            itens.map((s, i) => (
-              <div class:list={['placa', i === 0 && 'is-foco']} data-placa={i}>
-                {s.foto ? (
-                  <Image
-                    class="placa__foto"
-                    src={s.foto}
-                    alt=""
-                    quality={82}
-                    format="webp"
-                    widths={[560, 840, 1120]}
-                    sizes="(min-width: 66rem) 32rem, 90vw"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                ) : (
-                  <SectorMark name={s.glyph} class="placa__marca" detail="full" />
-                )}
-              </div>
+            s.sectors.map((nome, i) => (
+              <li class="setor">
+                <span class="setor__n">{String(i + 1).padStart(2, '0')}</span>
+                <span class="setor__nome">{nome}</span>
+              </li>
             ))
           }
-        </div>
-        <p class="min segmentos__nota">
-          Vivência de campo da equipe da CSMA em projetos de grande porte
-          nesses cinco segmentos.
-        </p>
+        </ol>
+      </div>
+
+      <!-- diferenciais -->
+      <div class="atuacao__col" id="diferenciais">
+        <p class="rotulo" data-e>{s.differentialsLabel}</p>
+        <ul class="diferenciais" data-eg>
+          {
+            s.differentials.map((d) => (
+              <li class="dif">
+                <span class="dif__marca" aria-hidden="true">
+                  <svg viewBox="0 0 16 12" fill="none">
+                    <path d="M1 6.2 5.6 10.8 15 1.4" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                </span>
+                <p class="dif__txt">{d}</p>
+              </li>
+            ))
+          }
+        </ul>
       </div>
     </div>
   </div>
 </section>
 
-<script>
-  const raiz = document.querySelector<HTMLElement>('[data-segmentos]');
-  if (raiz) {
-    const linhas = [...raiz.querySelectorAll<HTMLElement>('[data-seg]')];
-    const placas = [...raiz.querySelectorAll<HTMLElement>('[data-placa]')];
-
-    const focar = (i: number) => {
-      linhas.forEach((l, j) => l.classList.toggle('is-foco', i === j));
-      placas.forEach((p, j) => p.classList.toggle('is-foco', i === j));
-    };
-
-    linhas.forEach((l, i) => {
-      l.addEventListener('mouseenter', () => focar(i));
-      l.addEventListener('focus', () => focar(i));
-    });
-  }
-</script>
-
 <style>
-  .segmentos__grade { display: grid; gap: var(--e-6); }
-  @media (min-width: 66rem) {
-    .segmentos__grade {
-      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-      gap: var(--e-8);
+  .atuacao__grade { display: grid; gap: var(--e-8); }
+  @media (min-width: 62rem) {
+    .atuacao__grade {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: var(--e-9);
       align-items: start;
     }
   }
 
-  /* --- lista --- */
-  .segmentos__lista { display: grid; }
-  .linha {
+  /* --- segmentos --- */
+  .setores { display: grid; margin-top: var(--e-4); }
+  .setor {
     display: grid;
     grid-template-columns: 2.75rem minmax(0, 1fr);
-    gap: 0.3rem var(--e-4);
-    padding-block: var(--e-5);
+    align-items: baseline;
+    gap: var(--e-4);
+    padding-block: var(--e-4);
     border-top: 1px solid var(--fio-forte);
-    transition: color var(--dur-1) var(--suave);
   }
-  .segmentos__lista li:last-child .linha { border-bottom: 1px solid var(--fio-forte); }
-
-  .linha__n {
+  .setor:last-child { border-bottom: 1px solid var(--fio-forte); }
+  .setor__n {
     font-size: var(--t-rotulo);
     font-weight: 600;
     letter-spacing: 0.14em;
     color: var(--tinta-fraca);
-    padding-top: 0.5rem;
     font-variant-numeric: tabular-nums;
   }
-  .linha__nome {
-    font-size: clamp(1.375rem, 0.9rem + 1.9vw, 2.375rem);
+  .setor__nome {
+    font-size: clamp(1.375rem, 0.95rem + 1.6vw, 2.125rem);
     font-weight: 600;
     letter-spacing: -0.028em;
-    line-height: 1.08;
-    color: var(--tinta);
-    transition: color var(--dur-1) var(--suave);
-  }
-  .linha__lead {
-    grid-column: 2;
-    font-size: var(--t-min);
-    color: var(--tinta-media);
-    max-width: 44ch;
-    line-height: 1.6;
-  }
-  .linha.is-foco .linha__nome,
-  .linha:hover .linha__nome { color: var(--navy); }
-  .linha.is-foco .linha__n { color: var(--navy); }
-
-  /* --- painel --- */
-  .segmentos__painel { display: none; }
-  @media (min-width: 66rem) {
-    .segmentos__painel {
-      display: block;
-      position: sticky;
-      top: calc(var(--topo) + var(--e-5));
-    }
-  }
-  .segmentos__quadro {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    background: var(--branco);
-    border: 1px solid var(--fio);
-    border-radius: var(--raio);
-    overflow: hidden;
-  }
-  .placa {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    padding: var(--e-6);
-    opacity: 0;
-    transition: opacity var(--dur-2) var(--suave);
-  }
-  .placa.is-foco { opacity: 1; }
-  .placa__foto { width: 100%; height: 100%; object-fit: cover; }
-  .placa__marca {
+    line-height: 1.1;
     color: var(--navy);
-    --mark-key: 1.3;
-    --mark-key-o: 0.9;
-    --mark-soft: 1.1;
-    --mark-soft-o: 0.5;
-    --mark-faint: 1;
-    --mark-faint-o: 0.22;
   }
-  .segmentos__nota { margin-top: var(--e-4); max-width: 38ch; }
+
+  /* --- diferenciais --- */
+  .diferenciais {
+    display: grid;
+    gap: var(--e-5);
+    margin-top: var(--e-4);
+  }
+  @media (min-width: 44rem) {
+    .diferenciais { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-5) var(--e-7); }
+  }
+  .dif {
+    display: grid;
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    gap: var(--e-4);
+    padding-top: var(--e-4);
+    border-top: 1px solid var(--fio-forte);
+  }
+  .dif__marca { color: var(--navy); padding-top: 0.4rem; }
+  .dif__marca svg { width: 1.05rem; }
+  .dif__txt {
+    font-size: var(--t-h4);
+    font-weight: 500;
+    letter-spacing: -0.014em;
+    line-height: 1.4;
+    max-width: 28ch;
+  }
 </style>

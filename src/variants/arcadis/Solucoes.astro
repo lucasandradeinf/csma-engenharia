@@ -1,34 +1,26 @@
 ---
 /**
- * Soluções e entregáveis — direção 02.
- *
- * As seis frentes de atuação como uma grade de serviços de consultoria; os
- * seis entregáveis como uma lista numerada sobre off-white. Texto idêntico
- * ao da apresentação comercial.
+ * Como a CSMA gera valor + Principais entregaveis — paginas 5 e 8 da
+ * apresentacao revisada. Texto identico ao do PDF.
  */
-import { services, deliverables } from '../../data/site';
+import { solucoes, entregaveis } from './conteudo';
 ---
 
 <!-- ============================ SOLUÇÕES ============================ -->
 <section class="bloco solucoes" id="solucoes" aria-labelledby="t-solucoes">
   <div class="faixa">
     <div class="secao">
-      <p class="rotulo secao__rotulo" data-e>{services.eyebrow}</p>
-      <h2 class="h2" id="t-solucoes" data-e style="--atraso:60ms">{services.title}</h2>
-      <p class="lead" data-e style="--atraso:140ms">{services.lead}</p>
+      <p class="rotulo secao__rotulo" data-e>{solucoes.eyebrow}</p>
+      <h2 class="h2" id="t-solucoes" data-e style="--atraso:60ms">{solucoes.title}</h2>
+      <p class="lead" data-e style="--atraso:140ms">{solucoes.lead}</p>
     </div>
 
     <ul class="solucoes__grade" data-eg>
       {
-        services.items.map((s) => (
+        solucoes.items.map((s) => (
           <li class="servico">
             <span class="servico__n">{s.idx}</span>
             <h3 class="h3 servico__titulo">{s.title}</h3>
-            <span class="servico__seta" aria-hidden="true">
-              <svg viewBox="0 0 20 12" fill="none">
-                <path d="M0 6h18M13 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" />
-              </svg>
-            </span>
           </li>
         ))
       }
@@ -40,16 +32,16 @@ import { services, deliverables } from '../../data/site';
 <section class="bloco bloco--areia entregaveis" id="entregaveis" aria-labelledby="t-entrega">
   <div class="faixa entregaveis__grade">
     <div class="entregaveis__intro">
-      <p class="rotulo" data-e>{deliverables.eyebrow}</p>
+      <p class="rotulo" data-e>{entregaveis.eyebrow}</p>
       <h2 class="h2 entregaveis__titulo" id="t-entrega" data-e style="--atraso:60ms">
-        {deliverables.title}
+        {entregaveis.title}
       </h2>
-      <p class="lead entregaveis__lead" data-e style="--atraso:140ms">{deliverables.lead}</p>
+      <p class="lead entregaveis__lead" data-e style="--atraso:140ms">{entregaveis.lead}</p>
     </div>
 
     <ol class="entregaveis__lista" data-eg>
       {
-        deliverables.items.map((d) => (
+        entregaveis.items.map((d) => (
           <li class="entrega">
             <span class="entrega__n">{d.idx}</span>
             <span class="entrega__nome">{d.title}</span>
@@ -76,13 +68,12 @@ import { services, deliverables } from '../../data/site';
   }
 
   .servico {
-    position: relative;
     background: var(--branco);
-    padding: var(--e-6) var(--e-5) var(--e-8);
+    padding: var(--e-6) var(--e-5) var(--e-7);
     display: grid;
     gap: var(--e-4);
     align-content: start;
-    min-height: 12.5rem;
+    min-height: 11rem;
     transition: background var(--dur-1) var(--suave);
   }
   .servico:hover { background: var(--areia); }
@@ -100,17 +91,6 @@ import { services, deliverables } from '../../data/site';
   @media (min-width: 76rem) {
     .servico__titulo { font-size: clamp(1.0625rem, 0.8rem + 0.7vw, 1.375rem); }
   }
-  .servico__seta {
-    position: absolute;
-    left: var(--e-5);
-    bottom: var(--e-6);
-    color: var(--navy);
-    opacity: 0;
-    transform: translateX(-6px);
-    transition: opacity var(--dur-1) var(--suave), transform var(--dur-1) var(--suave);
-  }
-  .servico__seta svg { width: 1.4rem; }
-  .servico:hover .servico__seta { opacity: 1; transform: none; }
 
   /* ---------------- entregáveis ---------------- */
   .entregaveis__grade { display: grid; gap: var(--e-7); }

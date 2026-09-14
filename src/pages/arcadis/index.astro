@@ -1,16 +1,24 @@
 ---
 /**
- * DIREÇÃO 02 — CSMA como consultoria de engenharia madura.
+ * DIREÇÃO 02 — versão escolhida pelo cliente.
  * Rota: /arcadis/  (e /csma-engenharia/arcadis/ no GitHub Pages)
+ *
+ * A jornada segue a apresentação comercial revisada (13 páginas):
+ *   capa → quem somos → [vídeo institucional] → cenário atual → abordagem →
+ *   estudo de construtibilidade → soluções e entregáveis → metodologia →
+ *   cases → corpo técnico → segmentos e diferenciais → resultados → contato.
  */
 import Layout from '../../variants/arcadis/Layout.astro';
 import Nav from '../../variants/arcadis/Nav.astro';
 import Hero from '../../variants/arcadis/Hero.astro';
 import Empresa from '../../variants/arcadis/Empresa.astro';
+import Video from '../../variants/arcadis/Video.astro';
+import Cenario from '../../variants/arcadis/Cenario.astro';
 import Abordagem from '../../variants/arcadis/Abordagem.astro';
 import Solucoes from '../../variants/arcadis/Solucoes.astro';
+import Metodologia from '../../variants/arcadis/Metodologia.astro';
 import Projetos from '../../variants/arcadis/Projetos.astro';
-import Experiencia from '../../variants/arcadis/Experiencia.astro';
+import Equipe from '../../variants/arcadis/Equipe.astro';
 import Segmentos from '../../variants/arcadis/Segmentos.astro';
 import Fecho from '../../variants/arcadis/Fecho.astro';
 ---
@@ -20,10 +28,13 @@ import Fecho from '../../variants/arcadis/Fecho.astro';
   <main id="conteudo">
     <Hero />
     <Empresa />
+    <Video />
+    <Cenario />
     <Abordagem />
     <Solucoes />
+    <Metodologia />
     <Projetos />
-    <Experiencia />
+    <Equipe />
     <Segmentos />
     <Fecho />
   </main>

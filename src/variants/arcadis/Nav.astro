@@ -1,115 +1,102 @@
 ---
 /**
- * Navegação — direção 02.
+ * Navegacao — direcao 02.
  *
- * Institucional e estruturada, como se lê num escritório internacional de
- * engenharia: uma barra utilitária discreta em cima, a navegação principal
- * embaixo, um painel de "Soluções" que abre a arquitetura de informação
- * inteira, e um CTA fixo à direita. Nada de menu em tela cheia.
+ * Institucional e estruturada, como se le num escritorio internacional de
+ * engenharia: uma barra utilitaria discreta em cima (assinatura, e-mail e
+ * telefone), a navegacao principal embaixo, um painel de "Solucoes" que abre
+ * a arquitetura de informacao inteira e um CTA fixo a direita.
  */
 import Mark from '../_shared/Mark.astro';
-import { site, services, deliverables } from '../../data/site';
-
-interface ItemNav {
-  rotulo: string;
-  href: string;
-  /** Abre o painel de soluções em vez de navegar direto. */
-  painel?: boolean;
-}
-
-const principal: ItemNav[] = [
-  { rotulo: 'A CSMA', href: '#a-csma' },
-  { rotulo: 'Soluções', href: '#solucoes', painel: true },
-  { rotulo: 'Experiência', href: '#experiencia' },
-  { rotulo: 'Projetos', href: '#projetos' },
-  { rotulo: 'Segmentos', href: '#segmentos' },
-  { rotulo: 'Contato', href: '#contato' },
-];
+import { marca, solucoes, entregaveis, navegacao } from './conteudo';
 ---
 
 <header class="topo" data-topo>
   <!-- barra utilitária -->
   <div class="topo__util">
     <div class="faixa topo__util-linha">
-      <span>{site.signature}</span>
-      <a href={`mailto:${site.email}`}>{site.email}</a>
+      <span>{marca.signature}</span>
+      <span class="topo__util-contatos">
+        <a href={`mailto:${marca.email}`}>{marca.email}</a>
+        <a href={marca.phoneHref}>{marca.phone}</a>
+      </span>
     </div>
   </div>
 
   <!-- navegação principal -->
-  <div class="topo__principal">
-    <div class="faixa topo__linha">
-      <a class="topo__marca" href="#topo" aria-label="CSMA — início">
-        <span class="topo__marca-svg"><Mark travessao="var(--tinta-fraca)" /></span>
-      </a>
+  <div class="faixa topo__linha">
+    <a class="topo__marca" href="#topo" aria-label="CSMA — início">
+      <span class="topo__marca-svg"><Mark travessao="var(--tinta-fraca)" /></span>
+    </a>
 
-      <nav class="topo__nav" aria-label="Navegação principal">
-        {
-          principal.map((i) =>
-            i.painel ? (
-              <button
-                class="topo__item topo__item--painel"
-                type="button"
-                data-painel-abrir
-                aria-expanded="false"
-                aria-controls="painel-solucoes"
-              >
-                {i.rotulo}
-                <svg viewBox="0 0 12 8" fill="none" aria-hidden="true">
-                  <path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" />
-                </svg>
-              </button>
-            ) : (
-              <a class="topo__item" href={i.href}>
-                {i.rotulo}
-              </a>
-            )
+    <nav class="topo__nav" aria-label="Navegação principal">
+      {
+        navegacao.map((i) =>
+          'painel' in i && i.painel ? (
+            <button
+              class="topo__item topo__item--painel"
+              type="button"
+              data-painel-abrir
+              aria-expanded="false"
+              aria-controls="painel-solucoes"
+            >
+              {i.rotulo}
+              <svg viewBox="0 0 12 8" fill="none" aria-hidden="true">
+                <path d="M1 1.5 6 6.5 11 1.5" stroke="currentColor" stroke-width="1.6" />
+              </svg>
+            </button>
+          ) : (
+            <a class="topo__item" href={i.href}>
+              {i.rotulo}
+            </a>
           )
-        }
-      </nav>
+        )
+      }
+    </nav>
 
-      <a class="btn topo__cta" href={`mailto:${site.email}`}>
-        Fale com a CSMA
-        <svg viewBox="0 0 20 12" fill="none" aria-hidden="true">
-          <path d="M0 6h18M13 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" />
-        </svg>
-      </a>
+    <a class="btn topo__cta" href={`mailto:${marca.email}`}>
+      Fale com a CSMA
+      <svg viewBox="0 0 20 12" fill="none" aria-hidden="true">
+        <path d="M0 6h18M13 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" />
+      </svg>
+    </a>
 
-      <button class="topo__movel" type="button" data-movel-abrir aria-expanded="false" aria-controls="menu-movel">
-        <span class="topo__movel-txt">Menu</span>
-        <span class="topo__movel-marca" aria-hidden="true"><i></i><i></i></span>
-      </button>
-    </div>
+    <button class="topo__movel" type="button" data-movel-abrir aria-expanded="false" aria-controls="menu-movel">
+      <span class="topo__movel-txt">Menu</span>
+      <span class="topo__movel-marca" aria-hidden="true"><i></i><i></i></span>
+    </button>
   </div>
 
   <!-- painel de soluções (desktop) -->
   <div class="painel" id="painel-solucoes" data-painel hidden>
     <div class="faixa painel__grade">
       <div class="painel__col">
-        <p class="rotulo">{services.eyebrow}</p>
-        <h2 class="h4 painel__titulo">{services.title}</h2>
+        <p class="rotulo">{solucoes.eyebrow}</p>
+        <p class="h4 painel__titulo">{solucoes.title}</p>
         <ul class="painel__lista">
-          {services.items.map((s) => (
+          {solucoes.items.map((s) => (
             <li><a href="#solucoes">{s.title}</a></li>
           ))}
         </ul>
       </div>
 
       <div class="painel__col">
-        <p class="rotulo">{deliverables.eyebrow}</p>
-        <h2 class="h4 painel__titulo">{deliverables.title}</h2>
+        <p class="rotulo">{entregaveis.eyebrow}</p>
+        <p class="h4 painel__titulo">{entregaveis.title}</p>
         <ul class="painel__lista">
-          {deliverables.items.map((d) => (
+          {entregaveis.items.map((d) => (
             <li><a href="#entregaveis">{d.title}</a></li>
           ))}
         </ul>
       </div>
 
       <div class="painel__col painel__col--nota">
-        <p class="rotulo">Abordagem</p>
-        <p class="min painel__nota">{services.lead}</p>
-        <a class="link" href="#abordagem">
-          Conheça nossa abordagem
+        <p class="rotulo">Estudo de construtibilidade</p>
+        <p class="min painel__nota">
+          Execute seu projeto virtualmente antes mesmo de começar a construção.
+        </p>
+        <a class="link" href="#construtibilidade">
+          Conheça o estudo
           <svg viewBox="0 0 20 12" fill="none" aria-hidden="true">
             <path d="M0 6h18M13 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" />
           </svg>
@@ -121,11 +108,17 @@ const principal: ItemNav[] = [
   <!-- menu móvel -->
   <nav class="movel" id="menu-movel" data-movel hidden aria-label="Navegação">
     <ul>
-      {principal.map((i) => <li><a href={i.href} data-movel-link>{i.rotulo}</a></li>)}
-      <li><a href="#entregaveis" data-movel-link>Entregáveis</a></li>
-      <li><a href="#abordagem" data-movel-link>Construtibilidade</a></li>
+      {navegacao.map((i) => <li><a href={i.href} data-movel-link>{i.rotulo}</a></li>)}
+      <li><a href="#video" data-movel-link>Vídeo institucional</a></li>
+      <li><a href="#construtibilidade" data-movel-link>Estudo de construtibilidade</a></li>
+      <li><a href="#metodologia" data-movel-link>Metodologia</a></li>
+      <li><a href="#segmentos" data-movel-link>Segmentos e diferenciais</a></li>
     </ul>
-    <a class="btn movel__cta" href={`mailto:${site.email}`}>Fale com a CSMA</a>
+
+    <div class="movel__pe">
+      <a class="btn movel__cta" href={`mailto:${marca.email}`}>Fale com a CSMA</a>
+      <a class="movel__fone" href={marca.phoneHref}>{marca.phone}</a>
+    </div>
   </nav>
 </header>
 
@@ -202,6 +195,7 @@ const principal: ItemNav[] = [
     font-size: var(--t-min);
     color: var(--tinta-fraca);
   }
+  .topo__util-contatos { display: flex; gap: var(--e-5); flex: none; }
   .topo__util-linha a { transition: color var(--dur-1) var(--suave); }
   .topo__util-linha a:hover { color: var(--navy); }
 
@@ -252,10 +246,14 @@ const principal: ItemNav[] = [
   }
   @media (min-width: 66rem) { .topo__movel { display: none; } }
   .topo__movel-marca { display: grid; gap: 5px; width: 20px; }
-  .topo__movel-marca i { display: block; height: 2px; background: currentColor; }
+  .topo__movel-marca i {
+    display: block;
+    height: 2px;
+    background: currentColor;
+    transition: transform var(--dur-1) var(--suave);
+  }
   .topo__movel.is-ativo .topo__movel-marca i:first-child { transform: translateY(3.5px) rotate(45deg); }
   .topo__movel.is-ativo .topo__movel-marca i:last-child { transform: translateY(-3.5px) rotate(-45deg); }
-  .topo__movel-marca i { transition: transform var(--dur-1) var(--suave); }
 
   /* --- painel de soluções --- */
   .painel {
@@ -296,13 +294,18 @@ const principal: ItemNav[] = [
   /* --- menu móvel --- */
   .movel {
     position: fixed;
-    inset: calc(var(--topo)) 0 0 0;
+    inset: var(--topo) 0 0 0;
     background: var(--branco);
     padding: var(--e-6) var(--marg) var(--e-8);
     overflow-y: auto;
     display: grid;
     align-content: start;
     gap: var(--e-6);
+  }
+  /* Entre 60rem e 66rem a barra utilitaria aparece e o menu movel ainda existe:
+     o painel precisa comecar abaixo das duas faixas. */
+  @media (min-width: 60rem) {
+    .movel { inset-block-start: calc(var(--topo) + var(--util)); }
   }
   .movel[hidden] { display: none; }
   @media (min-width: 66rem) { .movel { display: none !important; } }
@@ -315,5 +318,13 @@ const principal: ItemNav[] = [
     letter-spacing: -0.018em;
     border-bottom: 1px solid var(--fio);
   }
+  .movel__pe { display: grid; gap: var(--e-4); justify-items: start; }
   .movel__cta { justify-self: start; }
+  .movel__fone {
+    padding: 0;
+    border: 0;
+    font-size: var(--t-min);
+    font-weight: 500;
+    color: var(--tinta-media);
+  }
 </style>

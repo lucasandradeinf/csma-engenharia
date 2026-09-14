@@ -1,177 +1,155 @@
 ---
 /**
- * Nossa abordagem e metodologia — direção 02.
+ * Nossa abordagem + Estudo de Construtibilidade — paginas 4 e 12 da
+ * apresentacao revisada.
  *
- * A tese da construtibilidade ganha um bloco navy de página inteira (o único
- * momento de cor forte da direção) e a metodologia volta ao branco, em seis
- * etapas numeradas com as saídas de cada uma.
+ * A abordagem e o unico momento de cor forte da direcao: um bloco navy com a
+ * cadeia de quatro elos exatamente como o PDF a declara (Engenharia ·
+ * Construtibilidade · Simulacao 3D e 4D · Workshop final). As duas etapas
+ * extras que o site antigo mostrava nao existem na apresentacao e sairam.
+ *
+ * Logo abaixo, de volta ao off-white, o capitulo novo da revisao: o Estudo
+ * de Construtibilidade, que e a proposta de valor da CSMA por escrito.
  */
-import { constructibility as c, methodology as m } from '../../data/site';
+import { abordagem as a, estudo as e } from './conteudo';
 ---
 
 <!-- ============================ ABORDAGEM ============================ -->
 <section class="bloco bloco--navy abordagem" id="abordagem" aria-labelledby="t-abordagem">
   <div class="faixa">
     <div class="secao">
-      <p class="rotulo secao__rotulo" data-e>Nossa abordagem</p>
-      <h2 class="h2" id="t-abordagem" data-e style="--atraso:60ms">{c.title}</h2>
-      <p class="lead" data-e style="--atraso:140ms">{c.lead}</p>
+      <p class="rotulo secao__rotulo" data-e>{a.eyebrow}</p>
+      <h2 class="h2" id="t-abordagem" data-e style="--atraso:60ms">{a.title}</h2>
+      <p class="lead" data-e style="--atraso:140ms">{a.lead}</p>
     </div>
 
-    <ol class="abordagem__etapas" data-eg>
+    <ol class="cadeia" data-eg>
       {
-        c.stages.map((s) => (
-          <li class:list={['etapa', 'real' in s && s.real && 'etapa--campo']}>
-            <span class="etapa__n">{s.idx}</span>
-            <h3 class="h4 etapa__titulo">{s.label}</h3>
-            <p class="min etapa__txt">{s.text}</p>
+        a.stages.map((s) => (
+          <li class="elo">
+            <span class="elo__n">{s.idx}</span>
+            <span class="elo__nome">{s.label}</span>
           </li>
         ))
       }
     </ol>
 
-    <div class="abordagem__nota" data-e>
-      <p class="abordagem__frase">{c.statement}</p>
-      <p class="min abordagem__obs">{c.note}</p>
-    </div>
+    <p class="abordagem__frase" data-e>{a.statement}</p>
   </div>
 </section>
 
-<!-- ============================ METODOLOGIA ============================ -->
-<section class="bloco metodo" id="metodologia" aria-labelledby="t-metodo">
+<!-- ==================== ESTUDO DE CONSTRUTIBILIDADE ==================== -->
+<section class="bloco bloco--areia estudo" id="construtibilidade" aria-labelledby="t-estudo">
   <div class="faixa">
     <div class="secao">
-      <p class="rotulo secao__rotulo" data-e>{m.eyebrow}</p>
-      <h2 class="h2" id="t-metodo" data-e style="--atraso:60ms">{m.title}</h2>
-      <p class="lead" data-e style="--atraso:140ms">{m.lead}</p>
+      <p class="rotulo secao__rotulo" data-e>{e.eyebrow}</p>
+      <h2 class="h2" id="t-estudo" data-e style="--atraso:60ms">{e.title}</h2>
+      <p class="lead estudo__lead" data-e style="--atraso:140ms">{e.lead}</p>
     </div>
 
-    <ol class="metodo__grade" data-eg>
+    <ul class="estudo__grade" data-eg>
       {
-        m.steps.map((s) => (
-          <li class="passo">
-            <span class="passo__n">{s.idx}</span>
-            <div class="passo__corpo">
-              <h3 class="h4">{s.title}</h3>
-              <p class="min passo__txt">{s.text}</p>
-              <p class="passo__saidas">{s.outputs.join(' · ')}</p>
-            </div>
+        e.pillars.map((p) => (
+          <li class="pilar-e">
+            <span class="pilar-e__n">{p.idx}</span>
+            <h3 class="h4 pilar-e__titulo">{p.title}</h3>
+            <p class="min pilar-e__txt">{p.text}</p>
           </li>
         ))
       }
-    </ol>
+    </ul>
 
-    <p class="metodo__awp" data-e>
-      <span class="rotulo">Referência de método</span>
-      <span>{m.footnote}</span>
-    </p>
+    <p class="estudo__fecho" data-e>{e.closing}</p>
   </div>
 </section>
 
 <style>
   /* ---------------- abordagem (navy) ---------------- */
-  .abordagem__etapas {
+  .cadeia {
     display: grid;
     gap: 1px;
     background: var(--fio);
     border-block: 1px solid var(--fio);
   }
-  @media (min-width: 44rem) {
-    .abordagem__etapas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 40rem) {
+    .cadeia { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-  @media (min-width: 70rem) {
-    .abordagem__etapas { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  @media (min-width: 64rem) {
+    .cadeia { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
 
-  .etapa {
+  .elo {
+    position: relative;
     background: var(--navy);
     padding: var(--e-6) var(--e-5) var(--e-7);
     display: grid;
-    gap: 0.55rem;
+    gap: var(--e-4);
     align-content: start;
+    min-height: 9.5rem;
   }
-  .etapa__n {
-    font-size: var(--t-h4);
+  .elo__n {
+    font-size: var(--t-rotulo);
     font-weight: 600;
+    letter-spacing: 0.14em;
     color: #7ea2d6;
-    letter-spacing: 0.02em;
     font-variant-numeric: tabular-nums;
   }
-  .etapa__titulo { color: #fff; }
-  .etapa__txt { color: var(--tinta-media); max-width: 32ch; }
-  .etapa--campo { background: var(--navy-fundo); }
-  .etapa--campo .etapa__n,
-  .etapa--campo .etapa__titulo { color: #ffffff; }
-  .etapa--campo .etapa__n { color: #a9c5ec; }
-
-  .abordagem__nota {
-    margin-top: var(--e-7);
-    display: grid;
-    gap: var(--e-4);
-  }
-  @media (min-width: 62rem) {
-    .abordagem__nota {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: var(--e-7);
-      align-items: start;
-    }
-  }
-  .abordagem__frase {
+  .elo__nome {
     font-size: var(--t-h3);
     font-weight: 600;
     letter-spacing: -0.024em;
-    line-height: 1.2;
+    line-height: 1.15;
     color: #fff;
-    max-width: 22ch;
-  }
-  .abordagem__obs { max-width: 46ch; }
-
-  /* ---------------- metodologia ---------------- */
-  .metodo__grade { display: grid; gap: var(--e-5); }
-  @media (min-width: 50rem) {
-    .metodo__grade { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-6) var(--e-7); }
-  }
-  @media (min-width: 76rem) {
-    .metodo__grade { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    max-width: 14ch;
   }
 
-  .passo {
+  .abordagem__frase {
+    margin-top: var(--e-8);
+    font-size: var(--t-h3);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.32;
+    color: #fff;
+    max-width: 34ch;
+  }
+
+  /* ---------------- estudo de construtibilidade ---------------- */
+  .estudo__lead { max-width: 58ch; }
+
+  .estudo__grade {
     display: grid;
-    grid-template-columns: 2.6rem minmax(0, 1fr);
-    gap: var(--e-4);
-    padding-top: var(--e-4);
-    border-top: 1px solid var(--fio);
+    gap: var(--e-6);
   }
-  .passo__n {
-    font-size: var(--t-h4);
-    font-weight: 600;
-    color: var(--navy);
-    line-height: 1.3;
-    font-variant-numeric: tabular-nums;
-  }
-  .passo__corpo { display: grid; gap: 0.5rem; }
-  .passo__txt { max-width: 34ch; }
-  .passo__saidas {
-    font-size: var(--t-rotulo);
-    letter-spacing: 0.05em;
-    color: var(--tinta-fraca);
-    line-height: 1.7;
-    padding-top: 0.35rem;
-    border-top: 1px solid var(--fio);
-    margin-top: 0.25rem;
+  @media (min-width: 52rem) {
+    .estudo__grade { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--e-7); }
   }
 
-  .metodo__awp {
-    margin-top: var(--e-7);
+  .pilar-e {
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
     padding-top: var(--e-4);
     border-top: 2px solid var(--navy);
-    display: grid;
-    gap: 0.3rem;
   }
-  .metodo__awp > span:last-child {
-    font-size: var(--t-h4);
+  .pilar-e__n {
+    font-size: var(--t-rotulo);
     font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--tinta-fraca);
+    font-variant-numeric: tabular-nums;
+  }
+  .pilar-e__titulo { max-width: 20ch; }
+  .pilar-e__txt { max-width: 38ch; }
+
+  .estudo__fecho {
+    margin-top: var(--e-8);
+    padding-top: var(--e-5);
+    border-top: 1px solid var(--fio-forte);
+    font-size: var(--t-h4);
+    font-weight: 500;
     letter-spacing: -0.014em;
+    line-height: 1.5;
     color: var(--tinta);
+    max-width: 52ch;
   }
 </style>
