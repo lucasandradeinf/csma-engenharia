@@ -1,0 +1,55 @@
+---
+/**
+ * DIREÇÃO 02 ("arcadis") — versão escolhida pelo cliente.
+ *
+ * Esta é a FONTE ÚNICA da página. Duas rotas a renderizam:
+ *   `/`         → produção (Vercel / domínio próprio), indexável
+ *   `/arcadis/` → rota histórica, mantida para os links já existentes
+ *                 (GitHub Pages em `/csma-engenharia/arcadis/`), `noindex`
+ *
+ * Nada aqui muda de rota para rota além do `noindex` — o desenho, o conteúdo
+ * e a ordem das seções são exatamente os mesmos nos dois endereços.
+ *
+ * A jornada segue a apresentação comercial revisada (13 páginas):
+ *   capa → quem somos → [vídeo institucional] → cenário atual → abordagem →
+ *   estudo de construtibilidade → soluções e entregáveis → metodologia →
+ *   cases → corpo técnico → segmentos e diferenciais → resultados → contato.
+ */
+import Layout from './Layout.astro';
+import Nav from './Nav.astro';
+import Hero from './Hero.astro';
+import Empresa from './Empresa.astro';
+import Video from './Video.astro';
+import Cenario from './Cenario.astro';
+import Abordagem from './Abordagem.astro';
+import Solucoes from './Solucoes.astro';
+import Metodologia from './Metodologia.astro';
+import Projetos from './Projetos.astro';
+import Equipe from './Equipe.astro';
+import Segmentos from './Segmentos.astro';
+import Fecho from './Fecho.astro';
+
+interface Props {
+  /** Só a rota de produção (`/`) entra nos buscadores. Ver `Layout.astro`. */
+  indexavel?: boolean;
+}
+
+const { indexavel = false } = Astro.props;
+---
+
+<Layout indexavel={indexavel}>
+  <Nav />
+  <main id="conteudo">
+    <Hero />
+    <Empresa />
+    <Video />
+    <Cenario />
+    <Abordagem />
+    <Solucoes />
+    <Metodologia />
+    <Projetos />
+    <Equipe />
+    <Segmentos />
+    <Fecho />
+  </main>
+</Layout>

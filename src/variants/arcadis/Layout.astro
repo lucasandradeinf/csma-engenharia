@@ -9,6 +9,17 @@ const FAMILIES = ['sans'] as const;
 const faces = fontFaces(FAMILIES);
 const preloads = fontPreloads(FAMILIES);
 
+interface Props {
+  /**
+   * `true` apenas na home de produção (`/`). A rota histórica `/arcadis/`
+   * renderiza exatamente a mesma página e continua fora dos buscadores, para
+   * que o mesmo conteúdo não seja indexado em dois endereços.
+   */
+  indexavel?: boolean;
+}
+
+const { indexavel = false } = Astro.props;
+
 const title = marca.title;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
 const ogImage = Astro.site
@@ -25,7 +36,7 @@ const ogImage = Astro.site
     <title>{title}</title>
     <meta name="description" content={marca.description} />
     <link rel="canonical" href={canonical} />
-    <meta name="robots" content="noindex, follow" />
+    <meta name="robots" content={indexavel ? 'index, follow' : 'noindex, follow'} />
     <meta name="theme-color" content="#122744" />
     <meta name="color-scheme" content="light" />
 

@@ -3,12 +3,28 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 /**
- * `SITE_URL` e `BASE_PATH` são injetados pelo GitHub Actions
- * (.github/workflows/deploy.yml) para que o site funcione tanto em
- * `usuario.github.io/repositorio/` quanto em domínio próprio.
- * Em desenvolvimento local ambos caem no padrão de raiz.
+ * O mesmo código publica em dois lugares, e a diferença entre eles é
+ * inteiramente de ambiente — nenhum caminho fica escrito no código:
+ *
+ *   Vercel (produção)   SITE_URL=https://csmaengenharia.com.br  (vercel.json)
+ *                       BASE_PATH ausente  → base `/`
+ *                       A home `/` é a direção arcadis.
+ *
+ *   GitHub Pages        SITE_URL / BASE_PATH vêm de `actions/configure-pages`
+ *                       (.github/workflows/deploy.yml) → base
+ *                       `/csma-engenharia/` no domínio github.io.
+ *
+ *   Local (dev/preview) sem variáveis → base `/`, igual à Vercel.
+ *
+ * Todo link para `public/` passa por `withBase()` (src/lib/url.ts) e todo
+ * asset processado recebe o `base` do próprio Astro, então trocar de host é
+ * só trocar essas duas variáveis.
  */
-const site = process.env.SITE_URL || 'https://csma-engenharia.github.io';
+const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+const site =
+  process.env.SITE_URL ||
+  (vercelUrl ? `https://${vercelUrl}` : undefined) ||
+  'https://csma-engenharia.github.io';
 const base = process.env.BASE_PATH || '/';
 
 export default defineConfig({

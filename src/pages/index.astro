@@ -1,50 +1,15 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
-import Hero from '../components/Hero.astro';
-import About from '../components/About.astro';
-import Challenge from '../components/Challenge.astro';
-import Constructibility from '../components/Constructibility.astro';
-import Methodology from '../components/Methodology.astro';
-import Services from '../components/Services.astro';
-import CaseStudies from '../components/CaseStudies.astro';
-import Deliverables from '../components/Deliverables.astro';
-import Team from '../components/Team.astro';
-import Experience from '../components/Experience.astro';
-import Sectors from '../components/Sectors.astro';
-import Differentials from '../components/Differentials.astro';
-import Benefits from '../components/Benefits.astro';
-import CTA from '../components/CTA.astro';
-import Footer from '../components/Footer.astro';
-
-/* Ritmo de superficie — a alternancia e deliberada e o navy e pontuacao,
-   nunca o fundo padrao:
-     hero        navy       about       off-white   desafio      branco
-     construtib. navy       metodologia off-white   solucoes     branco
-     cases       off-white  entregaveis branco      equipe       off-white
-     experiencia navy       segmentos   papel       diferenciais branco
-     beneficios  off-white  encerramento navy       rodape       navy      */
+/**
+ * HOME DE PRODUÇÃO — `/`
+ *
+ * O cliente escolheu a DIREÇÃO 02 ("arcadis"), então a raiz do site é ela.
+ * A página inteira vive em `src/variants/arcadis/Pagina.astro`; aqui só se
+ * declara a rota. A rota histórica `/arcadis/` renderiza o mesmo componente.
+ *
+ * `indexavel` é a única diferença entre as duas: a raiz entra nos buscadores,
+ * a rota histórica continua `noindex` para não duplicar o site.
+ */
+import Pagina from '../variants/arcadis/Pagina.astro';
 ---
 
-<BaseLayout>
-  <Header />
-
-  <main id="conteudo">
-    <Hero />
-    <About />
-    <Challenge />
-    <Constructibility />
-    <Methodology />
-    <Services />
-    <CaseStudies />
-    <Deliverables />
-    <Team />
-    <Experience />
-    <Sectors />
-    <Differentials />
-    <Benefits />
-    <CTA />
-  </main>
-
-  <Footer />
-</BaseLayout>
+<Pagina indexavel />

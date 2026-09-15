@@ -1,41 +1,13 @@
 ---
 /**
- * DIREÇÃO 02 — versão escolhida pelo cliente.
- * Rota: /arcadis/  (e /csma-engenharia/arcadis/ no GitHub Pages)
+ * DIREÇÃO 02 ("arcadis") — rota histórica.
  *
- * A jornada segue a apresentação comercial revisada (13 páginas):
- *   capa → quem somos → [vídeo institucional] → cenário atual → abordagem →
- *   estudo de construtibilidade → soluções e entregáveis → metodologia →
- *   cases → corpo técnico → segmentos e diferenciais → resultados → contato.
+ * Mantida para não quebrar os links já enviados ao cliente e a publicação
+ * atual no GitHub Pages (`/csma-engenharia/arcadis/`). Renderiza exatamente
+ * a mesma página que a raiz `/`, mas continua `noindex` para que só a raiz
+ * seja indexada.
  */
-import Layout from '../../variants/arcadis/Layout.astro';
-import Nav from '../../variants/arcadis/Nav.astro';
-import Hero from '../../variants/arcadis/Hero.astro';
-import Empresa from '../../variants/arcadis/Empresa.astro';
-import Video from '../../variants/arcadis/Video.astro';
-import Cenario from '../../variants/arcadis/Cenario.astro';
-import Abordagem from '../../variants/arcadis/Abordagem.astro';
-import Solucoes from '../../variants/arcadis/Solucoes.astro';
-import Metodologia from '../../variants/arcadis/Metodologia.astro';
-import Projetos from '../../variants/arcadis/Projetos.astro';
-import Equipe from '../../variants/arcadis/Equipe.astro';
-import Segmentos from '../../variants/arcadis/Segmentos.astro';
-import Fecho from '../../variants/arcadis/Fecho.astro';
+import Pagina from '../../variants/arcadis/Pagina.astro';
 ---
 
-<Layout>
-  <Nav />
-  <main id="conteudo">
-    <Hero />
-    <Empresa />
-    <Video />
-    <Cenario />
-    <Abordagem />
-    <Solucoes />
-    <Metodologia />
-    <Projetos />
-    <Equipe />
-    <Segmentos />
-    <Fecho />
-  </main>
-</Layout>
+<Pagina />
